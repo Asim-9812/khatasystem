@@ -8,6 +8,7 @@ import 'package:khata_app/features/reports/financial/trial_balance/presentation/
 import 'package:khata_app/features/reports/statement/customer_ledger_report/presentation/customer_ledger_report.dart';
 
 import '../../../common/colors.dart';
+import '../../reports/statement/daybook_report/presentation/daybook_report_presentation.dart';
 import '../../reports/statement/ledger_report/presentation/report_page.dart';
 import '../../reports/statement/supplier_ledger_report/presentation/supplier_ledger_report.dart';
 import '../model/menu_model.dart';
@@ -74,6 +75,8 @@ class SubMenuView extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfitLossReport()));
                             } else if(submenu[index].intMenuid == 151){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const VoucherReportPage()));
+                            }else if(submenu[index].intMenuid == 83){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const DayBookReport()));
                             }else{
                               Fluttertoast.showToast(
                                 msg: 'Feature Coming Soon!!!',
@@ -154,6 +157,7 @@ class SubMenuView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
+
                               if(submenu[index].intMenuid == 85){
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ReportPageView()));
                               }else if(submenu[index].intMenuid == 87){
@@ -166,6 +170,8 @@ class SubMenuView extends StatelessWidget {
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const TrialBalanceReport(),));
                               }else if(submenu[index].intMenuid == 65){
                                 Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfitLossReport()));
+                              }else if(submenu[index].intMenuid == 83){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => const DayBookReport()));
                               }
                               else{
                                 Fluttertoast.showToast(

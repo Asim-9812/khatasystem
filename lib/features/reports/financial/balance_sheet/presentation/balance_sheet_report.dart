@@ -21,6 +21,7 @@ import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 
 import '../../../../../../common/colors.dart';
 import '../../../../../../common/common_provider.dart';
+import '../../../../../common/snackbar.dart';
 import '../widgets/table_widget.dart';
 
 
@@ -39,8 +40,6 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
   @override
   void initState() {
     super.initState();
-    dateFrom.text = convertDate(mainInfo.startDate!);
-    dateTo.text = convertDate(mainInfo.endDate!);
   }
 
   @override
@@ -56,133 +55,207 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
     return Consumer(
       builder: (context, ref, child) {
         final outCome = ref.watch(listProvider(modelRef));
-        return Scaffold(
-            appBar: AppBar(
-              backgroundColor: ColorManager.primary,
-              centerTitle: true,
-              elevation: 0,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context, true);
-                },
-                icon: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  size: 28,
+        return WillPopScope(
+          onWillPop: () async {
+            ref.invalidate(balanceSheetReportProvider);
+
+            // Return true to allow the back navigation, or false to prevent it
+            return true;
+          },
+          child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: ColorManager.primary,
+                centerTitle: true,
+                elevation: 0,
+                leading: IconButton(
+                  onPressed: () {
+                    ref.invalidate(balanceSheetReportProvider);
+                    Navigator.pop(context, true);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 28,
+                    color: Colors.white,
+                  ),
+                ),
+                title: const Text('Balance Sheet'),
+                titleTextStyle: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
                   color: Colors.white,
                 ),
+                toolbarHeight: 70,
               ),
-              title: const Text('Balance Sheet'),
-              titleTextStyle: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
-              toolbarHeight: 70,
-            ),
-            body: outCome.when(
-              data: (data) {
+              body: outCome.when(
+                data: (data) {
 
-                List<Map<dynamic, dynamic>> allList = [];
+                  List<Map<dynamic, dynamic>> allList = [];
 
-                for (var e in data) {
-                  allList.add(e);
-                }
-
-                List<String> branches = ['All'];
-
-                data[2].forEach((key, _) {
-                  branches.add(key);
-                });
-
-                String branchItem = branches[0];
-
-                final branchItemData = ref.watch(itemProvider).branchItem;
-
-                GetListModel ledgerGroupListModel = GetListModel();
-                ledgerGroupListModel.refName = 'AccountLedgerReport';
-                ledgerGroupListModel.isSingleList = 'true';
-                ledgerGroupListModel.singleListNameStr = 'account';
-                ledgerGroupListModel.listNameId = "[]";
-                ledgerGroupListModel.mainInfoModel = mainInfo;
-                ledgerGroupListModel.conditionalValues = '';
-
-
-
-                String getBranchValue(String branchVal) {
-                  if (branchVal == "All") {
-                    return 'BranchId--';
-                  } else {
-                    return 'BranchId--${data[2][branchItemData]}';
+                  for (var e in data) {
+                    allList.add(e);
                   }
-                }
 
-                String getFromDate(TextEditingController txt) {
-                  if (txt.text.isEmpty) {
-                    return 'fromDate--';
-                  } else {
-                    return 'fromDate--${txt.text.trim()}';
+                  List<String> branches = ['All'];
+
+                  data[2].forEach((key, _) {
+                    branches.add(key);
+                  });
+
+                  String branchItem = branches[0];
+
+                  final branchItemData = ref.watch(itemProvider).branchItem;
+
+                  GetListModel ledgerGroupListModel = GetListModel();
+                  ledgerGroupListModel.refName = 'AccountLedgerReport';
+                  ledgerGroupListModel.isSingleList = 'true';
+                  ledgerGroupListModel.singleListNameStr = 'account';
+                  ledgerGroupListModel.listNameId = "[]";
+                  ledgerGroupListModel.mainInfoModel = mainInfo;
+                  ledgerGroupListModel.conditionalValues = '';
+
+
+
+                  String getBranchValue(String branchVal) {
+                    if (branchVal == "All") {
+                      return 'BranchId--';
+                    } else {
+                      return 'BranchId--${data[2][branchItemData]}';
+                    }
                   }
-                }
 
-                String getToDate(TextEditingController txt) {
-                  if (txt.text.isEmpty) {
-                    return 'toDate--';
-                  } else {
-                    return 'toDate--${txt.text.trim()}';
+                  String getFromDate(TextEditingController txt) {
+                    if (txt.text.isEmpty) {
+                      return 'fromDate--';
+                    } else {
+                      return 'fromDate--${txt.text.trim()}';
+                    }
                   }
-                }
+
+                  String getToDate(TextEditingController txt) {
+                    if (txt.text.isEmpty) {
+                      return 'toDate--';
+                    } else {
+                      return 'toDate--${txt.text.trim()}';
+                    }
+                  }
 
 
-                DataFilterModel filterModel = DataFilterModel();
-                filterModel.tblName = "BalanceSheeteReport";
-                filterModel.strName = "";
-                filterModel.underColumnName = null;
-                filterModel.underIntID = 0;
-                filterModel.columnName = null;
-                filterModel.filterColumnsString = "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"isDetail--false\",\"${getBranchValue(branchItemData)}\"]";
-                filterModel.pageRowCount = 3;
-                filterModel.currentPageNumber = 1;
-                filterModel.strListNames = "";
+                  DataFilterModel filterModel = DataFilterModel();
+                  filterModel.tblName = "BalanceSheeteReport";
+                  filterModel.strName = "";
+                  filterModel.underColumnName = null;
+                  filterModel.underIntID = 0;
+                  filterModel.columnName = null;
+                  filterModel.filterColumnsString = "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"isDetail--false\",\"${getBranchValue(branchItemData)}\"]";
+                  filterModel.pageRowCount = 3;
+                  filterModel.currentPageNumber = 1;
+                  filterModel.strListNames = "";
 
-                FilterAnyModel fModel = FilterAnyModel();
-                fModel.dataFilterModel = filterModel;
-                fModel.mainInfoModel = mainInfo;
+                  FilterAnyModel fModel = FilterAnyModel();
+                  fModel.dataFilterModel = filterModel;
+                  fModel.mainInfoModel = mainInfo;
 
-                return SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: SingleChildScrollView(
-                      physics: const ClampingScrollPhysics(),
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            height: 250,
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(15),
+                  return SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: SingleChildScrollView(
+                        physics: const ClampingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
                             ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: TextField(
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter
-                                              .digitsOnly,
-                                          DateInputFormatter(),
-                                          LengthLimitingTextInputFormatter(10)
-                                        ],
-                                        keyboardType: TextInputType.number,
-                                        textInputAction: TextInputAction.next,
-                                        controller: dateFrom,
-                                        decoration: InputDecoration(
+                            Container(
+                              height: 250,
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.8),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: TextField(
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            DateInputFormatter(),
+                                            LengthLimitingTextInputFormatter(10)
+                                          ],
+                                          keyboardType: TextInputType.number,
+                                          textInputAction: TextInputAction.next,
+                                          controller: dateFrom,
+                                          decoration: InputDecoration(
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(10),
+                                                  borderSide: BorderSide(
+                                                    color: Colors.black
+                                                        .withOpacity(0.45),
+                                                    width: 1,
+                                                  )),
+                                              contentPadding: const EdgeInsets.all(10),
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                  BorderRadius.circular(10),
+                                                  borderSide: BorderSide(
+                                                    color: ColorManager.primary,
+                                                    width: 1,
+                                                  )),
+                                              floatingLabelStyle: TextStyle(
+                                                  color: ColorManager.primary),
+                                              labelText: 'From',
+                                              labelStyle: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                              alignLabelWithHint: true,
+                                              suffixIcon: IconButton(
+                                                padding: EdgeInsets.zero,
+                                                onPressed: () async {
+                                                  DateTime? pickDate =
+                                                  await showDatePicker(
+                                                    context: context,
+                                                    initialDate: DateTime.now(),
+                                                    firstDate: DateTime(2000),
+                                                    lastDate: DateTime.now(),
+                                                  );
+                                                  if (pickDate != null) {
+                                                    dateFrom.text =
+                                                        DateFormat('yyyy/MM/dd')
+                                                            .format(pickDate);
+                                                  }
+                                                },
+                                                icon: Icon(
+                                                  Icons.edit_calendar,
+                                                  size: 30,
+                                                  color: ColorManager.primary,
+                                                ),
+                                              )),
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Expanded(
+                                        child: TextField(
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter
+                                                .digitsOnly,
+                                            DateInputFormatter(),
+                                            LengthLimitingTextInputFormatter(10)
+                                          ],
+                                          keyboardType: TextInputType.number,
+                                          textInputAction: TextInputAction.done,
+                                          controller: dateTo,
+                                          decoration: InputDecoration(
                                             border: OutlineInputBorder(
                                                 borderRadius:
                                                 BorderRadius.circular(10),
@@ -191,7 +264,6 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
                                                       .withOpacity(0.45),
                                                   width: 1,
                                                 )),
-                                            contentPadding: const EdgeInsets.all(10),
                                             focusedBorder: OutlineInputBorder(
                                                 borderRadius:
                                                 BorderRadius.circular(10),
@@ -200,10 +272,12 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
                                                   width: 1,
                                                 )),
                                             floatingLabelStyle: TextStyle(
-                                                color: ColorManager.primary),
-                                            labelText: 'From',
+                                                color: ColorManager.primary,
+                                                fontSize: 18),
+                                            contentPadding: const EdgeInsets.all(10),
+                                            labelText: 'To',
                                             labelStyle: const TextStyle(
-                                              fontSize: 18,
+                                              fontSize: 20,
                                               fontWeight: FontWeight.w500,
                                             ),
                                             alignLabelWithHint: true,
@@ -212,13 +286,13 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
                                               onPressed: () async {
                                                 DateTime? pickDate =
                                                 await showDatePicker(
-                                                  context: context,
-                                                  initialDate: DateTime.now(),
-                                                  firstDate: DateTime(2000),
-                                                  lastDate: DateTime(2100),
-                                                );
+                                                    context: context,
+                                                    initialDate:
+                                                    DateTime.now(),
+                                                    firstDate: DateTime(2000),
+                                                    lastDate: DateTime.now());
                                                 if (pickDate != null) {
-                                                  dateFrom.text =
+                                                  dateTo.text =
                                                       DateFormat('yyyy/MM/dd')
                                                           .format(pickDate);
                                                 }
@@ -228,181 +302,146 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
                                                 size: 30,
                                                 color: ColorManager.primary,
                                               ),
-                                            )),
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: TextField(
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter
-                                              .digitsOnly,
-                                          DateInputFormatter(),
-                                          LengthLimitingTextInputFormatter(10)
-                                        ],
-                                        keyboardType: TextInputType.number,
-                                        textInputAction: TextInputAction.done,
-                                        controller: dateTo,
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(10),
-                                              borderSide: BorderSide(
-                                                color: Colors.black
-                                                    .withOpacity(0.45),
-                                                width: 1,
-                                              )),
-                                          focusedBorder: OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(10),
-                                              borderSide: BorderSide(
-                                                color: ColorManager.primary,
-                                                width: 1,
-                                              )),
-                                          floatingLabelStyle: TextStyle(
-                                              color: ColorManager.primary,
-                                              fontSize: 18),
-                                          contentPadding: const EdgeInsets.all(10),
-                                          labelText: 'To',
-                                          labelStyle: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                          alignLabelWithHint: true,
-                                          suffixIcon: IconButton(
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () async {
-                                              DateTime? pickDate =
-                                              await showDatePicker(
-                                                  context: context,
-                                                  initialDate:
-                                                  DateTime.now(),
-                                                  firstDate: DateTime(2000),
-                                                  lastDate: DateTime(2100));
-                                              if (pickDate != null) {
-                                                dateTo.text =
-                                                    DateFormat('yyyy/MM/dd')
-                                                        .format(pickDate);
-                                              }
-                                            },
-                                            icon: Icon(
-                                              Icons.edit_calendar,
-                                              size: 30,
-                                              color: ColorManager.primary,
                                             ),
                                           ),
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500),
                                         ),
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  DropdownSearch<String>(
+                                    items: branches,
+                                    selectedItem: branchItem,
+                                    dropdownDecoratorProps:
+                                    DropDownDecoratorProps(
+                                      baseStyle: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                      dropdownSearchDecoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                              color:
+                                              Colors.black.withOpacity(0.45),
+                                              width: 2,
+                                            )),
+                                        contentPadding: const EdgeInsets.all(15),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                                color: ColorManager.primary,
+                                                width: 1)),
+                                        floatingLabelStyle: TextStyle(
+                                            color: ColorManager.primary),
+                                        labelText: 'Branch',
+                                        labelStyle: const TextStyle(fontSize: 18),
                                       ),
                                     ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                DropdownSearch<String>(
-                                  items: branches,
-                                  selectedItem: branchItem,
-                                  dropdownDecoratorProps:
-                                  DropDownDecoratorProps(
-                                    baseStyle: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
-                                    dropdownSearchDecoration: InputDecoration(
-                                      border: OutlineInputBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                            color:
-                                            Colors.black.withOpacity(0.45),
-                                            width: 2,
-                                          )),
-                                      contentPadding: const EdgeInsets.all(15),
-                                      focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                          BorderRadius.circular(10),
-                                          borderSide: BorderSide(
-                                              color: ColorManager.primary,
-                                              width: 1)),
-                                      floatingLabelStyle: TextStyle(
-                                          color: ColorManager.primary),
-                                      labelText: 'Branch',
-                                      labelStyle: const TextStyle(fontSize: 18),
-                                    ),
-                                  ),
-                                  popupProps: const PopupProps.menu(
-                                    showSearchBox: true,
-                                    fit: FlexFit.loose,
-                                    constraints: BoxConstraints(maxHeight: 250),
-                                    showSelectedItems: true,
-                                    searchFieldProps: TextFieldProps(
-                                      style: TextStyle(
-                                        fontSize: 18,
+                                    popupProps: const PopupProps.menu(
+                                      showSearchBox: true,
+                                      fit: FlexFit.loose,
+                                      constraints: BoxConstraints(maxHeight: 250),
+                                      showSelectedItems: true,
+                                      searchFieldProps: TextFieldProps(
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
                                       ),
                                     ),
+                                    onChanged: (dynamic value) {
+                                      ref.read(itemProvider).updateBranch(value);
+                                    },
                                   ),
-                                  onChanged: (dynamic value) {
-                                    ref.read(itemProvider).updateBranch(value);
-                                  },
-                                ),
-                                const Spacer(),
-                                ElevatedButton(
-                                  onPressed: () async {
-                                   ref.read(balanceSheetReportProvider.notifier).getTableData(fModel);
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: ColorManager.green,
-                                    minimumSize: const Size(200, 50),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                  const Spacer(),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      if(dateFrom.text.isEmpty || dateTo.text.isEmpty){
+                                        final scaffoldMessage = ScaffoldMessenger.of(context);
+                                        scaffoldMessage.showSnackBar(
+                                          SnackbarUtil.showFailureSnackbar(
+                                            message: 'Please pick a date',
+                                            duration: const Duration(milliseconds: 1400),
+                                          ),
+                                        );
+                                      }else{
+                                        DateFormat dateFormat = DateFormat('yyyy/MM/dd');
+
+                                        DateTime fromDate = dateFormat.parse(dateFrom.text);
+                                        DateTime toDate = dateFormat.parse(dateTo.text);
+                                        if (toDate.isBefore(fromDate)) {
+                                          final scaffoldMessage = ScaffoldMessenger.of(context);
+                                          scaffoldMessage.showSnackBar(
+                                            SnackbarUtil.showFailureSnackbar(
+                                              message: 'From date is greater than To date',
+                                              duration: const Duration(milliseconds: 1400),
+                                            ),
+                                          );
+                                        }
+                                        else{
+                                          ref.read(balanceSheetReportProvider.notifier).getTableData(fModel);
+                                        }
+
+                                      }
+
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: ColorManager.green,
+                                      minimumSize: const Size(200, 50),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    child: const FaIcon(
+                                      FontAwesomeIcons.arrowsRotate,
+                                      color: Colors.white,
+                                      size: 25,
                                     ),
                                   ),
-                                  child: const FaIcon(
-                                    FontAwesomeIcons.arrowsRotate,
-                                    color: Colors.white,
-                                    size: 25,
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          Consumer(
-                            builder: (context, ref, child) {
-                              final balanceSheetReport = ref.watch(balanceSheetReportProvider);
-                              return balanceSheetReport.when(
-                                data: (data) {
-                                  List<BalanceSheetReportModel> reportList = <BalanceSheetReportModel>[];
-                                  if (data.isNotEmpty) {
-                                    for (var e in data[0]) {
-                                      reportList.add(BalanceSheetReportModel.fromJson(e));
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Consumer(
+                              builder: (context, ref, child) {
+                                final balanceSheetReport = ref.watch(balanceSheetReportProvider);
+                                return balanceSheetReport.when(
+                                  data: (data) {
+                                    List<BalanceSheetReportModel> reportList = <BalanceSheetReportModel>[];
+                                    if (data.isNotEmpty) {
+                                      for (var e in data[0]) {
+                                        reportList.add(BalanceSheetReportModel.fromJson(e));
+                                      }
+                                    } else {
+                                      return Container();
                                     }
-                                  } else {
-                                    return Container(
+
+                                    return SizedBox(
                                       width: double.infinity,
-                                      color: Colors.blue.shade50,
                                       child: SingleChildScrollView(
                                         scrollDirection: Axis.horizontal,
                                         physics: const ClampingScrollPhysics(),
                                         child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             DataTable(
                                               columns: [
+                                                buildDataColumn(100, 'S.N.', TextAlign.start),
                                                 buildDataColumn(250, 'Liabilities', TextAlign.start),
                                                 buildDataColumn(200, 'Credit', TextAlign.end),
                                                 buildDataColumn(200, 'Assets', TextAlign.start),
                                                 buildDataColumn(160, 'Debit', TextAlign.end),
                                               ],
-                                              rows: const [],
+                                              rows: List.generate(
+                                                reportList.length,
+                                                    (index) => buildBalanceSheetDataRow(index, reportList[index], allList, context),
+                                              ),
                                               columnSpacing: 0,
                                               horizontalMargin: 0,
                                             ),
@@ -410,83 +449,56 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
                                         ),
                                       ),
                                     );
-                                  }
-
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      physics: const ClampingScrollPhysics(),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          DataTable(
-                                            columns: [
-                                              buildDataColumn(250, 'Liabilities', TextAlign.start),
-                                              buildDataColumn(200, 'Credit', TextAlign.end),
-                                              buildDataColumn(200, 'Assets', TextAlign.start),
-                                              buildDataColumn(160, 'Debit', TextAlign.end),
-                                            ],
-                                            rows: List.generate(
-                                              reportList.length,
-                                                  (index) => buildBalanceSheetDataRow(index, reportList[index], allList, context),
-                                            ),
-                                            columnSpacing: 0,
-                                            horizontalMargin: 0,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                                error: (error, stackTrace) =>
-                                    Center(child: Text('$error')),
-                                loading: () => const Center(
-                                    child: CircularProgressIndicator()),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 50,),
-                        ],
+                                  },
+                                  error: (error, stackTrace) =>
+                                      Center(child: Text('$error')),
+                                  loading: () => const Center(
+                                      child: CircularProgressIndicator()),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 50,),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-              error: (error, stackTrace) => Center(
-                child: Text('$error'),
+                  );
+                },
+                error: (error, stackTrace) => Center(
+                  child: Text('$error'),
+                ),
+                loading: () {
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 20, left: 20, top: 20),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: const [
+                            Expanded(child: CustomShimmer(width: double.infinity, height: 50, borderRadius: 10,)),
+                            SizedBox(width: 10,),
+                            Expanded(child: CustomShimmer(width: double.infinity, height: 50, borderRadius: 10,)),
+                          ],
+                        ),
+                        const SizedBox(height: 18,),
+                        const CustomShimmer(width: double.infinity, height: 50, borderRadius: 10,),
+                        const SizedBox(height: 18,),
+                        const CustomShimmer(width: 180, height: 50, borderRadius: 10,),
+                        const SizedBox(height: 40,),
+                        Row(
+                          children: const [
+                            Expanded(child: CustomShimmer(width: 40, height: 50,)),
+                            SizedBox(width: 1,),
+                            Expanded(child: CustomShimmer(width: 180, height: 50,)),
+                            SizedBox(width: 1,),
+                            Expanded(child: CustomShimmer(width: 120, height: 50,)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
-              loading: () {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 20, left: 20, top: 20),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: const [
-                          Expanded(child: CustomShimmer(width: double.infinity, height: 50, borderRadius: 10,)),
-                          SizedBox(width: 10,),
-                          Expanded(child: CustomShimmer(width: double.infinity, height: 50, borderRadius: 10,)),
-                        ],
-                      ),
-                      const SizedBox(height: 18,),
-                      const CustomShimmer(width: double.infinity, height: 50, borderRadius: 10,),
-                      const SizedBox(height: 18,),
-                      const CustomShimmer(width: 180, height: 50, borderRadius: 10,),
-                      const SizedBox(height: 40,),
-                      Row(
-                        children: const [
-                          Expanded(child: CustomShimmer(width: 40, height: 50,)),
-                          SizedBox(width: 1,),
-                          Expanded(child: CustomShimmer(width: 180, height: 50,)),
-                          SizedBox(width: 1,),
-                          Expanded(child: CustomShimmer(width: 120, height: 50,)),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+          ),
         );
       },
     );

@@ -29,6 +29,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
   TextEditingController dateFrom = TextEditingController();
   TimeOfDay selectedTime = TimeOfDay.now();
 
+  DateTime selectedDate = DateTime.now();
   NotificationServices notificationServices = NotificationServices();
 
   @override
@@ -149,19 +150,33 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                              ),
                              child: Align(
                                alignment: Alignment.centerLeft,
-                               child: DisplayDateTime(selectedTime: selectedTime),
+                               child: DisplayDateTime(
+                                 selectedDate: selectedDate,
+                                 selectedTime: selectedTime,),
                              ),
                            ),
                            const SizedBox(width: 30,),
                            Expanded(
                              child: ElevatedButton(
                                onPressed: () async {
+                                 final DateTime? pickedDate = await showDatePicker(
+                                   context: context,
+                                   initialDate: selectedDate,
+                                   firstDate: DateTime.now(),
+                                   lastDate: DateTime.now().add(const Duration(days: 365)),
+                                 );
+                                 if (pickedDate != null) {
+                                   setState(() {
+                                     selectedDate = pickedDate;
+                                   });
+                                 }
+
                                  final TimeOfDay? timeOfDay = await showTimePicker(
                                    context: context,
                                    initialTime: selectedTime,
                                    initialEntryMode: TimePickerEntryMode.dial,
                                  );
-                                 if(timeOfDay != null){
+                                 if (timeOfDay != null) {
                                    setState(() {
                                      selectedTime = timeOfDay;
                                    });

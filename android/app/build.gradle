@@ -63,10 +63,19 @@ android {
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storeFile file('C:\\Users\\Dell\\Desktop\\Workspace\\khata-mobile\\android\\app\\upload-keystore.jks')
             storePassword keystoreProperties['storePassword']
         }
     }
+
+//    signingConfigs {
+//        release {
+//            keyAlias keystoreProperties['keyAlias']
+//            keyPassword keystoreProperties['keyPassword']
+//            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+//            storePassword keystoreProperties['storePassword']
+//        }
+//    }
     buildTypes {
         release {
             signingConfig signingConfigs.release

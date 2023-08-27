@@ -5,15 +5,23 @@ import 'package:intl/intl.dart';
 class DisplayDateTime extends StatelessWidget {
   const DisplayDateTime({
     super.key,
+    required this.selectedDate,
     required this.selectedTime,
   });
 
+  final DateTime selectedDate;
   final TimeOfDay selectedTime;
 
   @override
   Widget build(BuildContext context) {
     var now = DateTime.now();
-    var scheduledDate = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
+    final scheduledDate = DateTime(
+      selectedDate.year,
+      selectedDate.month,
+      selectedDate.day,
+      selectedTime.hour,
+      selectedTime.minute,
+    );
 
     return scheduledDate.isBefore(now) ? Text('${_formatDateString(DateTime.now().add(const Duration(days: 1)))} ${_formatTime(selectedTime)}',
       style: const TextStyle(

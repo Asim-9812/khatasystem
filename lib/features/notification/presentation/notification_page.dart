@@ -28,7 +28,7 @@ class _NotificationViewState extends ConsumerState<NotificationView> {
   Widget build(BuildContext context) {
     var result = sessionBox.get('userReturn');
     var res = jsonDecode(result);
-    String token = res["ptoken"];
+    String token = '';
 
     final notificationData = ref.watch(notificationProvider(token));
     return OrientationBuilder(
@@ -151,7 +151,7 @@ class _NotificationViewState extends ConsumerState<NotificationView> {
                           ),
                         );
                       },
-                      error: (error, stackTrace) => Center(child: Text('$error'),),
+                      error: (error, stackTrace) => Center(child: Text('No notifications'),),
                       loading: () => Center(
                           child: Image.asset(
                             "assets/gif/loading-img2.gif",

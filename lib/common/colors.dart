@@ -21,6 +21,8 @@ class ColorManager {
   static Color greenNotification = HexColor.fromHex('#F6FBF9');
   static Color menuIcon = HexColor.fromHex('#1B7492');
   static Color textGrey = HexColor.fromHex('##646864');
+  static Color black = HexColor.fromHex('#36454F');
+  static Color red = HexColor.fromHex('#FF0000');
 }
 
 // this is a function which takes the string value of hex and formats it into hexadecimal value

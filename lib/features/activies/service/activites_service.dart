@@ -58,7 +58,7 @@ Future<List<LogModel>> fetchLogActivities(StreamController logStreamController, 
           responseType: ResponseType.json,
         ));
 
-    dio.options.headers["Authorization"] = "Bearer $token";
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
 
     final response = await dio.post(Api.getLoginActivities,
         data: {
@@ -94,8 +94,10 @@ Future<List<LogModel>> fetchLogActivities(StreamController logStreamController, 
 Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactionStreamController) async {
   final dio = Dio();
 
+
+
   try{
-    final response = await dio.post(Api.getLoginActivities,
+    final response = await dio.post(Api.getTransactionActivities,
         data: {
           "name": "string",
           "username": "string",

@@ -76,6 +76,9 @@ DataRow buildReportDataRow(int index, CustomerLedgerModel tblData,
   );
 }
 
+
+
+
 DataCell buildDataCell(
     double cellWidth, String cellText, TextAlign cellTextAlign, bool isFooter,
     [Color? footerColor]) {

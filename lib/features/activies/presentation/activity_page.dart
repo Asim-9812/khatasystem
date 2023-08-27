@@ -15,9 +15,8 @@ const List<String> list = [
   'Transaction Activity',
 ];
 
-var result = sessionBox.get('userReturn');
-var res = jsonDecode(result);
-String token = res["ptoken"];
+
+String token = '';
 
 class ActivityView extends StatefulWidget {
   const ActivityView({super.key});

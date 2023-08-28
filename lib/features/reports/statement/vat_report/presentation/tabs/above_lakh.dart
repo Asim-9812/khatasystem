@@ -6,6 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/common/shimmer_loading.dart';
 import 'package:khata_app/features/reports/common_widgets/date_input_formatter.dart';
+import 'package:khata_app/features/reports/statement/customer_ledger_report/model/customer_ledger_report_model.dart';
+import 'package:khata_app/features/reports/statement/customer_ledger_report/provider/customer_ledger_report_provider.dart';
+import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
@@ -13,30 +16,26 @@ import 'package:khata_app/features/reports/statement/ledger_report/model/report_
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:pager/pager.dart';
 
-import '../../../../../common/colors.dart';
-import '../../../../../common/common_provider.dart';
+import '../../../../../../common/colors.dart';
+import '../../../../../../common/common_provider.dart';
+import '../../../../../../common/snackbar.dart';
+import '../../../customer_ledger_report/widget/table_widget.dart';
 
-import '../../../../../common/snackbar.dart';
-import '../model/table_model.dart';
-import '../provider/report_provider.dart';
-import '../widget/build_ledger_table.dart';
 
-class ReportPageView extends StatefulWidget {
-  const ReportPageView({Key? key}) : super(key: key);
+class AboveLakhTab extends StatefulWidget {
+  const AboveLakhTab({Key? key}) : super(key: key);
 
   @override
-  State<ReportPageView> createState() => _ReportPageViewState();
+  State<AboveLakhTab> createState() => _AboveLakhTabState();
 }
 
-class _ReportPageViewState extends State<ReportPageView> {
+class _AboveLakhTabState extends State<AboveLakhTab> {
   TextEditingController dateFrom = TextEditingController();
   TextEditingController dateTo = TextEditingController();
   late int _currentPage;
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
-  String branchName = '';
-  String groupName = '';
 
   @override
   void initState() {
@@ -59,38 +58,15 @@ class _ReportPageViewState extends State<ReportPageView> {
     return Consumer(
       builder: (context, ref, child) {
         final outCome = ref.watch(listProvider(modelRef));
-        final res = ref.watch(tableDataProvider);
+        final res = ref.watch(customerLedgerReportProvider);
         return WillPopScope(
           onWillPop: () async {
-            ref.invalidate(tableDataProvider);
+            ref.invalidate(customerLedgerReportProvider);
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
           },
           child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: ColorManager.primary,
-                centerTitle: true,
-                elevation: 0,
-                leading: IconButton(
-                  onPressed: () {
-                    ref.invalidate(tableDataProvider);
-                    Navigator.pop(context, true);
-                  },
-                  icon: const Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    size: 28,
-                    color: Colors.white,
-                  ),
-                ),
-                title: const Text('Ledger Report'),
-                titleTextStyle: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-                toolbarHeight: 70,
-              ),
               body: outCome.when(
                 data: (data) {
                   List<Map<dynamic, dynamic>> allList = [];
@@ -99,9 +75,10 @@ class _ReportPageViewState extends State<ReportPageView> {
                     allList.add(e);
                   }
 
-                  List<String> groups = ['Select a group'];
+                  List<String> groups = ['All'];
                   List<String> ledgers = ['All'];
-                  List<String> branches = ['Select a branch'];
+                  List<String> branches = ['All'];
+                  List<String> particulars = ['All'];
 
                   data[0].forEach((key, _) {
                     groups.add(key);
@@ -116,6 +93,7 @@ class _ReportPageViewState extends State<ReportPageView> {
                   String groupItem = groups[0];
                   String ledgerItem = ledgers[0];
                   String branchItem = branches[0];
+                  String particularItem = particulars[0];
 
                   final groupItemData = ref.watch(itemProvider).item;
 
@@ -128,7 +106,8 @@ class _ReportPageViewState extends State<ReportPageView> {
                   ledgerGroupListModel.refName = 'AccountLedgerReport';
                   ledgerGroupListModel.isSingleList = 'true';
                   ledgerGroupListModel.singleListNameStr = 'account';
-                  ledgerGroupListModel.listNameId = "['mainLedger-${data[0][groupItemData]}']";
+                  ledgerGroupListModel.listNameId =
+                  "['mainLedger-${data[0][groupItemData]}']";
                   ledgerGroupListModel.mainInfoModel = mainInfo;
                   ledgerGroupListModel.conditionalValues = '';
 
@@ -178,15 +157,16 @@ class _ReportPageViewState extends State<ReportPageView> {
                       return 'toDate--${txt.text.trim()}';
                     }
                   }
+                  groupValue(groupItemData);
 
                   DataFilterModel filterModel = DataFilterModel();
-                  filterModel.tblName = "AccountLedgerReport--AccountLedgerReport";
+                  filterModel.tblName = "AccountLedgerReport--CustomerLedgerReport";
                   filterModel.strName = "";
                   filterModel.underColumnName = null;
                   filterModel.underIntID = 0;
                   filterModel.columnName = null;
                   filterModel.filterColumnsString =
-                      "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"${groupValue(groupItemData)}\",\"${getLedgerValue(groupItemData, ledgerItemData, updatedLedgerItemData)}\",\"${getBranchValue(branchItemData)}\"]";
+                  "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"${groupValue(groupItemData)}\",\"${getLedgerValue(groupItemData, ledgerItemData, updatedLedgerItemData)}\",\"${getBranchValue(branchItemData)}\"]";
                   filterModel.pageRowCount = _rowPerPage;
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
@@ -233,17 +213,17 @@ class _ReportPageViewState extends State<ReportPageView> {
                                           decoration: InputDecoration(
                                               border: OutlineInputBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(10),
+                                                  BorderRadius.circular(10),
                                                   borderSide: BorderSide(
                                                     color: Colors.black
                                                         .withOpacity(0.45),
                                                     width: 1,
                                                   )),
                                               contentPadding:
-                                                  const EdgeInsets.all(10),
+                                              const EdgeInsets.all(10),
                                               focusedBorder: OutlineInputBorder(
                                                   borderRadius:
-                                                      BorderRadius.circular(10),
+                                                  BorderRadius.circular(10),
                                                   borderSide: BorderSide(
                                                     color: ColorManager.primary,
                                                     width: 1,
@@ -259,16 +239,18 @@ class _ReportPageViewState extends State<ReportPageView> {
                                               suffixIcon: IconButton(
                                                 onPressed: () async {
                                                   DateTime? pickDate =
-                                                      await showDatePicker(
+                                                  await showDatePicker(
                                                     context: context,
                                                     initialDate: DateTime.now(),
                                                     firstDate: DateTime(2000),
-                                                        lastDate: DateTime.now(),
+                                                    lastDate: DateTime.now(),
                                                   );
                                                   if (pickDate != null) {
-                                                    dateFrom.text =
-                                                        DateFormat('yyyy/MM/dd')
-                                                            .format(pickDate);
+                                                    setState(() {
+                                                      dateFrom.text =
+                                                          DateFormat('yyyy/MM/dd')
+                                                              .format(pickDate);
+                                                    });
                                                   }
                                                 },
                                                 icon: Icon(
@@ -299,7 +281,7 @@ class _ReportPageViewState extends State<ReportPageView> {
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                   color: Colors.black
                                                       .withOpacity(0.45),
@@ -307,7 +289,7 @@ class _ReportPageViewState extends State<ReportPageView> {
                                                 )),
                                             focusedBorder: OutlineInputBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                                 borderSide: BorderSide(
                                                   color: ColorManager.primary,
                                                   width: 1,
@@ -316,7 +298,7 @@ class _ReportPageViewState extends State<ReportPageView> {
                                                 color: ColorManager.primary,
                                                 fontSize: 18),
                                             contentPadding:
-                                                const EdgeInsets.all(15),
+                                            const EdgeInsets.all(15),
                                             labelText: 'To',
                                             labelStyle: const TextStyle(
                                               fontSize: 20,
@@ -326,16 +308,17 @@ class _ReportPageViewState extends State<ReportPageView> {
                                             suffixIcon: IconButton(
                                               onPressed: () async {
                                                 DateTime? pickDate =
-                                                    await showDatePicker(
-                                                        context: context,
-                                                        initialDate:
-                                                            DateTime.now(),
-                                                        firstDate: DateTime(2000),
-                                                        lastDate: DateTime.now());
+                                                await showDatePicker(
+                                                    context: context,
+                                                    initialDate:
+                                                    DateTime.now(),
+                                                    firstDate: DateTime(2000),
+                                                    lastDate: DateTime.now());
                                                 if (pickDate != null) {
-                                                  dateTo.text =
-                                                      DateFormat('yyyy/MM/dd')
-                                                          .format(pickDate);
+                                                  setState(() {
+                                                    print(pickDate);
+                                                    dateTo.text = DateFormat('yyyy/MM/dd').format(pickDate);
+                                                  });
                                                 }
                                               },
                                               icon: Icon(
@@ -352,212 +335,30 @@ class _ReportPageViewState extends State<ReportPageView> {
                                       ),
                                     ],
                                   ),
-                                  const Spacer(),
-                                  DropdownSearch<String>(
-                                    items: groups,
-                                    selectedItem: groupItem,
-                                    dropdownDecoratorProps:
-                                        DropDownDecoratorProps(
-                                      baseStyle: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500),
-                                      dropdownSearchDecoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                              color:
-                                                  Colors.black.withOpacity(0.45),
-                                              width: 2,
-                                            )),
-                                        contentPadding: const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                                color: ColorManager.primary,
-                                                width: 1)),
-                                        floatingLabelStyle: TextStyle(
-                                            color: ColorManager.primary),
-                                        labelText: 'Group',
-                                        labelStyle: const TextStyle(fontSize: 18),
-                                      ),
-                                    ),
-                                    popupProps: const PopupProps.menu(
-                                      showSearchBox: true,
-                                      fit: FlexFit.loose,
-                                      constraints: BoxConstraints(maxHeight: 250),
-                                      showSelectedItems: true,
-                                      searchFieldProps: TextFieldProps(
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                    ),
-                                    onChanged: (dynamic value) {
-                                      groupName = value;
-                                      ref.read(itemProvider).updateItem(value);
-                                    },
+                                  SizedBox(
+                                    height: 20,
                                   ),
-                                  const Spacer(),
-                                  groupItemData == 'All'
-                                      ? DropdownSearch<String>(
-                                          items: ledgers,
-                                          selectedItem: ledgerItem,
-                                          dropdownDecoratorProps:
-                                              DropDownDecoratorProps(
-                                            baseStyle: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500),
-                                            dropdownSearchDecoration:
-                                                InputDecoration(
-                                              border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                    color: Colors.black
-                                                        .withOpacity(0.45),
-                                                    width: 2,
-                                                  )),
-                                              contentPadding:
-                                                  const EdgeInsets.all(15),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                      color: ColorManager.primary,
-                                                      width: 1)),
-                                              floatingLabelStyle: TextStyle(
-                                                  color: ColorManager.primary),
-                                              labelText: 'Ledger',
-                                              labelStyle:
-                                                  const TextStyle(fontSize: 18),
-                                            ),
-                                          ),
-                                          popupProps: const PopupProps.menu(
-                                            showSearchBox: true,
-                                            fit: FlexFit.loose,
-                                            constraints:
-                                                BoxConstraints(maxHeight: 250),
-                                            showSelectedItems: true,
-                                            searchFieldProps: TextFieldProps(
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ),
-                                          onChanged: (dynamic value) {
-                                            ref
-                                                .read(itemProvider)
-                                                .updateLedger(value);
-                                          },
-                                        )
-                                      : Consumer(
-                                          builder: (context, ref, child) {
-                                            final newData = ref.watch(
-                                                ledgerItemProvider(
-                                                    ledgerGroupListModel));
-                                            return newData.when(
-                                              data: (data) {
-                                                List<String> uLedgerItem = [
-                                                  'All'
-                                                ];
-                                                data.forEach((key, _) {
-                                                  uLedgerItem.add(key);
-                                                });
-                                                return DropdownSearch<String>(
-                                                  items: uLedgerItem,
-                                                  selectedItem:
-                                                      updatedLedgerItemData,
-                                                  dropdownDecoratorProps:
-                                                      DropDownDecoratorProps(
-                                                    baseStyle: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                    dropdownSearchDecoration:
-                                                        InputDecoration(
-                                                      border: OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          borderSide: BorderSide(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.45),
-                                                            width: 2,
-                                                          )),
-                                                      contentPadding:
-                                                          const EdgeInsets.all(
-                                                              15),
-                                                      focusedBorder: OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          borderSide: BorderSide(
-                                                              color: ColorManager
-                                                                  .primary,
-                                                              width: 1)),
-                                                      floatingLabelStyle:
-                                                          TextStyle(
-                                                              color: ColorManager
-                                                                  .primary),
-                                                      labelText: 'Ledger',
-                                                      labelStyle: const TextStyle(
-                                                          fontSize: 18),
-                                                    ),
-                                                  ),
-                                                  popupProps:
-                                                      const PopupProps.menu(
-                                                    showSearchBox: true,
-                                                    fit: FlexFit.loose,
-                                                    constraints: BoxConstraints(
-                                                        maxHeight: 250),
-                                                    showSelectedItems: true,
-                                                    searchFieldProps:
-                                                        TextFieldProps(
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  onChanged: (dynamic value) {
-                                                    ref
-                                                        .read(itemProvider)
-                                                        .changeItem(value);
-                                                  },
-                                                );
-                                              },
-                                              error: (error, stackTrace) =>
-                                                  Text('$error'),
-                                              loading: () => const Center(
-                                                  child:
-                                                      CircularProgressIndicator()),
-                                            );
-                                          },
-                                        ),
-                                  const Spacer(),
                                   DropdownSearch<String>(
                                     items: branches,
                                     selectedItem: branchItem,
                                     dropdownDecoratorProps:
-                                        DropDownDecoratorProps(
+                                    DropDownDecoratorProps(
                                       baseStyle: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500),
                                       dropdownSearchDecoration: InputDecoration(
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10),
+                                            BorderRadius.circular(10),
                                             borderSide: BorderSide(
                                               color:
-                                                  Colors.black.withOpacity(0.45),
+                                              Colors.black.withOpacity(0.45),
                                               width: 2,
                                             )),
                                         contentPadding: const EdgeInsets.all(15),
                                         focusedBorder: OutlineInputBorder(
                                             borderRadius:
-                                                BorderRadius.circular(10),
+                                            BorderRadius.circular(10),
                                             borderSide: BorderSide(
                                                 color: ColorManager.primary,
                                                 width: 1)),
@@ -579,11 +380,60 @@ class _ReportPageViewState extends State<ReportPageView> {
                                       ),
                                     ),
                                     onChanged: (dynamic value) {
-                                      branchName = value;
                                       ref.read(itemProvider).updateBranch(value);
                                     },
                                   ),
-                                  const Spacer(),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  DropdownSearch<String>(
+                                    items: particulars,
+                                    selectedItem: particularItem,
+                                    dropdownDecoratorProps:
+                                    DropDownDecoratorProps(
+                                      baseStyle: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                      dropdownSearchDecoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                              color:
+                                              Colors.black.withOpacity(0.45),
+                                              width: 2,
+                                            )),
+                                        contentPadding: const EdgeInsets.all(15),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                                color: ColorManager.primary,
+                                                width: 1)),
+                                        floatingLabelStyle: TextStyle(
+                                            color: ColorManager.primary),
+                                        labelText: 'Particulars',
+                                        labelStyle: const TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                    popupProps: const PopupProps.menu(
+                                      showSearchBox: true,
+                                      fit: FlexFit.loose,
+                                      constraints: BoxConstraints(maxHeight: 250),
+                                      showSelectedItems: true,
+                                      searchFieldProps: TextFieldProps(
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                    onChanged: (dynamic value) {
+                                      ref.read(itemProvider).updateBranch(value);
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
                                   ElevatedButton(
                                     onPressed: () async {
                                       if(dateFrom.text.isEmpty || dateTo.text.isEmpty){
@@ -595,43 +445,24 @@ class _ReportPageViewState extends State<ReportPageView> {
                                           ),
                                         );
                                       }else{
-                                        if(branchName == ''||branchName =='Select a branch'){
-                                          final scaffoldMessage = ScaffoldMessenger.of(context);
-                                          scaffoldMessage.showSnackBar(
-                                            SnackbarUtil.showFailureSnackbar(
-                                              message: 'Please select a branch',
-                                              duration: const Duration(milliseconds: 1400),
-                                            ),
-                                          );
-                                        } else if (groupName == '' || groupName=='Select a group'){
-                                          final scaffoldMessage = ScaffoldMessenger.of(context);
-                                          scaffoldMessage.showSnackBar(
-                                            SnackbarUtil.showFailureSnackbar(
-                                              message: 'Please select a group',
-                                              duration: const Duration(milliseconds: 1400),
-                                            ),
-                                          );
-                                        }else{
-                                          DateFormat dateFormat = DateFormat('yyyy/MM/dd');
+                                        DateFormat dateFormat = DateFormat('yyyy/MM/dd');
 
-                                          DateTime fromDate = dateFormat.parse(dateFrom.text);
-                                          DateTime toDate = dateFormat.parse(dateTo.text);
-                                          if (toDate.isBefore(fromDate)) {
-                                            final scaffoldMessage = ScaffoldMessenger.of(context);
-                                            scaffoldMessage.showSnackBar(
-                                              SnackbarUtil.showFailureSnackbar(
-                                                message: 'From date is greater than To date',
-                                                duration: const Duration(milliseconds: 1400),
-                                              ),
-                                            );
-                                          }
-                                          else{
-                                            ref.read(tableDataProvider.notifier).getTableValues(fModel);
-                                          }
+                                        DateTime fromDate = dateFormat.parse(dateFrom.text);
+                                        DateTime toDate = dateFormat.parse(dateTo.text);
+                                        if (toDate.isBefore(fromDate)) {
+                                          final scaffoldMessage = ScaffoldMessenger.of(context);
+                                          scaffoldMessage.showSnackBar(
+                                            SnackbarUtil.showFailureSnackbar(
+                                              message: 'From date is greater than To date',
+                                              duration: const Duration(milliseconds: 1400),
+                                            ),
+                                          );
                                         }
-
-
+                                        else{
+                                          ref.read(customerLedgerReportProvider.notifier).getTableValues(fModel);
+                                        }
                                       }
+
 
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -655,13 +486,13 @@ class _ReportPageViewState extends State<ReportPageView> {
                             ),
                             res.when(
                               data: (data) {
-                                List<TableData> newList = <TableData>[];
+                                List<CustomerLedgerModel> newList = <CustomerLedgerModel>[];
                                 List<String> reportTotal = <String>[];
                                 if (data.isNotEmpty) {
                                   final tableReport = ReportData.fromJson(data[2]);
                                   _totalPages = tableReport.totalPages!;
                                   for (var e in data[0]) {
-                                    newList.add(TableData.fromJson(e));
+                                    newList.add(CustomerLedgerModel.fromJson(e));
                                   }
                                   data[1].forEach((key, value) {
                                     reportTotal.add(value);
@@ -697,8 +528,8 @@ class _ReportPageViewState extends State<ReportPageView> {
                                                 80, 'View', TextAlign.center),
                                           ],
                                           rows: List.generate(
-                                              newList.length,
-                                              (index) => buildReportDataRow(index, newList[index], allList, context),
+                                            newList.length,
+                                                (index) => buildReportDataRow(index, newList[index], allList, context),
                                           ),
                                           columnSpacing: 0,
                                           horizontalMargin: 0,
@@ -750,7 +581,7 @@ class _ReportPageViewState extends State<ReportPageView> {
                                             _currentPage = page;
                                             /// updates current page number of filterModel, because it does not update on its own
                                             fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                            ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                            ref.read(customerLedgerReportProvider.notifier).getTableValues(fModel);
                                           },
                                           showItemsPerPage: true,
                                           onItemsPerPageChanged: (itemsPerPage) {

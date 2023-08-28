@@ -1,3 +1,4 @@
+import 'package:dropdown_button3/dropdown_button3.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,7 @@ import 'package:khata_app/model/list%20model/get_list_model.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/model/report_model.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:pager/pager.dart';
-
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import '../../../../../common/colors.dart';
 import '../../../../../common/common_provider.dart';
 import '../../../../../common/snackbar.dart';
@@ -42,7 +43,8 @@ class _DayBookReportState extends State<DayBookReport> {
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
   bool _isChecked = false;
-
+  List _selectedVouchers = [];
+  String formattedList = '';
   @override
   void initState() {
     super.initState();
@@ -54,20 +56,24 @@ class _DayBookReportState extends State<DayBookReport> {
   @override
   Widget build(BuildContext context) {
     GetListModel modelRef = GetListModel();
-    modelRef.refName = 'AccountLedgerReport';
+    modelRef.refName = 'DayBook';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
-    modelRef.listNameId = "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
+    modelRef.listNameId ="[\"branch\",\"voucherType\",\"ledger\"]";
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
 
+
     return Consumer(
       builder: (context, ref, child) {
-        final outCome = ref.watch(listProvider(modelRef));
+        final outCome = ref.watch(listProvider2(modelRef));
         final res = ref.watch(dayBookProvider);
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(dayBookProvider);
+            setState(() {
+              _selectedVouchers = [];
+            });
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
@@ -80,6 +86,9 @@ class _DayBookReportState extends State<DayBookReport> {
                 leading: IconButton(
                   onPressed: () {
                     ref.invalidate(dayBookProvider);
+                    setState(() {
+                      _selectedVouchers = [];
+                    });
                     Navigator.pop(context, true);
                   },
                   icon: const Icon(
@@ -104,69 +113,45 @@ class _DayBookReportState extends State<DayBookReport> {
                     allList.add(e);
                   }
 
-                  List<String> groups = ['All'];
+                  List<String> vouchers = ['All'];
                   List<String> ledgers = ['All'];
                   List<String> branches = ['All'];
 
                   data[0].forEach((key, _) {
-                    groups.add(key);
-                  });
-                  data[1].forEach((key, _) {
-                    ledgers.add(key);
-                  });
-                  data[2].forEach((key, _) {
                     branches.add(key);
                   });
+                  data[1].forEach((key, _) {
+                    vouchers.add(key);
+                  });
+                  data[2].forEach((key, _) {
+                    ledgers.add(key);
+                  });
 
-                  String groupItem = groups[0];
+                  String voucherItem = vouchers[0];
                   String ledgerItem = ledgers[0];
                   String branchItem = branches[0];
 
-                  final groupItemData = ref.watch(itemProvider).item;
 
                   final ledgerItemData = ref.watch(itemProvider).ledgerItem;
                   final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem;
 
                   final branchItemData = ref.watch(itemProvider).branchItem;
 
-                  GetListModel ledgerGroupListModel = GetListModel();
-                  ledgerGroupListModel.refName = 'AccountLedgerReport';
-                  ledgerGroupListModel.isSingleList = 'true';
-                  ledgerGroupListModel.singleListNameStr = 'account';
-                  ledgerGroupListModel.listNameId =
-                  "['mainLedger-${data[0][groupItemData]}']";
-                  ledgerGroupListModel.mainInfoModel = mainInfo;
-                  ledgerGroupListModel.conditionalValues = '';
-
-                  /// this function returns 'accountGroudId--' as required by the api and selected item
-                  String groupValue(String val) {
-                    if (val == "All") {
-                      return 'accountGroudId--';
-                    } else {
-                      return 'accountGroudId--${data[0][groupItemData]}';
-                    }
-                  }
 
                   /// this function returns ledgerId according to the selected item from drop down
-                  String getLedgerValue(String groupValue, String ledgerVal,
-                      String updateLedgerVal) {
-                    if (groupValue == "All" && ledgerVal == "All") {
-                      return 'LedgerId--0';
-                    } else if (groupValue == "All" && ledgerVal != "All") {
-                      return 'LedgerId--${data[1][ledgerItemData]}';
-                    } else if (groupValue != "All" && updateLedgerVal == "All") {
+                  String getLedgerValue(String ledgerVal) {
+                    if (ledgerVal == "All") {
                       return 'LedgerId--0';
                     } else {
-                      return 'LedgerId--${data[1][updatedLedgerItemData]}';
+                      return 'LedgerId--${data[2][ledgerItemData]}';
                     }
-
                   }
 
                   String getBranchValue(String branchVal) {
                     if (branchVal == "All") {
                       return 'BranchId--0';
                     } else {
-                      return 'BranchId--${data[2][branchItemData]}';
+                      return 'BranchId--${data[0][branchItemData]}';
                     }
                   }
 
@@ -178,7 +163,10 @@ class _DayBookReportState extends State<DayBookReport> {
                     }
                   }
 
-                  groupValue(groupItemData);
+                  void getVoucherList(List VoucherList){
+
+                  }
+
                   String isDetailed = _isChecked ? 'true' : 'false';
                   DataFilterModel filterModel = DataFilterModel();
                   filterModel.tblName = "DayBookReport";
@@ -187,7 +175,7 @@ class _DayBookReportState extends State<DayBookReport> {
                   filterModel.underIntID = 0;
                   filterModel.columnName = null;
                   filterModel.filterColumnsString =
-                  "[\"${getBranchValue(branchItemData)}\",\"${getCurrentDate(dateFrom)}\",\"voucherType--[\\\"3\\\",\\\"4\\\",\\\"5\\\",\\\"6\\\",\\\"7\\\",\\\"8\\\",\\\"9\\\",\\\"10\\\",\\\"11\\\",\\\"12\\\",\\\"13\\\",\\\"14\\\",\\\"15\\\",\\\"16\\\",\\\"17\\\",\\\"18\\\",\\\"19\\\",\\\"20\\\",\\\"21\\\",\\\"22\\\",\\\"23\\\",\\\"24\\\",\\\"25\\\",\\\"26\\\",\\\"27\\\",\\\"28\\\",\\\"29\\\",\\\"30\\\",\\\"31\\\",\\\"32\\\"]\",\"${getLedgerValue(groupItemData, ledgerItemData, updatedLedgerItemData)}\",\"isDetailed--$isDetailed\"]";
+                  "[\"${getBranchValue(branchItemData)}\",\"${getCurrentDate(dateFrom)}\",\"$formattedList\",\"${getLedgerValue(updatedLedgerItemData)}\",\"isDetailed--$isDetailed\"]";
                   filterModel.pageRowCount = _rowPerPage;
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
@@ -385,6 +373,110 @@ class _DayBookReportState extends State<DayBookReport> {
                                   const SizedBox(
                                     height: 20,
                                   ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: ColorManager.black.withOpacity(0.5),
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton2(
+                                        dropdownMaxHeight: 400,
+                                        isExpanded: true,
+                                        barrierLabel: 'Voucher Type',
+                                        hint: Align(
+                                          alignment: AlignmentDirectional.centerStart,
+                                          child: Text(
+                                            'Select Voucher Type',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: ColorManager.black,
+                                            ),
+                                          ),
+                                        ),
+                                        items: vouchers.map((item) {
+                                          return DropdownMenuItem<String>(
+                                            value: item,
+                                            enabled: true,
+                                            child: StatefulBuilder(
+                                              builder: (context, menuSetState) {
+                                                final _isSelected = _selectedVouchers.contains(item);
+                                                return InkWell(
+                                                  onTap: () {
+                                                    menuSetState(() {
+                                                      if (item == "All") {
+                                                        if (_isSelected) {
+                                                          setState(() {
+                                                            _selectedVouchers.clear();
+                                                          });
+
+                                                        } else {
+                                                         setState(() {
+                                                           _selectedVouchers = List.from(vouchers);
+                                                         });
+                                                        }
+                                                      } else {
+                                                        if (_selectedVouchers.contains("All")) {
+                                                          setState(() {
+                                                            _selectedVouchers.remove("All");
+                                                          });
+                                                        }
+                                                        _isSelected
+                                                            ? _selectedVouchers.remove(item)
+                                                            : _selectedVouchers.add(item);
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    height: double.infinity,
+                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                                    child: Row(
+                                                      children: [
+                                                        _isSelected
+                                                            ? const Icon(Icons.check_box_outlined)
+                                                            : const Icon(Icons.check_box_outline_blank),
+                                                        const SizedBox(width: 16),
+                                                        Text(
+                                                          item,
+                                                          style: const TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        }).toList(),
+                                        value: _selectedVouchers.isEmpty ? 'Select a Voucher type' : _selectedVouchers.first,
+                                        onChanged: (value) {},
+                                        selectedItemBuilder: (context) {
+
+                                          return [
+                                            Container(
+                                              alignment: AlignmentDirectional.centerStart,
+                                              child: Text(
+                                               _selectedVouchers.length == 0? 'Select a Voucher type' : '${_selectedVouchers.length} selected',
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                          ];
+                                        },
+                                      ),
+                                    ),
+                                  ),
+
+
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
                                   Row(
                                     children: [
                                       Checkbox(
@@ -423,6 +515,7 @@ class _DayBookReportState extends State<DayBookReport> {
                                           ),
                                         );
                                       }else{
+
                                         ref.read(dayBookProvider.notifier).getTableValues(fModel);
                                       }
 

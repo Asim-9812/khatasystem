@@ -6,6 +6,8 @@ import 'package:khata_app/features/reports/financial/balance_sheet/presentation/
 import 'package:khata_app/features/reports/financial/profit_loss/presentation/profit_loss_report.dart';
 import 'package:khata_app/features/reports/financial/trial_balance/presentation/trial_balance_report.dart';
 import 'package:khata_app/features/reports/statement/customer_ledger_report/presentation/customer_ledger_report.dart';
+import 'package:khata_app/features/reports/statement/groupwise_ledger_report/presentation/groupwise_ledger_report.dart';
+import 'package:khata_app/features/reports/statement/vat_report/presentation/vat_report.dart';
 
 import '../../../common/colors.dart';
 import '../../reports/statement/daybook_report/presentation/daybook_report_presentation.dart';
@@ -63,6 +65,8 @@ class SubMenuView extends StatelessWidget {
                           onTap: () {
                             if(submenu[index].intMenuid == 85){
                               Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ReportPageView()));
+                            }else if(submenu[index].intMenuid == 86){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const GroupWiseLedgerReport()));
                             }else if(submenu[index].intMenuid == 87){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const CustomerLedgerReport()));
                             } else if(submenu[index].intMenuid == 88){
@@ -73,8 +77,10 @@ class SubMenuView extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const TrialBalanceReport(),));
                             }else if(submenu[index].intMenuid == 65){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const ProfitLossReport()));
-                            } else if(submenu[index].intMenuid == 151){
+                            }else if(submenu[index].intMenuid == 151){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const VoucherReportPage()));
+                            }else if(submenu[index].intMenuid == 158){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const VatReport()));
                             }else if(submenu[index].intMenuid == 83){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const DayBookReport()));
                             }else{

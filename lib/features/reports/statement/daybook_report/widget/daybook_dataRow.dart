@@ -7,7 +7,8 @@ import 'package:khata_app/features/reports/statement/daybook_report/model/dayboo
 
 import '../../../../../common/colors.dart';
 import '../../../Register/voucher_report/widget/tbl_widgets.dart';
-import '../presentation/daybook_details.dart';
+
+
 
 DataRow buildDayBookReportRow(int index, DayBookModel tblData,
     final List<Map<dynamic, dynamic>> dropDownList,

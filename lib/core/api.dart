@@ -9,5 +9,6 @@ class Api {
   static const getLoginActivities = '$baseUrl/api/ActivityLog/GetLoginActivity';
   static const getTransactionActivities = '$baseUrl/api/ActivityLog/GetEntryMasterLog';
   static const getDashBoardAmount = '$baseUrl/api/MyFunction/DashBoardAccountGroupwithsub';
+  static const getSubList = '$baseUrl/api/MyFunction/GetList_Report';
   static const getNotification = '$baseUrl/api/GlobalNotification';
 }

@@ -9,14 +9,6 @@ import 'package:khata_app/features/reports/common_widgets/date_input_formatter.d
 import 'package:khata_app/features/reports/statement/customer_ledger_report/model/customer_ledger_report_model.dart';
 import 'package:khata_app/features/reports/statement/customer_ledger_report/provider/customer_ledger_report_provider.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
-import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
-import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/widgets/vatRow.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
@@ -24,20 +16,19 @@ import 'package:khata_app/features/reports/statement/ledger_report/model/report_
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:pager/pager.dart';
 
-import '../../../../../../common/colors.dart';
-import '../../../../../../common/common_provider.dart';
-import '../../../../../../common/snackbar.dart';
-import '../../../customer_ledger_report/widget/table_widget.dart';
+import '../../../../../common/colors.dart';
+import '../../../../../common/common_provider.dart';
+import '../../../../../common/snackbar.dart';
+import '../../customer_ledger_report/widget/table_widget.dart';
 
-
-class VatReportTab extends StatefulWidget {
-  const VatReportTab({Key? key}) : super(key: key);
+class BankCashReport extends StatefulWidget {
+  const BankCashReport({Key? key}) : super(key: key);
 
   @override
-  State<VatReportTab> createState() => _VatReportTabState();
+  State<BankCashReport> createState() => _BankCashReportState();
 }
 
-class _VatReportTabState extends State<VatReportTab> {
+class _BankCashReportState extends State<BankCashReport> {
   TextEditingController dateFrom = TextEditingController();
   TextEditingController dateTo = TextEditingController();
   late int _currentPage;
@@ -56,25 +47,48 @@ class _VatReportTabState extends State<VatReportTab> {
   @override
   Widget build(BuildContext context) {
     GetListModel modelRef = GetListModel();
-    modelRef.refName = 'VatReport';
+    modelRef.refName = 'AccountLedgerReport';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
-    modelRef.listNameId = "[\"vat_branch\"]";
+    modelRef.listNameId = "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
 
     return Consumer(
       builder: (context, ref, child) {
-        final outCome = ref.watch(vatListProvider(modelRef));
-        final res = ref.watch(vatReportProvider);
+        final outCome = ref.watch(listProvider(modelRef));
+        final res = ref.watch(customerLedgerReportProvider);
         return WillPopScope(
           onWillPop: () async {
-            ref.invalidate(vatReportProvider);
+            ref.invalidate(customerLedgerReportProvider);
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
           },
           child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: ColorManager.primary,
+                centerTitle: true,
+                elevation: 0,
+                leading: IconButton(
+                  onPressed: () {
+                    ref.invalidate(customerLedgerReportProvider);
+                    Navigator.pop(context, true);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 28,
+                    color: Colors.white,
+                  ),
+                ),
+                title: const Text('Bank Cash Report'),
+                titleTextStyle: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+                toolbarHeight: 70,
+              ),
               body: outCome.when(
                 data: (data) {
                   List<Map<dynamic, dynamic>> allList = [];
@@ -83,26 +97,68 @@ class _VatReportTabState extends State<VatReportTab> {
                     allList.add(e);
                   }
 
-                  List<String> branches = ['Select a branch'];
-
+                  List<String> groups = ['All'];
+                  List<String> ledgers = ['All'];
+                  List<String> branches = ['All'];
 
                   data[0].forEach((key, _) {
+                    groups.add(key);
+                  });
+                  data[1].forEach((key, _) {
+                    ledgers.add(key);
+                  });
+                  data[2].forEach((key, _) {
                     branches.add(key);
                   });
 
+                  String groupItem = groups[0];
+                  String ledgerItem = ledgers[0];
                   String branchItem = branches[0];
+
+                  final groupItemData = ref.watch(itemProvider).item;
+
+                  final ledgerItemData = ref.watch(itemProvider).ledgerItem;
+                  final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem;
 
                   final branchItemData = ref.watch(itemProvider).branchItem;
 
+                  GetListModel ledgerGroupListModel = GetListModel();
+                  ledgerGroupListModel.refName = 'AccountLedgerReport';
+                  ledgerGroupListModel.isSingleList = 'true';
+                  ledgerGroupListModel.singleListNameStr = 'account';
+                  ledgerGroupListModel.listNameId =
+                      "['mainLedger-${data[0][groupItemData]}']";
+                  ledgerGroupListModel.mainInfoModel = mainInfo;
+                  ledgerGroupListModel.conditionalValues = '';
 
+                  /// this function returns 'accountGroudId--' as required by the api and selected item
+                  String groupValue(String val) {
+                    if (val == "All") {
+                      return 'accountGroudId--';
+                    } else {
+                      return 'accountGroudId--${data[0][groupItemData]}';
+                    }
+                  }
 
-
+                  /// this function returns ledgerId according to the selected item from drop down
+                  String getLedgerValue(String groupValue, String ledgerVal,
+                      String updateLedgerVal) {
+                    if (groupValue == "All" && ledgerVal == "All") {
+                      return 'LedgerId--';
+                    } else if (groupValue == "All" && ledgerVal != "All") {
+                      return 'LedgerId--${data[1][ledgerItemData]}';
+                    } else if (groupValue != "All" && updateLedgerVal == "All") {
+                      return 'LedgerId--';
+                    } else {
+                      return 'LedgerId--${data[1][updatedLedgerItemData]}';
+                    }
+                  }
 
                   String getBranchValue(String branchVal) {
-                    if (branchVal == "ALL") {
-                      return 'branchId--0';
+                    if (branchVal == "All") {
+                      return 'BranchId--';
                     } else {
-                      return 'branchId--${data[0][branchItemData]}';
+                      return 'BranchId--${data[2][branchItemData]}';
                     }
                   }
 
@@ -121,15 +177,16 @@ class _VatReportTabState extends State<VatReportTab> {
                       return 'toDate--${txt.text.trim()}';
                     }
                   }
+                  groupValue(groupItemData);
 
                   DataFilterModel filterModel = DataFilterModel();
-                  filterModel.tblName = "VatReport";
+                  filterModel.tblName = "AccountLedgerReport--CustomerLedgerReport";
                   filterModel.strName = "";
                   filterModel.underColumnName = null;
                   filterModel.underIntID = 0;
                   filterModel.columnName = null;
                   filterModel.filterColumnsString =
-                  "[\"${getBranchValue(branchItemData)}\",\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\"]";
+                      "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"${groupValue(groupItemData)}\",\"${getLedgerValue(groupItemData, ledgerItemData, updatedLedgerItemData)}\",\"${getBranchValue(branchItemData)}\"]";
                   filterModel.pageRowCount = _rowPerPage;
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
@@ -205,15 +262,15 @@ class _VatReportTabState extends State<VatReportTab> {
                                                   await showDatePicker(
                                                     context: context,
                                                     initialDate: DateTime.now(),
-                                                    firstDate: DateTime.parse(mainInfo.startDate!),
+                                                    firstDate: DateTime(2000),
                                                     lastDate: DateTime.now(),
                                                   );
                                                   if (pickDate != null) {
-                                                    setState(() {
-                                                      dateFrom.text =
-                                                          DateFormat('yyyy/MM/dd')
-                                                              .format(pickDate);
-                                                    });
+                                                   setState(() {
+                                                     dateFrom.text =
+                                                         DateFormat('yyyy/MM/dd')
+                                                             .format(pickDate);
+                                                   });
                                                   }
                                                 },
                                                 icon: Icon(
@@ -275,8 +332,8 @@ class _VatReportTabState extends State<VatReportTab> {
                                                     context: context,
                                                     initialDate:
                                                     DateTime.now(),
-                                                    firstDate: DateTime.parse(mainInfo.startDate!),
-                                                    lastDate: DateTime.now());
+                                                    firstDate: DateTime(2000),
+                                                  lastDate: DateTime.now());
                                                 if (pickDate != null) {
                                                   setState(() {
                                                     print(pickDate);
@@ -298,30 +355,211 @@ class _VatReportTabState extends State<VatReportTab> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
+                                  const Spacer(),
                                   DropdownSearch<String>(
-                                    items: branches,
-                                    selectedItem: branchItem,
+                                    items: groups,
+                                    selectedItem: groupItem,
                                     dropdownDecoratorProps:
-                                    DropDownDecoratorProps(
+                                        DropDownDecoratorProps(
                                       baseStyle: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500),
                                       dropdownSearchDecoration: InputDecoration(
                                         border: OutlineInputBorder(
                                             borderRadius:
-                                            BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                             borderSide: BorderSide(
                                               color:
-                                              Colors.black.withOpacity(0.45),
+                                                  Colors.black.withOpacity(0.45),
                                               width: 2,
                                             )),
                                         contentPadding: const EdgeInsets.all(15),
                                         focusedBorder: OutlineInputBorder(
                                             borderRadius:
-                                            BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                                color: ColorManager.primary,
+                                                width: 1)),
+                                        floatingLabelStyle: TextStyle(
+                                            color: ColorManager.primary),
+                                        labelText: 'Group',
+                                        labelStyle: const TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                    popupProps: const PopupProps.menu(
+                                      showSearchBox: true,
+                                      fit: FlexFit.loose,
+                                      constraints: BoxConstraints(maxHeight: 250),
+                                      showSelectedItems: true,
+                                      searchFieldProps: TextFieldProps(
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                    onChanged: (dynamic value) {
+                                      ref.read(itemProvider).updateItem(value);
+                                    },
+                                  ),
+                                  const Spacer(),
+                                  groupItemData == 'All'
+                                      ? DropdownSearch<String>(
+                                          items: ledgers,
+                                          selectedItem: ledgerItem,
+                                          dropdownDecoratorProps:
+                                              DropDownDecoratorProps(
+                                            baseStyle: const TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w500),
+                                            dropdownSearchDecoration:
+                                                InputDecoration(
+                                              border: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  borderSide: BorderSide(
+                                                    color: Colors.black
+                                                        .withOpacity(0.45),
+                                                    width: 2,
+                                                  )),
+                                              contentPadding:
+                                                  const EdgeInsets.all(15),
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  borderSide: BorderSide(
+                                                      color: ColorManager.primary,
+                                                      width: 1)),
+                                              floatingLabelStyle: TextStyle(
+                                                  color: ColorManager.primary),
+                                              labelText: 'Ledger',
+                                              labelStyle:
+                                                  const TextStyle(fontSize: 18),
+                                            ),
+                                          ),
+                                          popupProps: const PopupProps.menu(
+                                            showSearchBox: true,
+                                            fit: FlexFit.loose,
+                                            constraints:
+                                                BoxConstraints(maxHeight: 250),
+                                            showSelectedItems: true,
+                                            searchFieldProps: TextFieldProps(
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                          ),
+                                          onChanged: (dynamic value) {
+                                            ref
+                                                .read(itemProvider)
+                                                .updateLedger(value);
+                                          },
+                                        )
+                                      : Consumer(
+                                          builder: (context, ref, child) {
+                                            final newData = ref.watch(
+                                                ledgerItemProvider(
+                                                    ledgerGroupListModel));
+                                            return newData.when(
+                                              data: (data) {
+                                                List<String> uLedgerItem = [
+                                                  'All'
+                                                ];
+                                                data.forEach((key, _) {
+                                                  uLedgerItem.add(key);
+                                                });
+                                                return DropdownSearch<String>(
+                                                  items: uLedgerItem,
+                                                  selectedItem:
+                                                      updatedLedgerItemData,
+                                                  dropdownDecoratorProps:
+                                                      DropDownDecoratorProps(
+                                                    baseStyle: const TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                    dropdownSearchDecoration:
+                                                        InputDecoration(
+                                                      border: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          borderSide: BorderSide(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.45),
+                                                            width: 2,
+                                                          )),
+                                                      contentPadding:
+                                                          const EdgeInsets.all(
+                                                              15),
+                                                      focusedBorder: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                          borderSide: BorderSide(
+                                                              color: ColorManager
+                                                                  .primary,
+                                                              width: 1)),
+                                                      floatingLabelStyle:
+                                                          TextStyle(
+                                                              color: ColorManager
+                                                                  .primary),
+                                                      labelText: 'Ledger',
+                                                      labelStyle: const TextStyle(
+                                                          fontSize: 18),
+                                                    ),
+                                                  ),
+                                                  popupProps:
+                                                      const PopupProps.menu(
+                                                    showSearchBox: true,
+                                                    fit: FlexFit.loose,
+                                                    constraints: BoxConstraints(
+                                                        maxHeight: 250),
+                                                    showSelectedItems: true,
+                                                    searchFieldProps:
+                                                        TextFieldProps(
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onChanged: (dynamic value) {
+                                                    ref
+                                                        .read(itemProvider)
+                                                        .changeItem(value);
+                                                  },
+                                                );
+                                              },
+                                              error: (error, stackTrace) =>
+                                                  Text('$error'),
+                                              loading: () => const Center(
+                                                  child:
+                                                      CircularProgressIndicator()),
+                                            );
+                                          },
+                                        ),
+                                  const Spacer(),
+                                  DropdownSearch<String>(
+                                    items: branches,
+                                    selectedItem: branchItem,
+                                    dropdownDecoratorProps:
+                                        DropDownDecoratorProps(
+                                      baseStyle: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                      dropdownSearchDecoration: InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                              color:
+                                                  Colors.black.withOpacity(0.45),
+                                              width: 2,
+                                            )),
+                                        contentPadding: const EdgeInsets.all(15),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
                                             borderSide: BorderSide(
                                                 color: ColorManager.primary,
                                                 width: 1)),
@@ -346,9 +584,7 @@ class _VatReportTabState extends State<VatReportTab> {
                                       ref.read(itemProvider).updateBranch(value);
                                     },
                                   ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
+                                  const Spacer(),
                                   ElevatedButton(
                                     onPressed: () async {
                                       if(dateFrom.text.isEmpty || dateTo.text.isEmpty){
@@ -374,18 +610,7 @@ class _VatReportTabState extends State<VatReportTab> {
                                           );
                                         }
                                         else{
-                                          if(data[0][branchItemData] == null){
-                                            final scaffoldMessage = ScaffoldMessenger.of(context);
-                                            scaffoldMessage.showSnackBar(
-                                              SnackbarUtil.showFailureSnackbar(
-                                                message: 'Please select a branch',
-                                                duration: const Duration(milliseconds: 1400),
-                                              ),
-                                            );}
-                                          else{
-                                            ref.read(vatReportProvider.notifier).getTableValues(fModel);
-                                          }
-
+                                          ref.read(customerLedgerReportProvider.notifier).getTableValues(fModel);
                                         }
                                       }
 
@@ -412,17 +637,20 @@ class _VatReportTabState extends State<VatReportTab> {
                             ),
                             res.when(
                               data: (data) {
-                                List<VatReportModel> newList = <VatReportModel>[];
+                                List<CustomerLedgerModel> newList = <CustomerLedgerModel>[];
                                 List<String> reportTotal = <String>[];
                                 if (data.isNotEmpty) {
-                                  for (var e in data) {
-                                    newList.add(VatReportModel.fromJson(e));
+                                  final tableReport = ReportData.fromJson(data[2]);
+                                  _totalPages = tableReport.totalPages!;
+                                  for (var e in data[0]) {
+                                    newList.add(CustomerLedgerModel.fromJson(e));
                                   }
+                                  data[1].forEach((key, value) {
+                                    reportTotal.add(value);
+                                  });
                                 } else {
                                   return Container();
                                 }
-
-                                print(newList);
                                 return SizedBox(
                                   width: double.infinity,
                                   child: SingleChildScrollView(
@@ -435,25 +663,65 @@ class _VatReportTabState extends State<VatReportTab> {
                                           columns: [
                                             buildDataColumn(
                                                 60, 'S.N', TextAlign.start),
-                                            buildDataColumn(200, 'Particulars',
+                                            buildDataColumn(200, 'Account Ledger',
                                                 TextAlign.start),
                                             buildDataColumn(
-                                                200, 'Total Amount', TextAlign.start),
+                                                200, 'Group', TextAlign.start),
                                             buildDataColumn(
-                                                160, 'Total Taxable Amount', TextAlign.end),
+                                                160, 'Opening', TextAlign.end),
                                             buildDataColumn(
                                                 160, 'Debit (Dr)', TextAlign.end),
                                             buildDataColumn(160, 'Credit (Cr)',
                                                 TextAlign.end),
                                             buildDataColumn(
+                                                160, 'Closing', TextAlign.end),
+                                            buildDataColumn(
                                                 80, 'View', TextAlign.center),
                                           ],
                                           rows: List.generate(
-                                            newList.length,
-                                                (index) => buildVatRow(index, newList[index], allList, context),
+                                              newList.length,
+                                              (index) => buildReportDataRow(index, newList[index], allList, context),
                                           ),
                                           columnSpacing: 0,
                                           horizontalMargin: 0,
+                                        ),
+                                        Table(
+                                          columnWidths: const <int,
+                                              TableColumnWidth>{
+                                            0: FixedColumnWidth(50),
+                                            1: FixedColumnWidth(200),
+                                            2: FixedColumnWidth(200),
+                                            3: FixedColumnWidth(160),
+                                            4: FixedColumnWidth(160),
+                                            5: FixedColumnWidth(160),
+                                            6: FixedColumnWidth(160),
+                                            7: FixedColumnWidth(80),
+                                          },
+                                          children: [
+                                            TableRow(
+                                              decoration: BoxDecoration(
+                                                color: ColorManager.primary,
+                                              ),
+                                              children: [
+                                                buildTableCell(''),
+                                                buildTableCell(''),
+                                                buildTableCell(''),
+                                                buildTableCell(
+                                                    reportTotal[0],
+                                                    TextAlign.end),
+                                                buildTableCell(reportTotal[1],
+                                                    TextAlign.end),
+                                                buildTableCell(reportTotal[2],
+                                                    TextAlign.end),
+                                                buildTableCell(
+                                                    reportTotal[3],
+                                                    TextAlign.end),
+                                                buildTableCell(
+                                                  '',
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                         /// Pager package used for pagination
                                         _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
@@ -464,7 +732,7 @@ class _VatReportTabState extends State<VatReportTab> {
                                             _currentPage = page;
                                             /// updates current page number of filterModel, because it does not update on its own
                                             fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                            ref.read(vatReportProvider.notifier).getTableValues(fModel);
+                                            ref.read(customerLedgerReportProvider.notifier).getTableValues(fModel);
                                           },
                                           showItemsPerPage: true,
                                           onItemsPerPageChanged: (itemsPerPage) {
@@ -547,3 +815,9 @@ class _VatReportTabState extends State<VatReportTab> {
   }
 }
 
+String convertDate(String dateString) {
+  DateTime dateTime = DateTime.parse(dateString);
+  String formattedDate =
+      "${dateTime.year}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.day.toString().padLeft(2, '0')}";
+  return formattedDate;
+}

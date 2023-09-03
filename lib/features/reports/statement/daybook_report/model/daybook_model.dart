@@ -18,7 +18,7 @@ class DayBookDetailedModel {
   final int? layerPosition;
   final bool? isSubLedger;
   final bool? isParent;
-  final DateTime? voucherDate;
+  final String? voucherDate;
 
   DayBookDetailedModel({
     this.sno,
@@ -64,7 +64,7 @@ class DayBookDetailedModel {
       layerPosition: json['layerposition'],
       isSubLedger: json['isSubLedger'],
       isParent: json['isParent'],
-      voucherDate: json['voucherDate'] != null ? DateTime.parse(json['voucherDate']) : null,
+      voucherDate: json['voucherDate'] ,
     );
   }
 }

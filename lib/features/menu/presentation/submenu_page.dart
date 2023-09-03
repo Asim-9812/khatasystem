@@ -5,11 +5,13 @@ import 'package:khata_app/features/reports/Register/voucher_report/presentation/
 import 'package:khata_app/features/reports/financial/balance_sheet/presentation/balance_sheet_report.dart';
 import 'package:khata_app/features/reports/financial/profit_loss/presentation/profit_loss_report.dart';
 import 'package:khata_app/features/reports/financial/trial_balance/presentation/trial_balance_report.dart';
+import 'package:khata_app/features/reports/statement/bank_cash_report/presentation/bank_cash_report.dart';
 import 'package:khata_app/features/reports/statement/customer_ledger_report/presentation/customer_ledger_report.dart';
 import 'package:khata_app/features/reports/statement/groupwise_ledger_report/presentation/groupwise_ledger_report.dart';
 import 'package:khata_app/features/reports/statement/vat_report/presentation/vat_report.dart';
 
 import '../../../common/colors.dart';
+import '../../../test.dart';
 import '../../reports/statement/daybook_report/presentation/daybook_report_presentation.dart';
 import '../../reports/statement/ledger_report/presentation/report_page.dart';
 import '../../reports/statement/supplier_ledger_report/presentation/supplier_ledger_report.dart';
@@ -83,6 +85,8 @@ class SubMenuView extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const VatReport()));
                             }else if(submenu[index].intMenuid == 83){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const DayBookReport()));
+                            }else if(submenu[index].intMenuid == 84){
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const BankCashReport()));
                             }else{
                               Fluttertoast.showToast(
                                 msg: 'Feature Coming Soon!!!',

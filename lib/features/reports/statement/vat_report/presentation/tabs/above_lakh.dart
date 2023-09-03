@@ -1,3 +1,4 @@
+import 'package:dropdown_button3/dropdown_button3.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +9,22 @@ import 'package:khata_app/common/shimmer_loading.dart';
 import 'package:khata_app/features/reports/common_widgets/date_input_formatter.dart';
 import 'package:khata_app/features/reports/statement/customer_ledger_report/model/customer_ledger_report_model.dart';
 import 'package:khata_app/features/reports/statement/customer_ledger_report/provider/customer_ledger_report_provider.dart';
+import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
+import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
+import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
+import 'package:khata_app/features/reports/statement/daybook_report/provider/daybook_report_provider.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
+import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
+import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
+import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/widgets/vatRow.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
@@ -19,23 +35,32 @@ import 'package:pager/pager.dart';
 import '../../../../../../common/colors.dart';
 import '../../../../../../common/common_provider.dart';
 import '../../../../../../common/snackbar.dart';
-import '../../../customer_ledger_report/widget/table_widget.dart';
+import '../../../../common_widgets/build_report_table.dart';
+import '../../../daybook_report/widget/daybook_dataRow.dart';
 
 
-class AboveLakhTab extends StatefulWidget {
+class AboveLakhTab extends ConsumerStatefulWidget {
   const AboveLakhTab({Key? key}) : super(key: key);
 
   @override
-  State<AboveLakhTab> createState() => _AboveLakhTabState();
+  ConsumerState<AboveLakhTab> createState() => _DayBookReportState();
 }
 
-class _AboveLakhTabState extends State<AboveLakhTab> {
+class _DayBookReportState extends ConsumerState<AboveLakhTab> {
   TextEditingController dateFrom = TextEditingController();
   TextEditingController dateTo = TextEditingController();
   late int _currentPage;
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
+  bool _isChecked = false;
+  List _selectedParticulars = [];
+  String formattedList = '';
+  List _allParticulars = [];
+  bool allSelected = true;
+
+  String? formattedValue ;
+
 
   @override
   void initState() {
@@ -45,23 +70,56 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
     _totalPages = 0;
   }
 
+  void processSelectedItems(FilterAnyModel fModel) {
+    if (_selectedParticulars.isEmpty) {
+      print('No particulars selected.');
+    }
+
+    else if(_selectedParticulars.any((element) => element['text']=='All')){
+      print('all');
+      formattedValue = '13,14,19,20';
+      ref.read(vatReportProvider.notifier).getTableValues(fModel);
+
+    }
+    else {
+      for (var item in _selectedParticulars) {
+        if (item != 'All') {
+          formattedValue = _selectedParticulars
+              .map((item) => '${item['value']}')
+              .join(',');
+
+
+        }
+
+
+      }
+      print(formattedValue);
+      ref.read(vatReportProvider.notifier).getTableValues(fModel);
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     GetListModel modelRef = GetListModel();
-    modelRef.refName = 'AccountLedgerReport';
+    modelRef.refName = 'AboveLakhVATReport';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
-    modelRef.listNameId = "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
+    modelRef.listNameId ="[\"trans_branch\",\"trans_particular\"]";
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
 
+
     return Consumer(
       builder: (context, ref, child) {
-        final outCome = ref.watch(listProvider(modelRef));
-        final res = ref.watch(customerLedgerReportProvider);
+        final outCome = ref.watch(aboveLakhProvider(modelRef));
+        final res = ref.watch(vatReportProvider);
         return WillPopScope(
           onWillPop: () async {
-            ref.invalidate(customerLedgerReportProvider);
+            ref.invalidate(vatReportProvider);
+            setState(() {
+              _selectedParticulars = [];
+            });
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
@@ -75,70 +133,35 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
                     allList.add(e);
                   }
 
-                  List<String> groups = ['All'];
-                  List<String> ledgers = ['All'];
-                  List<String> branches = ['All'];
-                  List<String> particulars = ['All'];
+                  List<Map<String,dynamic>> particulars = [
+                    {'text': 'All', 'value': 'all'}
+                  ];
+                  List<String> branches = ['Select a branch'];
 
                   data[0].forEach((key, _) {
-                    groups.add(key);
-                  });
-                  data[1].forEach((key, _) {
-                    ledgers.add(key);
-                  });
-                  data[2].forEach((key, _) {
                     branches.add(key);
                   });
+                  data[1].forEach((key, _) {
+                    particulars.add({'text': key, 'value': _});
+                    _allParticulars.add({'text': key, 'value': _});
+                  });
 
-                  String groupItem = groups[0];
-                  String ledgerItem = ledgers[0];
+
+                  Map<String,dynamic> particularItem = particulars[0];
                   String branchItem = branches[0];
-                  String particularItem = particulars[0];
 
-                  final groupItemData = ref.watch(itemProvider).item;
 
-                  final ledgerItemData = ref.watch(itemProvider).ledgerItem;
-                  final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem;
 
                   final branchItemData = ref.watch(itemProvider).branchItem;
 
-                  GetListModel ledgerGroupListModel = GetListModel();
-                  ledgerGroupListModel.refName = 'AccountLedgerReport';
-                  ledgerGroupListModel.isSingleList = 'true';
-                  ledgerGroupListModel.singleListNameStr = 'account';
-                  ledgerGroupListModel.listNameId =
-                  "['mainLedger-${data[0][groupItemData]}']";
-                  ledgerGroupListModel.mainInfoModel = mainInfo;
-                  ledgerGroupListModel.conditionalValues = '';
 
-                  /// this function returns 'accountGroudId--' as required by the api and selected item
-                  String groupValue(String val) {
-                    if (val == "All") {
-                      return 'accountGroudId--';
-                    } else {
-                      return 'accountGroudId--${data[0][groupItemData]}';
-                    }
-                  }
 
-                  /// this function returns ledgerId according to the selected item from drop down
-                  String getLedgerValue(String groupValue, String ledgerVal,
-                      String updateLedgerVal) {
-                    if (groupValue == "All" && ledgerVal == "All") {
-                      return 'LedgerId--';
-                    } else if (groupValue == "All" && ledgerVal != "All") {
-                      return 'LedgerId--${data[1][ledgerItemData]}';
-                    } else if (groupValue != "All" && updateLedgerVal == "All") {
-                      return 'LedgerId--';
-                    } else {
-                      return 'LedgerId--${data[1][updatedLedgerItemData]}';
-                    }
-                  }
 
                   String getBranchValue(String branchVal) {
                     if (branchVal == "All") {
-                      return 'BranchId--';
+                      return 'BranchId--0';
                     } else {
-                      return 'BranchId--${data[2][branchItemData]}';
+                      return 'BranchId--${data[0][branchItemData]}';
                     }
                   }
 
@@ -157,16 +180,17 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
                       return 'toDate--${txt.text.trim()}';
                     }
                   }
-                  groupValue(groupItemData);
 
+
+                  String isDetailed = _isChecked ? 'true' : 'false';
                   DataFilterModel filterModel = DataFilterModel();
-                  filterModel.tblName = "AccountLedgerReport--CustomerLedgerReport";
+                  filterModel.tblName = "VATReportAboveOneLakh";
                   filterModel.strName = "";
                   filterModel.underColumnName = null;
                   filterModel.underIntID = 0;
                   filterModel.columnName = null;
                   filterModel.filterColumnsString =
-                  "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"${groupValue(groupItemData)}\",\"${getLedgerValue(groupItemData, ledgerItemData, updatedLedgerItemData)}\",\"${getBranchValue(branchItemData)}\"]";
+                  "[\"${getBranchValue(branchItemData)}\",\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"particularType--$formattedValue\"]";
                   filterModel.pageRowCount = _rowPerPage;
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
@@ -187,7 +211,6 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
                               height: 10,
                             ),
                             Container(
-                              height: 350,
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),
@@ -242,7 +265,7 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
                                                   await showDatePicker(
                                                     context: context,
                                                     initialDate: DateTime.now(),
-                                                    firstDate: DateTime(2000),
+                                                    firstDate: DateTime.parse(mainInfo.startDate!),
                                                     lastDate: DateTime.now(),
                                                   );
                                                   if (pickDate != null) {
@@ -312,7 +335,7 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
                                                     context: context,
                                                     initialDate:
                                                     DateTime.now(),
-                                                    firstDate: DateTime(2000),
+                                                    firstDate: DateTime.parse(mainInfo.startDate!),
                                                     lastDate: DateTime.now());
                                                 if (pickDate != null) {
                                                   setState(() {
@@ -383,60 +406,99 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
                                       ref.read(itemProvider).updateBranch(value);
                                     },
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 20,
                                   ),
-                                  DropdownSearch<String>(
-                                    items: particulars,
-                                    selectedItem: particularItem,
-                                    dropdownDecoratorProps:
-                                    DropDownDecoratorProps(
-                                      baseStyle: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500),
-                                      dropdownSearchDecoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                              color:
-                                              Colors.black.withOpacity(0.45),
-                                              width: 2,
-                                            )),
-                                        contentPadding: const EdgeInsets.all(15),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                                color: ColorManager.primary,
-                                                width: 1)),
-                                        floatingLabelStyle: TextStyle(
-                                            color: ColorManager.primary),
-                                        labelText: 'Particulars',
-                                        labelStyle: const TextStyle(fontSize: 18),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: ColorManager.black.withOpacity(0.5),
                                       ),
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    popupProps: const PopupProps.menu(
-                                      showSearchBox: true,
-                                      fit: FlexFit.loose,
-                                      constraints: BoxConstraints(maxHeight: 250),
-                                      showSelectedItems: true,
-                                      searchFieldProps: TextFieldProps(
-                                        style: TextStyle(
-                                          fontSize: 18,
+                                    child: DropdownButtonHideUnderline(
+                                      child: DropdownButton2(
+                                        dropdownMaxHeight: 400,
+                                        isExpanded: true,
+                                        barrierLabel: 'Voucher Type',
+                                        hint: Align(
+                                          alignment: AlignmentDirectional.centerStart,
+                                          child: Text(
+                                            'Select Voucher Type',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: ColorManager.black,
+                                            ),
+                                          ),
                                         ),
+                                        items: particulars.map((item) {
+                                          return DropdownMenuItem<Map<String,dynamic>>(
+                                            value: item,
+                                            child: StatefulBuilder(
+                                              builder: (context, menuSetState) {
+                                                final isSelected = _selectedParticulars.contains(item);
+                                                return InkWell(
+                                                  onTap: () {
+                                                    menuSetState(() {
+
+                                                      isSelected
+                                                          ? _selectedParticulars.remove(item)
+                                                          : _selectedParticulars.add(item);
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    height: double.infinity,
+                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                                    child: Row(
+                                                      children: [
+                                                        isSelected
+                                                            ? const Icon(Icons.check_box_outlined)
+                                                            : const Icon(Icons.check_box_outline_blank),
+                                                        const SizedBox(width: 16),
+                                                        Text(
+                                                          item['text'],
+                                                          style: const TextStyle(
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        }).toList(),
+
+                                        value: _selectedParticulars.isEmpty ? null : particularItem,
+
+                                        onChanged: (value) {},
+                                        selectedItemBuilder: (context) {
+                                          return [
+                                            Container(
+                                              alignment: AlignmentDirectional.centerStart,
+                                              child: Text(
+                                                _selectedParticulars.isEmpty ? 'Select a Voucher type' : '${_selectedParticulars.length} selected',
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                          ];
+                                        },
                                       ),
                                     ),
-                                    onChanged: (dynamic value) {
-                                      ref.read(itemProvider).updateBranch(value);
-                                    },
                                   ),
-                                  SizedBox(
+
+
+                                  const SizedBox(
                                     height: 20,
                                   ),
                                   ElevatedButton(
                                     onPressed: () async {
-                                      if(dateFrom.text.isEmpty || dateTo.text.isEmpty){
+                                      if(dateFrom.text.isEmpty){
                                         final scaffoldMessage = ScaffoldMessenger.of(context);
                                         scaffoldMessage.showSnackBar(
                                           SnackbarUtil.showFailureSnackbar(
@@ -445,22 +507,8 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
                                           ),
                                         );
                                       }else{
-                                        DateFormat dateFormat = DateFormat('yyyy/MM/dd');
+                                        processSelectedItems(fModel);
 
-                                        DateTime fromDate = dateFormat.parse(dateFrom.text);
-                                        DateTime toDate = dateFormat.parse(dateTo.text);
-                                        if (toDate.isBefore(fromDate)) {
-                                          final scaffoldMessage = ScaffoldMessenger.of(context);
-                                          scaffoldMessage.showSnackBar(
-                                            SnackbarUtil.showFailureSnackbar(
-                                              message: 'From date is greater than To date',
-                                              duration: const Duration(milliseconds: 1400),
-                                            ),
-                                          );
-                                        }
-                                        else{
-                                          ref.read(customerLedgerReportProvider.notifier).getTableValues(fModel);
-                                        }
                                       }
 
 
@@ -486,117 +534,148 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
                             ),
                             res.when(
                               data: (data) {
-                                List<CustomerLedgerModel> newList = <CustomerLedgerModel>[];
-                                List<String> reportTotal = <String>[];
-                                if (data.isNotEmpty) {
-                                  final tableReport = ReportData.fromJson(data[2]);
-                                  _totalPages = tableReport.totalPages!;
-                                  for (var e in data[0]) {
-                                    newList.add(CustomerLedgerModel.fromJson(e));
+                                if(_isChecked == false){
+                                  List<AboveLakhModel> newList = <AboveLakhModel>[];
+                                  if (data.isNotEmpty) {
+                                    final tableReport = ReportData.fromJson(data[1]);
+                                    _totalPages = tableReport.totalPages!;
+                                    for (var e in data[0]) {
+                                      newList.add(AboveLakhModel.fromJson(e));
+                                    }
+                                  } else {
+                                    return Container();
                                   }
-                                  data[1].forEach((key, value) {
-                                    reportTotal.add(value);
-                                  });
-                                } else {
-                                  return Container();
-                                }
-                                return SizedBox(
-                                  width: double.infinity,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    physics: const ClampingScrollPhysics(),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        DataTable(
-                                          columns: [
-                                            buildDataColumn(
-                                                60, 'S.N', TextAlign.start),
-                                            buildDataColumn(200, 'Account Ledger',
-                                                TextAlign.start),
-                                            buildDataColumn(
-                                                200, 'Group', TextAlign.start),
-                                            buildDataColumn(
-                                                160, 'Opening', TextAlign.end),
-                                            buildDataColumn(
-                                                160, 'Debit (Dr)', TextAlign.end),
-                                            buildDataColumn(160, 'Credit (Cr)',
-                                                TextAlign.end),
-                                            buildDataColumn(
-                                                160, 'Closing', TextAlign.end),
-                                            buildDataColumn(
-                                                80, 'View', TextAlign.center),
-                                          ],
-                                          rows: List.generate(
-                                            newList.length,
-                                                (index) => buildReportDataRow(index, newList[index], allList, context),
-                                          ),
-                                          columnSpacing: 0,
-                                          horizontalMargin: 0,
-                                        ),
-                                        Table(
-                                          columnWidths: const <int,
-                                              TableColumnWidth>{
-                                            0: FixedColumnWidth(50),
-                                            1: FixedColumnWidth(200),
-                                            2: FixedColumnWidth(200),
-                                            3: FixedColumnWidth(160),
-                                            4: FixedColumnWidth(160),
-                                            5: FixedColumnWidth(160),
-                                            6: FixedColumnWidth(160),
-                                            7: FixedColumnWidth(80),
-                                          },
-                                          children: [
-                                            TableRow(
-                                              decoration: BoxDecoration(
-                                                color: ColorManager.primary,
-                                              ),
-                                              children: [
-                                                buildTableCell(''),
-                                                buildTableCell(''),
-                                                buildTableCell(''),
-                                                buildTableCell(
-                                                    reportTotal[0],
-                                                    TextAlign.end),
-                                                buildTableCell(reportTotal[1],
-                                                    TextAlign.end),
-                                                buildTableCell(reportTotal[2],
-                                                    TextAlign.end),
-                                                buildTableCell(
-                                                    reportTotal[3],
-                                                    TextAlign.end),
-                                                buildTableCell(
-                                                  '',
-                                                ),
-                                              ],
+                                  return SizedBox(
+                                    width: double.infinity,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      physics: const ClampingScrollPhysics(),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          DataTable(
+                                            columns: [
+                                              buildDataColumn(
+                                                  60, 'S.N', TextAlign.start),
+                                              buildDataColumn(200, 'PAN',
+                                                  TextAlign.start),
+                                              buildDataColumn(
+                                                  200, 'Tax Payer', TextAlign.start),
+                                              buildDataColumn(
+                                                  160, 'Trade Name Type', TextAlign.end),
+                                              buildDataColumn(
+                                                  160, 'Taxable Amount', TextAlign.end),
+                                              buildDataColumn(160, 'Exempted Amount',
+                                                  TextAlign.end),
+                                            ],
+                                            rows: List.generate(
+                                              newList.length,
+                                                  (index) => buildAboveLakhRow(index, newList[index], allList, context),
                                             ),
-                                          ],
-                                        ),
-                                        /// Pager package used for pagination
-                                        _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                          currentItemsPerPage: _rowPerPage,
-                                          currentPage: _currentPage,
-                                          totalPages: _totalPages,
-                                          onPageChanged: (page) {
-                                            _currentPage = page;
-                                            /// updates current page number of filterModel, because it does not update on its own
-                                            fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                            ref.read(customerLedgerReportProvider.notifier).getTableValues(fModel);
-                                          },
-                                          showItemsPerPage: true,
-                                          onItemsPerPageChanged: (itemsPerPage) {
-                                            _rowPerPage = itemsPerPage;
-                                            _currentPage = 1;
-                                            /// updates row per page of filterModel, because it does not update on its own
-                                            fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                            ref.read(tableDataProvider.notifier).getTableValues(fModel);
-                                          },
-                                          itemsPerPageList: rowPerPageItems,
-                                        ),
-                                      ],
+                                            columnSpacing: 0,
+                                            horizontalMargin: 0,
+                                          ),
+                                          /// Pager package used for pagination
+                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
+                                            currentItemsPerPage: _rowPerPage,
+                                            currentPage: _currentPage,
+                                            totalPages: _totalPages,
+                                            onPageChanged: (page) {
+                                              _currentPage = page;
+                                              /// updates current page number of filterModel, because it does not update on its own
+                                              fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                              ref.read(vatReportProvider.notifier).getTableValues(fModel);
+                                            },
+                                            showItemsPerPage: true,
+                                            onItemsPerPageChanged: (itemsPerPage) {
+                                              _rowPerPage = itemsPerPage;
+                                              _currentPage = 1;
+                                              /// updates row per page of filterModel, because it does not update on its own
+                                              fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                              ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                            },
+                                            itemsPerPageList: rowPerPageItems,
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                }
+                                else{
+                                  List<DayBookDetailedModel> newList = <DayBookDetailedModel>[];
+                                  if (data.isNotEmpty) {
+                                    final tableReport = ReportData.fromJson(data[1]);
+                                    _totalPages = tableReport.totalPages!;
+                                    for (var e in data[0]) {
+                                      newList.add(DayBookDetailedModel.fromJson(e));
+                                    }
+                                  } else {
+                                    return Container();
+                                  }
+                                  return SizedBox(
+                                    width: double.infinity,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      physics: const ClampingScrollPhysics(),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          DataTable(
+                                            columns: [
+                                              buildDataColumn(
+                                                  60, 'S.N', TextAlign.start),
+                                              buildDataColumn(200, 'Voucher No.',
+                                                  TextAlign.start),
+                                              buildDataColumn(
+                                                  200, 'Ref No', TextAlign.start),
+                                              buildDataColumn(
+                                                  160, 'Cheque No', TextAlign.end),
+                                              buildDataColumn(
+                                                  160, 'Voucher Type', TextAlign.end),
+                                              buildDataColumn(160, 'Particular',
+                                                  TextAlign.end),
+                                              buildDataColumn(160, 'Dr',
+                                                  TextAlign.end),
+                                              buildDataColumn(160, 'Cr',
+                                                  TextAlign.end),
+                                              buildDataColumn(200, 'Narration',
+                                                  TextAlign.end)
+                                            ],
+                                            rows: List.generate(
+                                              newList.length,
+                                                  (index) => buildDayBookDetailedReportRow(index, newList[index], allList, context),
+                                            ),
+                                            columnSpacing: 0,
+                                            horizontalMargin: 0,
+                                          ),
+                                          /// Pager package used for pagination
+                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
+                                            currentItemsPerPage: _rowPerPage,
+                                            currentPage: _currentPage,
+                                            totalPages: _totalPages,
+                                            onPageChanged: (page) {
+                                              _currentPage = page;
+                                              /// updates current page number of filterModel, because it does not update on its own
+                                              fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                              ref.read(vatReportProvider.notifier).getTableValues(fModel);
+                                            },
+                                            showItemsPerPage: true,
+                                            onItemsPerPageChanged: (itemsPerPage) {
+                                              _rowPerPage = itemsPerPage;
+                                              _currentPage = 1;
+                                              /// updates row per page of filterModel, because it does not update on its own
+                                              fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                              ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                            },
+                                            itemsPerPageList: rowPerPageItems,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }
+
+
                               },
                               error: (error, stackTrace) =>
                                   Center(child: Text('$error')),
@@ -662,11 +741,4 @@ class _AboveLakhTabState extends State<AboveLakhTab> {
   void dispose() {
     super.dispose();
   }
-}
-
-String convertDate(String dateString) {
-  DateTime dateTime = DateTime.parse(dateString);
-  String formattedDate =
-      "${dateTime.year}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.day.toString().padLeft(2, '0')}";
-  return formattedDate;
 }

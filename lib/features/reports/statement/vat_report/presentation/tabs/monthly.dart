@@ -9,6 +9,11 @@ import 'package:khata_app/features/reports/common_widgets/date_input_formatter.d
 import 'package:khata_app/features/reports/statement/customer_ledger_report/model/customer_ledger_report_model.dart';
 import 'package:khata_app/features/reports/statement/customer_ledger_report/provider/customer_ledger_report_provider.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
+import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
+import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
+import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
+import 'package:khata_app/features/reports/statement/vat_report/widgets/vatRow.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
@@ -36,6 +41,7 @@ class _MonthlyState extends State<Monthly> {
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
+  String name = '';
 
   @override
   void initState() {
@@ -48,20 +54,20 @@ class _MonthlyState extends State<Monthly> {
   @override
   Widget build(BuildContext context) {
     GetListModel modelRef = GetListModel();
-    modelRef.refName = 'AccountLedgerReport';
+    modelRef.refName = 'MonthlyVATReport';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
-    modelRef.listNameId = "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
+    modelRef.listNameId = "[\"monthly_branch\"]";
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
 
     return Consumer(
       builder: (context, ref, child) {
-        final outCome = ref.watch(listProvider(modelRef));
-        final res = ref.watch(customerLedgerReportProvider);
+        final outCome = ref.watch(monthlyProvider(modelRef));
+        final res = ref.watch(vatReportProvider);
         return WillPopScope(
           onWillPop: () async {
-            ref.invalidate(customerLedgerReportProvider);
+            ref.invalidate(vatReportProvider);
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
@@ -75,96 +81,39 @@ class _MonthlyState extends State<Monthly> {
                     allList.add(e);
                   }
 
-                  List<String> groups = ['All'];
-                  List<String> ledgers = ['All'];
-                  List<String> branches = ['All'];
+                  List<String> branches = ['Select a Branch'];
+
 
                   data[0].forEach((key, _) {
-                    groups.add(key);
-                  });
-                  data[1].forEach((key, _) {
-                    ledgers.add(key);
-                  });
-                  data[2].forEach((key, _) {
                     branches.add(key);
                   });
 
-                  String groupItem = groups[0];
-                  String ledgerItem = ledgers[0];
                   String branchItem = branches[0];
 
-                  final groupItemData = ref.watch(itemProvider).item;
-
-                  final ledgerItemData = ref.watch(itemProvider).ledgerItem;
-                  final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem;
 
                   final branchItemData = ref.watch(itemProvider).branchItem;
 
-                  GetListModel ledgerGroupListModel = GetListModel();
-                  ledgerGroupListModel.refName = 'AccountLedgerReport';
-                  ledgerGroupListModel.isSingleList = 'true';
-                  ledgerGroupListModel.singleListNameStr = 'account';
-                  ledgerGroupListModel.listNameId =
-                  "['mainLedger-${data[0][groupItemData]}']";
-                  ledgerGroupListModel.mainInfoModel = mainInfo;
-                  ledgerGroupListModel.conditionalValues = '';
 
-                  /// this function returns 'accountGroudId--' as required by the api and selected item
-                  String groupValue(String val) {
-                    if (val == "All") {
-                      return 'accountGroudId--';
-                    } else {
-                      return 'accountGroudId--${data[0][groupItemData]}';
-                    }
-                  }
 
-                  /// this function returns ledgerId according to the selected item from drop down
-                  String getLedgerValue(String groupValue, String ledgerVal,
-                      String updateLedgerVal) {
-                    if (groupValue == "All" && ledgerVal == "All") {
-                      return 'LedgerId--';
-                    } else if (groupValue == "All" && ledgerVal != "All") {
-                      return 'LedgerId--${data[1][ledgerItemData]}';
-                    } else if (groupValue != "All" && updateLedgerVal == "All") {
-                      return 'LedgerId--';
-                    } else {
-                      return 'LedgerId--${data[1][updatedLedgerItemData]}';
-                    }
-                  }
 
                   String getBranchValue(String branchVal) {
-                    if (branchVal == "All") {
-                      return 'BranchId--';
+                    if (branchVal == "ALL") {
+                      return 'BranchId--0';
                     } else {
-                      return 'BranchId--${data[2][branchItemData]}';
+                      return 'BranchId--${data[0][branchItemData]}';
                     }
                   }
 
-                  String getFromDate(TextEditingController txt) {
-                    if (txt.text.isEmpty) {
-                      return 'fromDate--';
-                    } else {
-                      return 'fromDate--${txt.text.trim()}';
-                    }
-                  }
 
-                  String getToDate(TextEditingController txt) {
-                    if (txt.text.isEmpty) {
-                      return 'toDate--';
-                    } else {
-                      return 'toDate--${txt.text.trim()}';
-                    }
-                  }
-                  groupValue(groupItemData);
 
                   DataFilterModel filterModel = DataFilterModel();
-                  filterModel.tblName = "AccountLedgerReport--CustomerLedgerReport";
+                  filterModel.tblName = "MonthlyVATReport";
                   filterModel.strName = "";
                   filterModel.underColumnName = null;
                   filterModel.underIntID = 0;
                   filterModel.columnName = null;
                   filterModel.filterColumnsString =
-                  "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"${groupValue(groupItemData)}\",\"${getLedgerValue(groupItemData, ledgerItemData, updatedLedgerItemData)}\",\"${getBranchValue(branchItemData)}\"]";
+                  "[\"${getBranchValue(branchItemData)}\"]";
                   filterModel.pageRowCount = _rowPerPage;
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
@@ -238,6 +187,7 @@ class _MonthlyState extends State<Monthly> {
                                     ),
                                     onChanged: (dynamic value) {
                                       ref.read(itemProvider).updateBranch(value);
+                                        name=value;
                                     },
                                   ),
                                   SizedBox(
@@ -245,31 +195,16 @@ class _MonthlyState extends State<Monthly> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () async {
-                                      if(dateFrom.text.isEmpty || dateTo.text.isEmpty){
+                                      if(data[0][branchItemData]==null){
                                         final scaffoldMessage = ScaffoldMessenger.of(context);
                                         scaffoldMessage.showSnackBar(
                                           SnackbarUtil.showFailureSnackbar(
-                                            message: 'Please pick a date',
+                                            message: 'Select a branch',
                                             duration: const Duration(milliseconds: 1400),
                                           ),
                                         );
                                       }else{
-                                        DateFormat dateFormat = DateFormat('yyyy/MM/dd');
-
-                                        DateTime fromDate = dateFormat.parse(dateFrom.text);
-                                        DateTime toDate = dateFormat.parse(dateTo.text);
-                                        if (toDate.isBefore(fromDate)) {
-                                          final scaffoldMessage = ScaffoldMessenger.of(context);
-                                          scaffoldMessage.showSnackBar(
-                                            SnackbarUtil.showFailureSnackbar(
-                                              message: 'From date is greater than To date',
-                                              duration: const Duration(milliseconds: 1400),
-                                            ),
-                                          );
-                                        }
-                                        else{
-                                          ref.read(customerLedgerReportProvider.notifier).getTableValues(fModel);
-                                        }
+                                        ref.read(vatReportProvider.notifier).getTableValues(fModel);
                                       }
 
 
@@ -295,17 +230,12 @@ class _MonthlyState extends State<Monthly> {
                             ),
                             res.when(
                               data: (data) {
-                                List<CustomerLedgerModel> newList = <CustomerLedgerModel>[];
+                                List<MonthlyModel> newList = <MonthlyModel>[];
                                 List<String> reportTotal = <String>[];
                                 if (data.isNotEmpty) {
-                                  final tableReport = ReportData.fromJson(data[2]);
-                                  _totalPages = tableReport.totalPages!;
-                                  for (var e in data[0]) {
-                                    newList.add(CustomerLedgerModel.fromJson(e));
+                                  for (var e in data) {
+                                    newList.add(MonthlyModel.fromJson(e));
                                   }
-                                  data[1].forEach((key, value) {
-                                    reportTotal.add(value);
-                                  });
                                 } else {
                                   return Container();
                                 }
@@ -321,65 +251,25 @@ class _MonthlyState extends State<Monthly> {
                                           columns: [
                                             buildDataColumn(
                                                 60, 'S.N', TextAlign.start),
-                                            buildDataColumn(200, 'Account Ledger',
+                                            buildDataColumn(200, 'Month',
                                                 TextAlign.start),
                                             buildDataColumn(
-                                                200, 'Group', TextAlign.start),
+                                                200, 'Opening', TextAlign.start),
                                             buildDataColumn(
-                                                160, 'Opening', TextAlign.end),
+                                                160, 'Debit', TextAlign.end),
                                             buildDataColumn(
-                                                160, 'Debit (Dr)', TextAlign.end),
-                                            buildDataColumn(160, 'Credit (Cr)',
+                                                160, 'Credit', TextAlign.end),
+                                            buildDataColumn(200, 'Balance',
                                                 TextAlign.end),
-                                            buildDataColumn(
-                                                160, 'Closing', TextAlign.end),
                                             buildDataColumn(
                                                 80, 'View', TextAlign.center),
                                           ],
                                           rows: List.generate(
                                             newList.length,
-                                                (index) => buildReportDataRow(index, newList[index], allList, context),
+                                                (index) => buildMonthlyRow(index, newList[index], allList,name, context),
                                           ),
                                           columnSpacing: 0,
                                           horizontalMargin: 0,
-                                        ),
-                                        Table(
-                                          columnWidths: const <int,
-                                              TableColumnWidth>{
-                                            0: FixedColumnWidth(50),
-                                            1: FixedColumnWidth(200),
-                                            2: FixedColumnWidth(200),
-                                            3: FixedColumnWidth(160),
-                                            4: FixedColumnWidth(160),
-                                            5: FixedColumnWidth(160),
-                                            6: FixedColumnWidth(160),
-                                            7: FixedColumnWidth(80),
-                                          },
-                                          children: [
-                                            TableRow(
-                                              decoration: BoxDecoration(
-                                                color: ColorManager.primary,
-                                              ),
-                                              children: [
-                                                buildTableCell(''),
-                                                buildTableCell(''),
-                                                buildTableCell(''),
-                                                buildTableCell(
-                                                    reportTotal[0],
-                                                    TextAlign.end),
-                                                buildTableCell(reportTotal[1],
-                                                    TextAlign.end),
-                                                buildTableCell(reportTotal[2],
-                                                    TextAlign.end),
-                                                buildTableCell(
-                                                    reportTotal[3],
-                                                    TextAlign.end),
-                                                buildTableCell(
-                                                  '',
-                                                ),
-                                              ],
-                                            ),
-                                          ],
                                         ),
                                         /// Pager package used for pagination
                                         _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
@@ -390,7 +280,7 @@ class _MonthlyState extends State<Monthly> {
                                             _currentPage = page;
                                             /// updates current page number of filterModel, because it does not update on its own
                                             fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                            ref.read(customerLedgerReportProvider.notifier).getTableValues(fModel);
+                                            ref.read(vatReportProvider.notifier).getTableValues(fModel);
                                           },
                                           showItemsPerPage: true,
                                           onItemsPerPageChanged: (itemsPerPage) {

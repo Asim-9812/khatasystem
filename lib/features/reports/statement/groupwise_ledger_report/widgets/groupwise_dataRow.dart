@@ -40,27 +40,6 @@ DataRow buildGroupWiseRow(int index,GroupwiseLedgerReportModel tblData, String g
 
 
 
-// DataRow buildDayBookSubReport(int index, DayBookDetailedModel tblData, [BuildContext? context]) {
-//   return DataRow(
-//     color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
-//     cells: [
-//       buildDataCell(80, '${tblData.sno}', TextAlign.start,2),
-//       buildDataCell(200, '${tblData.voucherDate}', TextAlign.start,2),
-//       buildDataCell(200, '${tblData.voucherNo}', TextAlign.start,2),
-//       buildDataCell(200, '${tblData.refNo}', TextAlign.start,2),
-//       buildDataCell(160, '${tblData.chequeNo}', TextAlign.start,2),
-//       buildDataCell(160, '${tblData.voucherTypeName}', TextAlign.center,2),
-//       // buildDataCell(200, '${tblData.ledgerName}', TextAlign.start),
-//       buildDataCell(160, '${tblData.strDebitAmount}', TextAlign.end,2),
-//       buildDataCell(160, '${tblData.strCreditAmount}', TextAlign.end,2),
-//       buildDataCell(160, '${tblData.strAmount}', TextAlign.end,2),
-//       buildDataCell(160, '${tblData.narration}', TextAlign.start,2),
-//     ],
-//   );
-// }
-
-
-
 
 
 DataCell buildHtmlDataCell(double cellWidth, String cellText, TextAlign cellTextAlign, int layerPosition) {

@@ -12,6 +12,7 @@ import 'package:khata_app/features/reports/statement/ledger_report/provider/repo
 import 'package:khata_app/features/reports/statement/vat_report/presentation/tabs/above_lakh.dart';
 import 'package:khata_app/features/reports/statement/vat_report/presentation/tabs/monthly.dart';
 import 'package:khata_app/features/reports/statement/vat_report/presentation/tabs/vat_report_tab.dart';
+import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
@@ -49,7 +50,7 @@ class _VatReportState extends ConsumerState<VatReport> with TickerProviderStateM
         elevation: 0,
         leading: IconButton(
           onPressed: () {
-            ref.invalidate(customerLedgerReportProvider);
+            ref.invalidate(vatReportProvider);
             Navigator.pop(context, true);
           },
           icon: const Icon(

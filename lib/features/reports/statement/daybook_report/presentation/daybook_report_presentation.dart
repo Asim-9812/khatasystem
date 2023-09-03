@@ -20,7 +20,6 @@ import 'package:khata_app/model/list%20model/get_list_model.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/model/report_model.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:pager/pager.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 import '../../../../../common/colors.dart';
 import '../../../../../common/common_provider.dart';
 import '../../../../../common/snackbar.dart';
@@ -28,14 +27,14 @@ import '../../../common_widgets/build_report_table.dart';
 import '../widget/daybook_dataRow.dart';
 
 
-class DayBookReport extends StatefulWidget {
+class DayBookReport extends ConsumerStatefulWidget {
   const DayBookReport({Key? key}) : super(key: key);
 
   @override
-  State<DayBookReport> createState() => _DayBookReportState();
+  ConsumerState<DayBookReport> createState() => _DayBookReportState();
 }
 
-class _DayBookReportState extends State<DayBookReport> {
+class _DayBookReportState extends ConsumerState<DayBookReport> {
   TextEditingController dateFrom = TextEditingController();
   TextEditingController dateTo = TextEditingController();
   late int _currentPage;
@@ -45,12 +44,50 @@ class _DayBookReportState extends State<DayBookReport> {
   bool _isChecked = false;
   List _selectedVouchers = [];
   String formattedList = '';
+  List _allVouchers = [];
+  bool allSelected = true;
+
+  String? formattedValue ;
+
+
   @override
   void initState() {
     super.initState();
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
+  }
+
+  void processSelectedItems(FilterAnyModel fModel) {
+    if (_selectedVouchers.isEmpty) {
+      print('No vouchers selected.');
+    }
+
+    else if(_selectedVouchers.any((element) => element['text']=='All')){
+      print('all');
+      formattedValue = _allVouchers
+          .map((item) => '\\\\\\"${item['value']}\\\\\\\"')
+          .join(',');
+      print(formattedValue);
+      ref.read(dayBookProvider.notifier).getTableValues(fModel);
+
+    }
+    else {
+      for (var item in _selectedVouchers) {
+        if (item != 'All') {
+          formattedValue = _selectedVouchers
+              .map((item) => '\\\\\\"${item['value']}\\\\\\\"')
+              .join(',');
+
+
+        }
+
+
+      }
+      print('voucherType--[$formattedValue]');
+      ref.read(dayBookProvider.notifier).getTableValues(fModel);
+
+    }
   }
 
   @override
@@ -113,7 +150,9 @@ class _DayBookReportState extends State<DayBookReport> {
                     allList.add(e);
                   }
 
-                  List<String> vouchers = ['All'];
+                  List<Map<String,dynamic>> vouchers = [
+                    {'text': 'All', 'value': 'all'}
+                  ];
                   List<String> ledgers = ['All'];
                   List<String> branches = ['All'];
 
@@ -121,13 +160,15 @@ class _DayBookReportState extends State<DayBookReport> {
                     branches.add(key);
                   });
                   data[1].forEach((key, _) {
-                    vouchers.add(key);
+                    vouchers.add({'text': key, 'value': _});
+                    _allVouchers.add({'text': key, 'value': _});
                   });
+
                   data[2].forEach((key, _) {
                     ledgers.add(key);
                   });
 
-                  String voucherItem = vouchers[0];
+                  Map<String,dynamic> voucherItem = vouchers[0];
                   String ledgerItem = ledgers[0];
                   String branchItem = branches[0];
 
@@ -175,7 +216,7 @@ class _DayBookReportState extends State<DayBookReport> {
                   filterModel.underIntID = 0;
                   filterModel.columnName = null;
                   filterModel.filterColumnsString =
-                  "[\"${getBranchValue(branchItemData)}\",\"${getCurrentDate(dateFrom)}\",\"$formattedList\",\"${getLedgerValue(updatedLedgerItemData)}\",\"isDetailed--$isDetailed\"]";
+                  "[\"${getBranchValue(branchItemData)}\",\"${getCurrentDate(dateFrom)}\",\"voucherType--[$formattedValue]\",\"${getLedgerValue(updatedLedgerItemData)}\",\"isDetailed--$isDetailed\"]";
                   filterModel.pageRowCount = _rowPerPage;
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
@@ -247,7 +288,7 @@ class _DayBookReportState extends State<DayBookReport> {
                                             await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
-                                              firstDate: DateTime(2000),
+                                              firstDate: DateTime.parse(mainInfo.startDate!),
                                               lastDate: DateTime.now(),
                                             );
                                             if (pickDate != null) {
@@ -255,6 +296,7 @@ class _DayBookReportState extends State<DayBookReport> {
                                                 dateFrom.text =
                                                     DateFormat('yyyy/MM/dd')
                                                         .format(pickDate);
+                                                _selectedVouchers = [];
                                               });
                                             }
                                           },
@@ -396,36 +438,18 @@ class _DayBookReportState extends State<DayBookReport> {
                                           ),
                                         ),
                                         items: vouchers.map((item) {
-                                          return DropdownMenuItem<String>(
+                                          return DropdownMenuItem<Map<String,dynamic>>(
                                             value: item,
-                                            enabled: true,
                                             child: StatefulBuilder(
                                               builder: (context, menuSetState) {
-                                                final _isSelected = _selectedVouchers.contains(item);
+                                                final isSelected = _selectedVouchers.contains(item);
                                                 return InkWell(
                                                   onTap: () {
                                                     menuSetState(() {
-                                                      if (item == "All") {
-                                                        if (_isSelected) {
-                                                          setState(() {
-                                                            _selectedVouchers.clear();
-                                                          });
 
-                                                        } else {
-                                                         setState(() {
-                                                           _selectedVouchers = List.from(vouchers);
-                                                         });
-                                                        }
-                                                      } else {
-                                                        if (_selectedVouchers.contains("All")) {
-                                                          setState(() {
-                                                            _selectedVouchers.remove("All");
-                                                          });
-                                                        }
-                                                        _isSelected
-                                                            ? _selectedVouchers.remove(item)
-                                                            : _selectedVouchers.add(item);
-                                                      }
+                                                      isSelected
+                                                          ? _selectedVouchers.remove(item)
+                                                          : _selectedVouchers.add(item);
                                                     });
                                                   },
                                                   child: Container(
@@ -433,12 +457,12 @@ class _DayBookReportState extends State<DayBookReport> {
                                                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                                     child: Row(
                                                       children: [
-                                                        _isSelected
+                                                        isSelected
                                                             ? const Icon(Icons.check_box_outlined)
                                                             : const Icon(Icons.check_box_outline_blank),
                                                         const SizedBox(width: 16),
                                                         Text(
-                                                          item,
+                                                          item['text'],
                                                           style: const TextStyle(
                                                             fontSize: 14,
                                                           ),
@@ -451,15 +475,16 @@ class _DayBookReportState extends State<DayBookReport> {
                                             ),
                                           );
                                         }).toList(),
-                                        value: _selectedVouchers.isEmpty ? 'Select a Voucher type' : _selectedVouchers.first,
+
+                                        value: _selectedVouchers.isEmpty ? null : voucherItem,
+
                                         onChanged: (value) {},
                                         selectedItemBuilder: (context) {
-
                                           return [
                                             Container(
                                               alignment: AlignmentDirectional.centerStart,
                                               child: Text(
-                                               _selectedVouchers.length == 0? 'Select a Voucher type' : '${_selectedVouchers.length} selected',
+                                                _selectedVouchers.isEmpty ? 'Select a Voucher type' : '${_selectedVouchers.length} selected',
                                                 style: const TextStyle(
                                                   fontSize: 14,
                                                   overflow: TextOverflow.ellipsis,
@@ -515,8 +540,8 @@ class _DayBookReportState extends State<DayBookReport> {
                                           ),
                                         );
                                       }else{
+                                        processSelectedItems(fModel);
 
-                                        ref.read(dayBookProvider.notifier).getTableValues(fModel);
                                       }
 
 

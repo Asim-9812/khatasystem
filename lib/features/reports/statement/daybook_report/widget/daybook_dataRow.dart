@@ -20,13 +20,13 @@ DataRow buildDayBookReportRow(int index, DayBookModel tblData,
       buildDataCell(
           60, (index+1).toString(), TextAlign.start, 2),
       buildDataCell(
-          200, tblData.voucherNo!, TextAlign.start, 2),
-      buildDataCell(200, tblData.refNo!, TextAlign.start,
+          200, '${tblData.voucherNo}', TextAlign.start, 2),
+      buildDataCell(200, '${tblData.refNo}', TextAlign.start,
           2),
       buildDataCell(
-          160, tblData.voucherTypeName!, TextAlign.end, 2),
+          160, '${tblData.voucherTypeName}', TextAlign.end, 2),
       buildDataCell(
-          160, '${tblData.crTotal}', TextAlign.end, 2),
+          160, '${tblData.totalAmount}', TextAlign.end, 2),
       buildDataCell(
           160, tblData.narration!, TextAlign.end, 2),
       //  DataCell(

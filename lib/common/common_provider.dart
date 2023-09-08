@@ -64,11 +64,17 @@ class GroupItem extends ChangeNotifier{
   String branchItem = 'All';
   String voucherTypeItem = 'All';
   String statusType = 'All';
+  bool isDetailed = false;
 
   void updateTrialBalanceType(String text){
     trialBalanceType = text;
     notifyListeners();
   }
+  void updateIsDetailed(bool isChecked){
+    isDetailed = !isDetailed;
+    notifyListeners();
+  }
+
 
   void updateStatusType(String text){
     statusType = text;
@@ -79,6 +85,7 @@ class GroupItem extends ChangeNotifier{
     voucherTypeItem = text;
     notifyListeners();
   }
+
 
   void updateItem(String text){
     item = text;

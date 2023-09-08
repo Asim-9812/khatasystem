@@ -15,9 +15,51 @@ final aboveLakhProvider = FutureProvider.family.autoDispose((ref, GetListModel m
 final monthlyProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => VatListProvider().getMonthlyList(model));
 
 final vatReportProvider = StateNotifierProvider<VatReportProvider, AsyncValue<List<dynamic>>>((ref) =>VatReportProvider());
+final vatReportProvider2 = StateNotifierProvider<VatReportProvider2, AsyncValue<List<dynamic>>>((ref) =>VatReportProvider2());
+final vatReportProvider3 = StateNotifierProvider<VatReportProvider3, AsyncValue<List<dynamic>>>((ref) =>VatReportProvider3());
 
 class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   VatReportProvider() : super(const AsyncValue.data([]));
+
+  Future<void> getTableValues(FilterAnyModel filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+        state = AsyncValue.data(result);
+        print(result);
+
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+class VatReportProvider2 extends StateNotifier<AsyncValue<List<dynamic>>>{
+  VatReportProvider2() : super(const AsyncValue.data([]));
+
+  Future<void> getTableValues(FilterAnyModel filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+        state = AsyncValue.data(result);
+        print(result);
+
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+class VatReportProvider3 extends StateNotifier<AsyncValue<List<dynamic>>>{
+  VatReportProvider3() : super(const AsyncValue.data([]));
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
@@ -42,7 +84,6 @@ class VatListProvider {
   Future<List<Map<String, dynamic>>> getVatReportList(GetListModel getListModel) async {
     final dio = Dio();
     final jsonData = jsonEncode(getListModel.toJson());
-    List<Map<String, dynamic>> myList = [];
 
     try {
       final response = await dio.post(Api.getSubList, data: jsonData);

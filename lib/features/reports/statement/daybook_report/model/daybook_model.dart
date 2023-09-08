@@ -74,9 +74,9 @@ class DayBookModel {
   final int? masterEntryID;
   final String? voucherNo;
   final String? refNo;
-  final double? crTotal;
+  final double? totalAmount;
   final String? narration;
-  final int? voucherTypeId;
+  final String? voucherTypeId;
   final String? voucherTypeName;
   final String? voucherDate;
 
@@ -84,7 +84,7 @@ class DayBookModel {
     this.masterEntryID,
     this.voucherNo,
     this.refNo,
-    this.crTotal,
+    this.totalAmount,
     this.narration,
     this.voucherTypeId,
     this.voucherTypeName,
@@ -95,11 +95,11 @@ class DayBookModel {
     return DayBookModel(
       masterEntryID: json['masterEntryID'],
       voucherNo: json['voucherNo'],
-      refNo: json['ref_No'],
-      crTotal: json['crTotal'],
+      refNo: json['refNo'],
+      totalAmount: double.parse(json['totalAmount'].toString()),
       narration: json['narration'],
-      voucherTypeId: json['voucherTypeId'],
-      voucherTypeName: json['voucherTypeName'],
+      voucherTypeId: json['voucherID'],
+      voucherTypeName: json['voucherName'],
       voucherDate: json['voucherDate'],
     );
   }

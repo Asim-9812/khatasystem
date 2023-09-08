@@ -1,32 +1,16 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:khata_app/common/shimmer_loading.dart';
-import 'package:khata_app/features/reports/common_widgets/date_input_formatter.dart';
-import 'package:khata_app/features/reports/statement/customer_ledger_report/model/customer_ledger_report_model.dart';
-import 'package:khata_app/features/reports/statement/customer_ledger_report/provider/customer_ledger_report_provider.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
 import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
-import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
-import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
 import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
 import 'package:khata_app/features/reports/statement/vat_report/widgets/vatRow.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
-import 'package:khata_app/features/reports/statement/ledger_report/model/report_model.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:pager/pager.dart';
-
 import '../../../../../../common/colors.dart';
-import '../../../../../../common/common_provider.dart';
-import '../../../../../../common/snackbar.dart';
 import '../../../common_widgets/build_report_table.dart';
 
 
@@ -149,7 +133,7 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                                         borderRadius: BorderRadius.circular(10)
                                       ),
                                       child: Center(
-                                        child: Text('${widget.data.monthFromDate}',style: TextStyle(color: Colors.black),),),
+                                        child: Text('${widget.data.monthFromDate}',style: const TextStyle(color: Colors.black),),),
                                     ),
                                   ),
                                   const SizedBox(
@@ -165,7 +149,7 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                                           borderRadius: BorderRadius.circular(10)
                                       ),
                                       child: Center(
-                                        child: Text('${widget.data.monthToDate}',style: TextStyle(color: Colors.black),),),
+                                        child: Text('${widget.data.monthToDate}',style: const TextStyle(color: Colors.black),),),
                                     ),
                                   ),
                                 ],

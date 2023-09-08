@@ -7,22 +7,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/common/shimmer_loading.dart';
 import 'package:khata_app/features/reports/common_widgets/date_input_formatter.dart';
-import 'package:khata_app/features/reports/statement/customer_ledger_report/model/customer_ledger_report_model.dart';
-import 'package:khata_app/features/reports/statement/customer_ledger_report/provider/customer_ledger_report_provider.dart';
 import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
-import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
-import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
-import 'package:khata_app/features/reports/statement/daybook_report/provider/daybook_report_provider.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
 import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
-import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
-import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
-import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
 import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
 import 'package:khata_app/features/reports/statement/vat_report/widgets/vatRow.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
@@ -31,7 +18,6 @@ import 'package:khata_app/model/list%20model/get_list_model.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/model/report_model.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:pager/pager.dart';
-
 import '../../../../../../common/colors.dart';
 import '../../../../../../common/common_provider.dart';
 import '../../../../../../common/snackbar.dart';
@@ -78,7 +64,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
     else if(_selectedParticulars.any((element) => element['text']=='All')){
       print('all');
       formattedValue = '13,14,19,20';
-      ref.read(vatReportProvider.notifier).getTableValues(fModel);
+      ref.read(vatReportProvider3.notifier).getTableValues(fModel);
 
     }
     else {
@@ -94,7 +80,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
 
       }
       print(formattedValue);
-      ref.read(vatReportProvider.notifier).getTableValues(fModel);
+      ref.read(vatReportProvider3.notifier).getTableValues(fModel);
 
     }
   }
@@ -113,10 +99,10 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
     return Consumer(
       builder: (context, ref, child) {
         final outCome = ref.watch(aboveLakhProvider(modelRef));
-        final res = ref.watch(vatReportProvider);
+        final res = ref.watch(vatReportProvider3);
         return WillPopScope(
           onWillPop: () async {
-            ref.invalidate(vatReportProvider);
+            ref.invalidate(vatReportProvider3);
             setState(() {
               _selectedParticulars = [];
             });
@@ -584,7 +570,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                               _currentPage = page;
                                               /// updates current page number of filterModel, because it does not update on its own
                                               fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(vatReportProvider.notifier).getTableValues(fModel);
+                                              ref.read(vatReportProvider3.notifier).getTableValues(fModel);
                                             },
                                             showItemsPerPage: true,
                                             onItemsPerPageChanged: (itemsPerPage) {
@@ -657,7 +643,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                               _currentPage = page;
                                               /// updates current page number of filterModel, because it does not update on its own
                                               fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(vatReportProvider.notifier).getTableValues(fModel);
+                                              ref.read(vatReportProvider3.notifier).getTableValues(fModel);
                                             },
                                             showItemsPerPage: true,
                                             onItemsPerPageChanged: (itemsPerPage) {

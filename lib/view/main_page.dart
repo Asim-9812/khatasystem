@@ -39,7 +39,7 @@ class _MainViewState extends State<MainView> {
     showDialog(context: context,
         builder: (BuildContext context) {
           return alertDialog;
-        });
+        }  );
   }
 
   void _onUpdateFailure(String error) {

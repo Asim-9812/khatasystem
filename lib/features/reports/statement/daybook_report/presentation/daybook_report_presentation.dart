@@ -1,4 +1,3 @@
-import 'package:dropdown_button3/dropdown_button3.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,25 +6,23 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/common/shimmer_loading.dart';
 import 'package:khata_app/features/reports/common_widgets/date_input_formatter.dart';
-import 'package:khata_app/features/reports/statement/customer_ledger_report/model/customer_ledger_report_model.dart';
-import 'package:khata_app/features/reports/statement/customer_ledger_report/provider/customer_ledger_report_provider.dart';
-import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
-import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
-import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
 import 'package:khata_app/features/reports/statement/daybook_report/provider/daybook_report_provider.dart';
-import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/model/report_model.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:pager/pager.dart';
+
 import '../../../../../common/colors.dart';
 import '../../../../../common/common_provider.dart';
-import '../../../../../common/snackbar.dart';
-import '../../../common_widgets/build_report_table.dart';
-import '../widget/daybook_dataRow.dart';
 
+import '../../../../../common/snackbar.dart';
+import '../../customer_ledger_report/widget/table_widget.dart';
+import '../../ledger_report/provider/report_provider.dart';
+import '../model/daybook_model.dart';
+import '../widget/daybook_dataRow.dart';
 
 class DayBookReport extends ConsumerStatefulWidget {
   const DayBookReport({Key? key}) : super(key: key);
@@ -41,14 +38,12 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
-  bool _isChecked = false;
+  String branchName = '';
+  String groupName = '';
+  String voucherValue = '';
   List _selectedVouchers = [];
-  String formattedList = '';
-  List _allVouchers = [];
-  bool allSelected = true;
 
-  String? formattedValue ;
-
+  bool _isChecked = false;
 
   @override
   void initState() {
@@ -58,37 +53,20 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
     _totalPages = 0;
   }
 
-  void processSelectedItems(FilterAnyModel fModel) {
-    if (_selectedVouchers.isEmpty) {
-      print('No vouchers selected.');
-    }
-
-    else if(_selectedVouchers.any((element) => element['text']=='All')){
-      print('all');
-      formattedValue = _allVouchers
-          .map((item) => '\\\\\\"${item['value']}\\\\\\\"')
-          .join(',');
-      print(formattedValue);
-      ref.read(dayBookProvider.notifier).getTableValues(fModel);
-
-    }
-    else {
-      for (var item in _selectedVouchers) {
-        if (item != 'All') {
-          formattedValue = _selectedVouchers
-              .map((item) => '\\\\\\"${item['value']}\\\\\\\"')
-              .join(',');
-
-
-        }
-
-
-      }
-      print('voucherType--[$formattedValue]');
-      ref.read(dayBookProvider.notifier).getTableValues(fModel);
-
-    }
-  }
+  //
+  // String processSelectedItems(List voucherTypes) {
+  //   if (_selectedVouchers.isEmpty) {
+  //     print('No vouchers selected.');
+  //     return '';
+  //   }
+  //
+  //   else{
+  //     print('sv : $voucherTypes');
+  //     String formattedList = '[${voucherTypes.map((e) => '\\\"$e\\\"').join(',')}]';
+  //     return formattedList;
+  //
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -96,21 +74,17 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
     modelRef.refName = 'DayBook';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
-    modelRef.listNameId ="[\"branch\",\"voucherType\",\"ledger\"]";
+    modelRef.listNameId = "[\"branch\",\"voucherType\",\"ledger\"]";
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
 
-
     return Consumer(
       builder: (context, ref, child) {
-        final outCome = ref.watch(listProvider2(modelRef));
+        final outCome = ref.watch(dayBookListProvider(modelRef));
         final res = ref.watch(dayBookProvider);
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(dayBookProvider);
-            setState(() {
-              _selectedVouchers = [];
-            });
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
@@ -123,9 +97,6 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                 leading: IconButton(
                   onPressed: () {
                     ref.invalidate(dayBookProvider);
-                    setState(() {
-                      _selectedVouchers = [];
-                    });
                     Navigator.pop(context, true);
                   },
                   icon: const Icon(
@@ -150,25 +121,21 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                     allList.add(e);
                   }
 
-                  List<Map<String,dynamic>> vouchers = [
-                    {'text': 'All', 'value': 'all'}
-                  ];
-                  List<String> ledgers = ['All'];
-                  List<String> branches = ['All'];
+                  List<Map<String,dynamic>> vouchers = [{'text': 'All', 'value': 'all'}];
+                  List<String> ledgers = ['Select a Ledger'];
+                  List<String> branches = ['Select a branch'];
 
                   data[0].forEach((key, _) {
                     branches.add(key);
                   });
                   data[1].forEach((key, _) {
                     vouchers.add({'text': key, 'value': _});
-                    _allVouchers.add({'text': key, 'value': _});
                   });
 
                   data[2].forEach((key, _) {
                     ledgers.add(key);
                   });
 
-                  Map<String,dynamic> voucherItem = vouchers[0];
                   String ledgerItem = ledgers[0];
                   String branchItem = branches[0];
 
@@ -177,11 +144,11 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                   final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem;
 
                   final branchItemData = ref.watch(itemProvider).branchItem;
+                  final voucherItemData = ref.watch(itemProvider).voucherTypeItem;
+                  final isDetailed = ref.watch(itemProvider).isDetailed;
 
-
-                  /// this function returns ledgerId according to the selected item from drop down
                   String getLedgerValue(String ledgerVal) {
-                    if (ledgerVal == "All") {
+                    if (ledgerVal == "ALL") {
                       return 'LedgerId--0';
                     } else {
                       return 'LedgerId--${data[2][ledgerItemData]}';
@@ -189,7 +156,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                   }
 
                   String getBranchValue(String branchVal) {
-                    if (branchVal == "All") {
+                    if (branchVal == "ALL") {
                       return 'BranchId--0';
                     } else {
                       return 'BranchId--${data[0][branchItemData]}';
@@ -204,11 +171,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                     }
                   }
 
-                  void getVoucherList(List VoucherList){
 
-                  }
-
-                  String isDetailed = _isChecked ? 'true' : 'false';
                   DataFilterModel filterModel = DataFilterModel();
                   filterModel.tblName = "DayBookReport";
                   filterModel.strName = "";
@@ -216,7 +179,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                   filterModel.underIntID = 0;
                   filterModel.columnName = null;
                   filterModel.filterColumnsString =
-                  "[\"${getBranchValue(branchItemData)}\",\"${getCurrentDate(dateFrom)}\",\"voucherType--[$formattedValue]\",\"${getLedgerValue(updatedLedgerItemData)}\",\"isDetailed--$isDetailed\"]";
+                  "[\"${getBranchValue(branchItemData)}\",\"${getCurrentDate(dateFrom)}\",\"voucherType--$voucherItemData\",\"${getLedgerValue(updatedLedgerItemData)}\",\"isDetailed--$isDetailed\"]";
                   filterModel.pageRowCount = _rowPerPage;
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
@@ -237,6 +200,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                               height: 10,
                             ),
                             Container(
+                              height: 420,
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),
@@ -288,16 +252,14 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                             await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
-                                              firstDate: DateTime.parse(mainInfo.startDate!),
+                                              firstDate: DateTime(2022,07,17),
                                               lastDate: DateTime.now(),
                                             );
                                             if (pickDate != null) {
-                                              setState(() {
                                                 dateFrom.text =
                                                     DateFormat('yyyy/MM/dd')
                                                         .format(pickDate);
-                                                _selectedVouchers = [];
-                                              });
+
                                             }
                                           },
                                           icon: Icon(
@@ -310,7 +272,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                         fontSize: 18,
                                         fontWeight: FontWeight.w500),
                                   ),
-                                  const SizedBox(
+                                  SizedBox(
                                     height: 20,
                                   ),
                                   DropdownSearch<String>(
@@ -409,107 +371,53 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                       ),
                                     ),
                                     onChanged: (dynamic value) {
+                                      branchName = value;
                                       ref.read(itemProvider).updateBranch(value);
                                     },
                                   ),
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  Container(
+                                  MultiSelectDialogField(
                                     decoration: BoxDecoration(
                                       border: Border.all(
-                                        color: ColorManager.black.withOpacity(0.5),
+                                        color: Colors.black.withOpacity(0.5),
                                       ),
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(10)
                                     ),
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton2(
-                                        dropdownMaxHeight: 400,
-                                        isExpanded: true,
-                                        barrierLabel: 'Voucher Type',
-                                        hint: Align(
-                                          alignment: AlignmentDirectional.centerStart,
-                                          child: Text(
-                                            'Select Voucher Type',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: ColorManager.black,
-                                            ),
-                                          ),
-                                        ),
-                                        items: vouchers.map((item) {
-                                          return DropdownMenuItem<Map<String,dynamic>>(
-                                            value: item,
-                                            child: StatefulBuilder(
-                                              builder: (context, menuSetState) {
-                                                final isSelected = _selectedVouchers.contains(item);
-                                                return InkWell(
-                                                  onTap: () {
-                                                    menuSetState(() {
-
-                                                      isSelected
-                                                          ? _selectedVouchers.remove(item)
-                                                          : _selectedVouchers.add(item);
-                                                    });
-                                                  },
-                                                  child: Container(
-                                                    height: double.infinity,
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                                    child: Row(
-                                                      children: [
-                                                        isSelected
-                                                            ? const Icon(Icons.check_box_outlined)
-                                                            : const Icon(Icons.check_box_outline_blank),
-                                                        const SizedBox(width: 16),
-                                                        Text(
-                                                          item['text'],
-                                                          style: const TextStyle(
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        }).toList(),
-
-                                        value: _selectedVouchers.isEmpty ? null : voucherItem,
-
-                                        onChanged: (value) {},
-                                        selectedItemBuilder: (context) {
-                                          return [
-                                            Container(
-                                              alignment: AlignmentDirectional.centerStart,
-                                              child: Text(
-                                                _selectedVouchers.isEmpty ? 'Select a Voucher type' : '${_selectedVouchers.length} selected',
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                maxLines: 1,
-                                              ),
-                                            ),
-                                          ];
-                                        },
-                                      ),
-                                    ),
+                                    chipDisplay: MultiSelectChipDisplay.none(),
+                                    searchable: true,
+                                    items: vouchers.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
+                                    listType: MultiSelectListType.LIST,
+                                    onConfirm: (values) {
+                                      if (values.contains("all")) {
+                                        // If "All" is selected, select all items except "All"
+                                        _selectedVouchers = vouchers.map((e) => e['value']).toList();
+                                        _selectedVouchers.remove("all");
+                                        String formattedList = '[${_selectedVouchers.map((e) => '\\\"$e\\\"').join(',')}]';
+                                        ref.read(itemProvider).updateVoucherType(formattedList);
+                                      } else {
+                                        // Otherwise, set the selected values as usual
+                                        _selectedVouchers = values;
+                                        String formattedList = '[${_selectedVouchers.map((e) => '\\\"$e\\\"').join(',')}]';
+                                        ref.read(itemProvider).updateVoucherType(formattedList);
+                                      }
+                                    },
                                   ),
-
-
                                   const SizedBox(
                                     height: 20,
                                   ),
                                   Row(
                                     children: [
                                       Checkbox(
-                                        value: _isChecked,
+                                        value: isDetailed,
                                         onChanged: (val) {
-                                          setState(() {
-                                            _isChecked =!_isChecked;
-                                          });
+                                          if(isDetailed == true){
+                                            ref.read(itemProvider).updateIsDetailed(false);
+                                          }
+                                          else{
+                                            ref.read(itemProvider).updateIsDetailed(true);
+                                          }
                                         },
                                         checkColor: Colors.white,
                                         fillColor:
@@ -531,17 +439,43 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () async {
+                                      final scaffoldMessage = ScaffoldMessenger.of(context);
                                       if(dateFrom.text.isEmpty){
-                                        final scaffoldMessage = ScaffoldMessenger.of(context);
+
                                         scaffoldMessage.showSnackBar(
                                           SnackbarUtil.showFailureSnackbar(
                                             message: 'Please pick a date',
                                             duration: const Duration(milliseconds: 1400),
                                           ),
                                         );
-                                      }else{
-                                        processSelectedItems(fModel);
+                                      }else if(branchItemData == 'All'){
+                                        scaffoldMessage.showSnackBar(
+                                          SnackbarUtil.showFailureSnackbar(
+                                            message: 'Please pick a branch',
+                                            duration: const Duration(milliseconds: 1400),
+                                          ),
+                                        );
 
+                                      }else if(ledgerItemData == 'All'){
+                                        scaffoldMessage.showSnackBar(
+                                          SnackbarUtil.showFailureSnackbar(
+                                            message: 'Please pick a ledger',
+                                            duration: const Duration(milliseconds: 1400),
+                                          ),
+                                        );
+
+                                      }else if(_selectedVouchers.isEmpty){
+                                        scaffoldMessage.showSnackBar(
+                                          SnackbarUtil.showFailureSnackbar(
+                                            message: 'Please pick a voucher type',
+                                            duration: const Duration(milliseconds: 1400),
+                                          ),
+                                        );
+
+
+                                      }
+                                      else{
+                                        ref.read(dayBookProvider.notifier).fetchTableData(fModel);
                                       }
 
 
@@ -617,7 +551,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                               _currentPage = page;
                                               /// updates current page number of filterModel, because it does not update on its own
                                               fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(dayBookProvider.notifier).getTableValues(fModel);
+                                              ref.read(dayBookProvider.notifier).fetchTableData(fModel);
                                             },
                                             showItemsPerPage: true,
                                             onItemsPerPageChanged: (itemsPerPage) {
@@ -690,7 +624,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                               _currentPage = page;
                                               /// updates current page number of filterModel, because it does not update on its own
                                               fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(dayBookProvider.notifier).getTableValues(fModel);
+                                              ref.read(dayBookProvider.notifier).fetchTableData(fModel);
                                             },
                                             showItemsPerPage: true,
                                             onItemsPerPageChanged: (itemsPerPage) {
@@ -775,3 +709,5 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
     super.dispose();
   }
 }
+
+

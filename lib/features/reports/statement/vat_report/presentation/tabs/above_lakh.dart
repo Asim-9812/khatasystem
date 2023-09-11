@@ -17,6 +17,7 @@ import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/model/report_model.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:pager/pager.dart';
 import '../../../../../../common/colors.dart';
 import '../../../../../../common/common_provider.dart';
@@ -56,34 +57,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
     _totalPages = 0;
   }
 
-  void processSelectedItems(FilterAnyModel fModel) {
-    if (_selectedParticulars.isEmpty) {
-      print('No particulars selected.');
-    }
 
-    else if(_selectedParticulars.any((element) => element['text']=='All')){
-      print('all');
-      formattedValue = '13,14,19,20';
-      ref.read(vatReportProvider3.notifier).getTableValues(fModel);
-
-    }
-    else {
-      for (var item in _selectedParticulars) {
-        if (item != 'All') {
-          formattedValue = _selectedParticulars
-              .map((item) => '${item['value']}')
-              .join(',');
-
-
-        }
-
-
-      }
-      print(formattedValue);
-      ref.read(vatReportProvider3.notifier).getTableValues(fModel);
-
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +103,6 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                   });
                   data[1].forEach((key, _) {
                     particulars.add({'text': key, 'value': _});
-                    _allParticulars.add({'text': key, 'value': _});
                   });
 
 
@@ -139,6 +112,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
 
 
                   final branchItemData = ref.watch(itemProvider).branchItem;
+                  final particularItemData = ref.watch(itemProvider).particularTypeItem;
 
 
 
@@ -176,7 +150,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                   filterModel.underIntID = 0;
                   filterModel.columnName = null;
                   filterModel.filterColumnsString =
-                  "[\"${getBranchValue(branchItemData)}\",\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"particularType--$formattedValue\"]";
+                  "[\"${getBranchValue(branchItemData)}\",\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"particularType--$particularItemData\"]";
                   filterModel.pageRowCount = _rowPerPage;
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
@@ -395,88 +369,36 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  Container(
+                                  MultiSelectDialogField(
                                     decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: ColorManager.black.withOpacity(0.5),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: DropdownButtonHideUnderline(
-                                      child: DropdownButton2(
-                                        dropdownMaxHeight: 400,
-                                        isExpanded: true,
-                                        barrierLabel: 'Voucher Type',
-                                        hint: Align(
-                                          alignment: AlignmentDirectional.centerStart,
-                                          child: Text(
-                                            'Select Voucher Type',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: ColorManager.black,
-                                            ),
-                                          ),
+                                        border: Border.all(
+                                          color: Colors.black.withOpacity(0.5),
                                         ),
-                                        items: particulars.map((item) {
-                                          return DropdownMenuItem<Map<String,dynamic>>(
-                                            value: item,
-                                            child: StatefulBuilder(
-                                              builder: (context, menuSetState) {
-                                                final isSelected = _selectedParticulars.contains(item);
-                                                return InkWell(
-                                                  onTap: () {
-                                                    menuSetState(() {
-
-                                                      isSelected
-                                                          ? _selectedParticulars.remove(item)
-                                                          : _selectedParticulars.add(item);
-                                                    });
-                                                  },
-                                                  child: Container(
-                                                    height: double.infinity,
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                                    child: Row(
-                                                      children: [
-                                                        isSelected
-                                                            ? const Icon(Icons.check_box_outlined)
-                                                            : const Icon(Icons.check_box_outline_blank),
-                                                        const SizedBox(width: 16),
-                                                        Text(
-                                                          item['text'],
-                                                          style: const TextStyle(
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        }).toList(),
-
-                                        value: _selectedParticulars.isEmpty ? null : particularItem,
-
-                                        onChanged: (value) {},
-                                        selectedItemBuilder: (context) {
-                                          return [
-                                            Container(
-                                              alignment: AlignmentDirectional.centerStart,
-                                              child: Text(
-                                                _selectedParticulars.isEmpty ? 'Select a Voucher type' : '${_selectedParticulars.length} selected',
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                                maxLines: 1,
-                                              ),
-                                            ),
-                                          ];
-                                        },
-                                      ),
+                                        borderRadius: BorderRadius.circular(10)
                                     ),
+                                    searchable: true,
+                                    items: particulars.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
+                                    listType: MultiSelectListType.LIST,
+                                    onConfirm: (values) {
+                                      if (values.contains("all")) {
+                                        // If "All" is selected, select all items except "All"
+                                        _selectedParticulars = particulars.map((e) => e['value']).toList();
+                                        _selectedParticulars.remove("all");
+                                        String formattedList = _selectedParticulars.map((e) => '$e').join(',');
+                                        ref.read(itemProvider).updateParticularType(formattedList);
+                                      } else {
+                                        // Otherwise, set the selected values as usual
+                                        _selectedParticulars = values;
+                                        String formattedList = _selectedParticulars.map((e) => '$e').join(',');
+                                        ref.read(itemProvider).updateParticularType(formattedList);
+                                      }
+                                    },
                                   ),
+
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+
 
 
                                   const SizedBox(
@@ -484,7 +406,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () async {
-                                      if(dateFrom.text.isEmpty){
+                                      if(dateFrom.text.isEmpty || dateTo.text.isEmpty){
                                         final scaffoldMessage = ScaffoldMessenger.of(context);
                                         scaffoldMessage.showSnackBar(
                                           SnackbarUtil.showFailureSnackbar(
@@ -493,10 +415,45 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                           ),
                                         );
                                       }else{
-                                        processSelectedItems(fModel);
+                                        DateFormat dateFormat = DateFormat('yyyy/MM/dd');
+
+                                        DateTime fromDate = dateFormat.parse(dateFrom.text);
+                                        DateTime toDate = dateFormat.parse(dateTo.text);
+
+                                        final scaffoldMessage = ScaffoldMessenger.of(context);
+                                        if (toDate.isBefore(fromDate)) {
+                                          scaffoldMessage.showSnackBar(
+                                            SnackbarUtil.showFailureSnackbar(
+                                              message: 'From date is greater than To date',
+                                              duration: const Duration(milliseconds: 1400),
+                                            ),
+                                          );
+                                        }
+                                        else if(data[0][branchItemData]==null){
+                                          scaffoldMessage.showSnackBar(
+                                            SnackbarUtil.showFailureSnackbar(
+                                              message: 'Select a branch',
+                                              duration: const Duration(milliseconds: 1400),
+                                            ),
+                                          );
+                                        }
+                                        else if(_selectedParticulars.isEmpty){
+                                          scaffoldMessage.showSnackBar(
+                                            SnackbarUtil.showFailureSnackbar(
+                                              message: 'Please pick a particular type',
+                                              duration: const Duration(milliseconds: 1400),
+                                            ),
+                                          );
+
+
+                                        }
+
+
+                                        else{
+                                          ref.read(vatReportProvider3.notifier).getTableValues(fModel);
+                                        }
 
                                       }
-
 
                                     },
                                     style: ElevatedButton.styleFrom(
@@ -588,12 +545,12 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                   );
                                 }
                                 else{
-                                  List<DayBookDetailedModel> newList = <DayBookDetailedModel>[];
+                                  List<AboveLakhModel> newList = <AboveLakhModel>[];
                                   if (data.isNotEmpty) {
                                     final tableReport = ReportData.fromJson(data[1]);
                                     _totalPages = tableReport.totalPages!;
                                     for (var e in data[0]) {
-                                      newList.add(DayBookDetailedModel.fromJson(e));
+                                      newList.add(AboveLakhModel.fromJson(e));
                                     }
                                   } else {
                                     return Container();
@@ -629,7 +586,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                             ],
                                             rows: List.generate(
                                               newList.length,
-                                                  (index) => buildDayBookDetailedReportRow(index, newList[index], allList, context),
+                                                  (index) => buildAboveLakhRow(index, newList[index],allList, context),
                                             ),
                                             columnSpacing: 0,
                                             horizontalMargin: 0,

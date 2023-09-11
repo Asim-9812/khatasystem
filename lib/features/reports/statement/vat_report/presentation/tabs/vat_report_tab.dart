@@ -425,23 +425,23 @@ class _VatReportTabState extends State<VatReportTab> {
                                         DataTable(
                                           columns: [
                                             buildDataColumn(
-                                                60, 'S.N', TextAlign.start),
+                                                60, 'S.N', TextAlign.center),
                                             buildDataColumn(200, 'Particulars',
-                                                TextAlign.start),
+                                                TextAlign.center),
                                             buildDataColumn(
-                                                200, 'Total Amount', TextAlign.start),
+                                                200, 'Total Amount', TextAlign.center),
                                             buildDataColumn(
-                                                160, 'Total Taxable Amount', TextAlign.end),
+                                                200, 'Total Taxable Amount', TextAlign.center),
                                             buildDataColumn(
-                                                160, 'Debit (Dr)', TextAlign.end),
+                                                160, 'Debit (Dr)', TextAlign.center),
                                             buildDataColumn(160, 'Credit (Cr)',
-                                                TextAlign.end),
+                                                TextAlign.center),
                                             buildDataColumn(
                                                 80, 'View', TextAlign.center),
                                           ],
                                           rows: List.generate(
                                             newList.length,
-                                                (index) => buildVatRow(index, newList[index], allList, context),
+                                                (index) => buildVatRow(index, newList[index],getBranchValue(branchItemData),getFromDate(dateFrom),getToDate(dateTo),allList, context),
                                           ),
                                           columnSpacing: 0,
                                           horizontalMargin: 0,

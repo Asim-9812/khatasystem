@@ -17,11 +17,50 @@ final monthlyProvider = FutureProvider.family.autoDispose((ref, GetListModel mod
 final vatReportProvider = StateNotifierProvider<VatReportProvider, AsyncValue<List<dynamic>>>((ref) =>VatReportProvider());
 final vatReportProvider2 = StateNotifierProvider<VatReportProvider2, AsyncValue<List<dynamic>>>((ref) =>VatReportProvider2());
 final vatReportProvider3 = StateNotifierProvider<VatReportProvider3, AsyncValue<List<dynamic>>>((ref) =>VatReportProvider3());
+final vatReportDetailProvider = StateNotifierProvider<VatReportDetailProvider, AsyncValue<List<dynamic>>>((ref) =>VatReportDetailProvider());
 
+class VatReportDetailProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
+  VatReportDetailProvider() : super(const AsyncValue.data([]));
+
+
+  Future<void> getTableValues2(FilterAnyModel2 filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data[0] as List<dynamic>;
+        state = AsyncValue.data(result);
+        print(result);
+
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
 class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   VatReportProvider() : super(const AsyncValue.data([]));
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+        state = AsyncValue.data(result);
+        print(result);
+
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+
+  Future<void> getTableValues2(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     try{
       final jsonData = jsonEncode(filterModel.toJson());

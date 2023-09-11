@@ -75,7 +75,7 @@ class MainInfoModel {
     this.strId,
     this.sessionId,
     this.fromDate,
-    this.toDate
+    this.toDate,
   });
 
   MainInfoModel.fromJson(Map<String, dynamic> json) {
@@ -115,6 +115,90 @@ class MainInfoModel {
     data['sessionId'] = sessionId;
     data['fromDate'] = fromDate;
     data['toDate'] = toDate;
+    return data;
+  }
+}
+
+class MainInfoModel2 {
+  int? userId;
+  int? fiscalID;
+  int? branchDepartmentId;
+  int? branchId;
+  bool? isEngOrNepaliDate;
+  bool? isMenuVerified;
+  int? filterId;
+  int? refId;
+  int? mainId;
+  String? dbName;
+  String? decimalPlace;
+  String? startDate;
+  String? endDate;
+  String? strId;
+  String? sessionId;
+  String? fromDate;
+  String? toDate;
+  int? id;
+
+  MainInfoModel2({
+    this.userId,
+    this.fiscalID,
+    this.branchDepartmentId,
+    this.branchId,
+    this.isEngOrNepaliDate,
+    this.isMenuVerified,
+    this.filterId,
+    this.refId,
+    this.mainId,
+    this.dbName,
+    this.decimalPlace,
+    this.startDate,
+    this.endDate,
+    this.strId,
+    this.sessionId,
+    this.fromDate,
+    this.toDate,
+    this.id
+  });
+
+  MainInfoModel2.fromJson(Map<String, dynamic> json) {
+    userId = json['userId'];
+    fiscalID = json['fiscalID'];
+    branchDepartmentId = json['branchDepartmentId'];
+    branchId = json['branchId'];
+    isEngOrNepaliDate = json['isEngOrNepaliDate'];
+    isMenuVerified = json['isMenuVerified'];
+    filterId = json['filterId'];
+    refId = json['refId'];
+    mainId = json['mainId'];
+    dbName = json['dbName'];
+    decimalPlace = json['decimalPlace'];
+    startDate = json['startDate'];
+    endDate = json['endDate'];
+    strId = json['strId'];
+    sessionId = json['sessionId'];
+    id = json['id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['userId'] = userId;
+    data['fiscalID'] = fiscalID;
+    data['branchDepartmentId'] = branchDepartmentId;
+    data['branchId'] = branchId;
+    data['isEngOrNepaliDate'] = isEngOrNepaliDate;
+    data['isMenuVerified'] = isMenuVerified;
+    data['filterId'] = filterId;
+    data['refId'] = refId;
+    data['mainId'] = mainId;
+    data['dbName'] = dbName;
+    data['decimalPlace'] = decimalPlace;
+    data['startDate'] = startDate;
+    data['endDate'] = endDate;
+    data['strId'] = strId;
+    data['sessionId'] = sessionId;
+    data['fromDate'] = fromDate;
+    data['toDate'] = toDate;
+    data['id'] = id;
     return data;
   }
 }

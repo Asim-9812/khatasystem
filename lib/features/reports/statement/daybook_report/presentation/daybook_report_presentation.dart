@@ -165,7 +165,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
 
                   String getCurrentDate(TextEditingController txt) {
                     if (txt.text.isEmpty) {
-                      return 'currentDate--';
+                      return 'currentDate--2022/07/17';
                     } else {
                       return 'currentDate--${txt.text.trim()}';
                     }
@@ -200,7 +200,6 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                               height: 10,
                             ),
                             Container(
-                              height: 420,
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),
@@ -252,7 +251,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                             await showDatePicker(
                                               context: context,
                                               initialDate: DateTime.now(),
-                                              firstDate: DateTime(2022,07,17),
+                                              firstDate: DateTime(2022,7,17),
                                               lastDate: DateTime.now(),
                                             );
                                             if (pickDate != null) {
@@ -385,7 +384,6 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                       ),
                                       borderRadius: BorderRadius.circular(10)
                                     ),
-                                    chipDisplay: MultiSelectChipDisplay.none(),
                                     searchable: true,
                                     items: vouchers.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
                                     listType: MultiSelectListType.LIST,
@@ -404,6 +402,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                       }
                                     },
                                   ),
+
                                   const SizedBox(
                                     height: 20,
                                   ),
@@ -414,9 +413,11 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                         onChanged: (val) {
                                           if(isDetailed == true){
                                             ref.read(itemProvider).updateIsDetailed(false);
+                                            ref.invalidate(dayBookProvider);
                                           }
                                           else{
                                             ref.read(itemProvider).updateIsDetailed(true);
+                                            ref.invalidate(dayBookProvider);
                                           }
                                         },
                                         checkColor: Colors.white,
@@ -501,7 +502,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                             ),
                             res.when(
                               data: (data) {
-                                if(_isChecked == false){
+                                if(isDetailed == false){
                                   List<DayBookModel> newList = <DayBookModel>[];
                                   if (data.isNotEmpty) {
                                     final tableReport = ReportData.fromJson(data[1]);
@@ -532,12 +533,14 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                                   160, 'Voucher Type', TextAlign.end),
                                               buildDataColumn(
                                                   160, 'Amount', TextAlign.end),
-                                              buildDataColumn(160, 'Narration',
+                                              buildDataColumn(200, 'Narration',
+                                                  TextAlign.end),
+                                              buildDataColumn(160, 'View',
                                                   TextAlign.end),
                                             ],
                                             rows: List.generate(
                                               newList.length,
-                                                  (index) => buildDayBookReportRow(index, newList[index], allList, context),
+                                                  (index) => buildDayBookReportRow(index, newList[index],voucherItemData,getBranchValue(branchItemData), context),
                                             ),
                                             columnSpacing: 0,
                                             horizontalMargin: 0,
@@ -606,11 +609,13 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                               buildDataColumn(160, 'Cr',
                                                   TextAlign.end),
                                               buildDataColumn(200, 'Narration',
+                                                  TextAlign.end),
+                                              buildDataColumn(160, 'View',
                                                   TextAlign.end)
                                             ],
                                             rows: List.generate(
                                               newList.length,
-                                                  (index) => buildDayBookDetailedReportRow(index, newList[index], allList, context),
+                                                  (index) => buildDayBookDetailedReportRow(index, newList[index],voucherItemData,getBranchValue(branchItemData), context),
                                             ),
                                             columnSpacing: 0,
                                             horizontalMargin: 0,

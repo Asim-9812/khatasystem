@@ -30,3 +30,33 @@ class FilterAnyModel{
 
 
 }
+
+class FilterAnyModel2{
+  DataFilterModel? dataFilterModel;
+  MainInfoModel2? mainInfoModel;
+
+
+  FilterAnyModel2({this.dataFilterModel, this.mainInfoModel});
+
+  FilterAnyModel2.fromJson(Map<String, dynamic> json){
+    dataFilterModel = json["dataFilterModel"] != null ? DataFilterModel.fromJson(json["dataFilterModel"]) : null;
+    mainInfoModel = json["mainInfoModel"] != null ? MainInfoModel2.fromJson(json["mainInfoModel"]) : null;
+
+  }
+
+
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic>  data = <String, dynamic>{};
+    if (mainInfoModel != null) {
+      data['mainInfoModel'] = mainInfoModel!.toJson();
+    }
+    if (dataFilterModel != null) {
+      data['dataFilterModel'] = dataFilterModel!.toJson();
+    }
+
+    return data;
+  }
+
+
+
+}

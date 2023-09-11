@@ -150,6 +150,23 @@ class TableDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
       throw DioException().getDioError(err);
     }
   }
+
+
+  Future<void> getTableValues2(FilterAnyModel2 filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+        state = AsyncValue.data(result);
+      }else{
+        print(response.statusCode);
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
 }
 
 

@@ -242,17 +242,17 @@ class _MonthlyState extends State<Monthly> {
                                         DataTable(
                                           columns: [
                                             buildDataColumn(
-                                                60, 'S.N', TextAlign.start),
+                                                60, 'S.N', TextAlign.center),
                                             buildDataColumn(200, 'Month',
-                                                TextAlign.start),
+                                                TextAlign.center),
                                             buildDataColumn(
-                                                200, 'Opening', TextAlign.start),
+                                                200, 'Opening', TextAlign.center),
                                             buildDataColumn(
-                                                160, 'Debit', TextAlign.end),
+                                                160, 'Debit', TextAlign.center),
                                             buildDataColumn(
-                                                160, 'Credit', TextAlign.end),
+                                                160, 'Credit', TextAlign.center),
                                             buildDataColumn(200, 'Balance',
-                                                TextAlign.end),
+                                                TextAlign.center),
                                             buildDataColumn(
                                                 80, 'View', TextAlign.center),
                                           ],

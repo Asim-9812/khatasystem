@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
 import 'package:khata_app/features/reports/statement/vat_report/model/vat_report_model.dart';
 import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
@@ -10,8 +11,8 @@ import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:pager/pager.dart';
-import '../../../../../../common/colors.dart';
-import '../../../common_widgets/build_report_table.dart';
+import '../../../../../../../common/colors.dart';
+import '../../../../common_widgets/build_report_table.dart';
 
 
 class MonthlyVatReportTab extends StatefulWidget {
@@ -24,8 +25,6 @@ class MonthlyVatReportTab extends StatefulWidget {
 }
 
 class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
-  TextEditingController dateFrom = TextEditingController();
-  TextEditingController dateTo = TextEditingController();
   late int _currentPage;
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
@@ -133,7 +132,7 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                                         borderRadius: BorderRadius.circular(10)
                                       ),
                                       child: Center(
-                                        child: Text('${widget.data.monthFromDate}',style: const TextStyle(color: Colors.black),),),
+                                        child: Text(DateFormat('yyyy/MM/dd').format(widget.data.monthFromDate),style: const TextStyle(color: Colors.black),),),
                                     ),
                                   ),
                                   const SizedBox(
@@ -149,7 +148,7 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                                           borderRadius: BorderRadius.circular(10)
                                       ),
                                       child: Center(
-                                        child: Text('${widget.data.monthToDate}',style: const TextStyle(color: Colors.black),),),
+                                        child: Text(DateFormat('yyyy/MM/dd').format(widget.data.monthToDate),style: const TextStyle(color: Colors.black),),),
                                     ),
                                   ),
                                 ],
@@ -238,7 +237,7 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                                       ],
                                       rows: List.generate(
                                         newList.length,
-                                            (index) => buildVatRow2(index, newList[index], context),
+                                            (index) => buildVatRow2(index, newList[index],'branchId--${widget.data.branchId}','fromDate--${DateFormat('yyyy/MM/dd').format(widget.data.monthFromDate)}','toDate--${DateFormat('yyyy/MM/dd').format(widget.data.monthToDate)}', context),
                                       ),
                                       columnSpacing: 0,
                                       horizontalMargin: 0,

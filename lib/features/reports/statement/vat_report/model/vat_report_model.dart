@@ -1,3 +1,60 @@
+class VatReportDetailModel {
+  final String? sno;
+  final String? date;
+  final String? invoiceNo;
+  final String? supplierOrLedgerId;
+  final String? cashOrParty;
+  final String? pan;
+  final String? strTotalAmount;
+  final String? strTaxableAmount;
+  final String? strVATDr;
+  final String? strVATCr;
+  final double? allTotalAmount;
+  final double? allTaxableAmount;
+  final double? allVATAmountDr;
+  final double? allVATAmountCr;
+
+  VatReportDetailModel({
+    this.sno,
+    this.date,
+    this.invoiceNo,
+    this.supplierOrLedgerId,
+    this.cashOrParty,
+    this.pan,
+    this.strTotalAmount,
+    this.strTaxableAmount,
+    this.strVATDr,
+    this.strVATCr,
+    this.allTotalAmount,
+    this.allTaxableAmount,
+    this.allVATAmountDr,
+    this.allVATAmountCr,
+  });
+
+  factory VatReportDetailModel.fromJson(Map<String, dynamic> json) {
+    return VatReportDetailModel(
+      sno: json['sno'],
+      date: json['date'],
+      invoiceNo: json['invoiceNo'],
+      supplierOrLedgerId: json['supplierorledgerid'],
+      cashOrParty: json['cashorParty'],
+      pan: json['pan'],
+      strTotalAmount: json['strTotalAmount'],
+      strTaxableAmount: json['strTaxableAmount'],
+      strVATDr: json['strVATDr'],
+      strVATCr: json['strVATCr'],
+      allTotalAmount: json['allTotalAmount']?.toDouble(),
+      allTaxableAmount: json['allTaxableAmount']?.toDouble(),
+      allVATAmountDr: json['allVATAmountDr']?.toDouble(),
+      allVATAmountCr: json['allVATAmountCr']?.toDouble(),
+    );
+  }
+}
+
+
+
+
+
 class VatReportModel {
   final String sno;
   final int vouchertypeID;
@@ -95,7 +152,7 @@ class AboveLakhModel {
 class MonthlyModel {
   final String sno;
   final String month;
-  final int branchId;
+  final String branchId;
   final DateTime monthFromDate;
   final DateTime monthToDate;
   final double openingBalance;
@@ -121,7 +178,7 @@ class MonthlyModel {
     return MonthlyModel(
       sno: json['sno'] as String,
       month: json['month'] as String,
-      branchId: json['branchid'] as int,
+      branchId: json['branchid'].toString(),
       monthFromDate: DateTime.parse(json['monthfromdate'] as String),
       monthToDate: DateTime.parse(json['monthTodate'] as String),
       openingBalance: double.parse(json['openingBalance'].toString()),

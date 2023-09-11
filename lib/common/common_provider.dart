@@ -64,6 +64,7 @@ class GroupItem extends ChangeNotifier{
   String branchItem = 'All';
   String voucherTypeItem = 'All';
   String statusType = 'All';
+  String particularTypeItem = 'All';
   bool isDetailed = false;
 
   void updateTrialBalanceType(String text){
@@ -83,6 +84,11 @@ class GroupItem extends ChangeNotifier{
 
   void updateVoucherType(String text){
     voucherTypeItem = text;
+    notifyListeners();
+  }
+
+  void updateParticularType(String text){
+    particularTypeItem = text;
     notifyListeners();
   }
 

@@ -1,73 +1,74 @@
 class DayBookDetailedModel {
-  final String? sno;
   final int? masterEntryID;
+  final String? sno;
   final String? voucherNo;
-  final String? chequeNo;
-  final String? refNo;
-  final double? drTotal;
-  final double? crTotal;
-  final String? narration;
-  final int? voucherTypeId;
-  final String? voucherTypeName;
-  final String? particulars;
-  final double? debitAmount;
-  final String? strDebitAmount;
-  final double? creditAmount;
-  final String? strCreditAmount;
-  final double? strAmount;
-  final int? layerPosition;
-  final bool? isSubLedger;
-  final bool? isParent;
   final String? voucherDate;
+  final String? refNo;
+  final String? chequeNo;
+  final String? voucherID;
+  final String? voucherName;
+  final int? ledgerID;
+  final String? particulars;
+  final String? drcr;
+  final double? debit;
+  final String? strDebit;
+  final double? credit;
+  final String? strCredit;
+  final String? narration;
+  final String? chequeDate;
+  final double? debitTotal;
+  final double? creditTotal;
+  final String? mainNarration;
 
   DayBookDetailedModel({
-    this.sno,
     this.masterEntryID,
+    this.sno,
     this.voucherNo,
-    this.chequeNo,
-    this.refNo,
-    this.drTotal,
-    this.crTotal,
-    this.narration,
-    this.voucherTypeId,
-    this.voucherTypeName,
-    this.particulars,
-    this.debitAmount,
-    this.strDebitAmount,
-    this.creditAmount,
-    this.strCreditAmount,
-    this.strAmount,
-    this.layerPosition,
-    this.isSubLedger,
-    this.isParent,
     this.voucherDate,
+    this.refNo,
+    this.chequeNo,
+    this.voucherID,
+    this.voucherName,
+    this.ledgerID,
+    this.particulars,
+    this.drcr,
+    this.debit,
+    this.strDebit,
+    this.credit,
+    this.strCredit,
+    this.narration,
+    this.chequeDate,
+    this.debitTotal,
+    this.creditTotal,
+    this.mainNarration,
   });
 
   factory DayBookDetailedModel.fromJson(Map<String, dynamic> json) {
     return DayBookDetailedModel(
-      sno: json['sno'],
       masterEntryID: json['masterEntryID'],
+      sno: json['sno'],
       voucherNo: json['voucherNo'],
+      voucherDate: json['voucherDate'],
+      refNo: json['refNo'],
       chequeNo: json['chequeNo'],
-      refNo: json['ref_No'],
-      drTotal: json['drTotal'],
-      crTotal: json['crTotal'],
-      narration: json['narration'],
-      voucherTypeId: json['voucherTypeId'],
-      voucherTypeName: json['voucherTypeName'],
+      voucherID: json['voucherID'],
+      voucherName: json['voucherName'],
+      ledgerID: json['ledgerID'],
       particulars: json['particulars'],
-      debitAmount: json['debitAmount'],
-      strDebitAmount: json['strDebitAmount'],
-      creditAmount: json['creditAmount'],
-      strCreditAmount: json['strCreditAmount'],
-      strAmount: json['strAmount'],
-      layerPosition: json['layerposition'],
-      isSubLedger: json['isSubLedger'],
-      isParent: json['isParent'],
-      voucherDate: json['voucherDate'] ,
+      drcr: json['drcr'],
+      debit: json['debit']?.toDouble(),
+      strDebit: json['strDebit'],
+      credit: json['credit']?.toDouble(),
+      strCredit: json['strCredit'],
+      narration: json['narration'],
+      chequeDate: json['chequeDate'],
+      debitTotal: json['debitTotal']?.toDouble(),
+      creditTotal: json['creditTotal']?.toDouble(),
+      mainNarration: json['mainNarration'],
     );
   }
 }
+
 
 
 class DayBookModel {
@@ -79,6 +80,7 @@ class DayBookModel {
   final String? voucherTypeId;
   final String? voucherTypeName;
   final String? voucherDate;
+  final int? ledgerId;
 
   DayBookModel({
     this.masterEntryID,
@@ -89,6 +91,7 @@ class DayBookModel {
     this.voucherTypeId,
     this.voucherTypeName,
     this.voucherDate,
+    this.ledgerId,
   });
 
   factory DayBookModel.fromJson(Map<String, dynamic> json) {
@@ -101,6 +104,7 @@ class DayBookModel {
       voucherTypeId: json['voucherID'],
       voucherTypeName: json['voucherName'],
       voucherDate: json['voucherDate'],
+      ledgerId: json['ledgerID'],
     );
   }
 }

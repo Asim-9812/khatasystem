@@ -195,7 +195,6 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                               height: 10,
                             ),
                             Container(
-                              height: 350,
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(
                                   vertical: 10, horizontal: 10),
@@ -342,7 +341,9 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                       ),
                                     ],
                                   ),
-                                  const Spacer(),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
                                   DropdownSearch<String>(
                                     items: groups,
                                     selectedItem: groupItem,
@@ -390,7 +391,9 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                       print(validation);
                                     },
                                   ),
-                                  const Spacer(),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
                                   DropdownSearch<String>(
                                     items: branches,
                                     selectedItem: branchItem,
@@ -436,7 +439,9 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                       ref.read(itemProvider).updateBranch(value);
                                     },
                                   ),
-                                  const Spacer(),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
                                   ElevatedButton(
                                     onPressed: () async {
                                       if(dateFrom.text.isEmpty || dateTo.text.isEmpty){
@@ -523,17 +528,19 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                         DataTable(
                                           columns: [
                                             buildDataColumn(
-                                                60, 'S.N', TextAlign.start),
+                                                60, 'S.N', TextAlign.center),
                                             buildDataColumn(200, 'Account Group',
-                                                TextAlign.start),
+                                                TextAlign.center),
                                             buildDataColumn(
-                                                200, 'Opening', TextAlign.start),
+                                                200, 'Opening', TextAlign.center),
                                             buildDataColumn(
-                                                160, 'Dr', TextAlign.end),
+                                                160, 'Dr', TextAlign.center),
                                             buildDataColumn(
-                                                160, 'Cr', TextAlign.end),
+                                                160, 'Cr', TextAlign.center),
                                             buildDataColumn(160, 'Closing',
-                                                TextAlign.end),
+                                                TextAlign.center),
+                                            buildDataColumn(160, 'View',
+                                                TextAlign.center),
                                           ],
                                           rows: List.generate(
                                             newList.length,

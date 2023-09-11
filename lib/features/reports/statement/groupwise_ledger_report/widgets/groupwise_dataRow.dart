@@ -25,14 +25,39 @@ DataRow buildGroupWiseRow(int index,GroupwiseLedgerReportModel tblData, String g
           60, '${tblData.sno}', TextAlign.start, 2),
       buildHtmlDataCell(
           200, accountGroup, TextAlign.start, 2),
-      buildDataCell(200, tblData.openingBalance.toString(), TextAlign.start,
+      buildDataCell(200, tblData.strOpeningBalance.toString(), TextAlign.start,
           2),
       buildDataCell(
           160,  '${tblData.debitAmount}', TextAlign.end, 2),
       buildDataCell(
           160, '${tblData.creditAmount}', TextAlign.end, 2),
       buildDataCell(
-          160,  '${tblData.closingBalance}', TextAlign.end, 2),
+          160,  '${tblData.strClosingBalance}', TextAlign.end, 2),
+      DataCell(
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              // Navigator.push(
+              //     context!,
+              //     MaterialPageRoute(
+              //       builder: (context) => DetailedVatReport(
+              //         branchId: branchId,
+              //         voucherTypeId: tblData.vouchertypeID,
+              //         dateFrom: dateFrom,
+              //         dateTo: dateTo,
+              //       ),
+              //     ));
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: ColorManager.green,
+                minimumSize: const Size(30, 30)),
+            child: const Icon(
+              Icons.remove_red_eye_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ),
     ],
   );
 }

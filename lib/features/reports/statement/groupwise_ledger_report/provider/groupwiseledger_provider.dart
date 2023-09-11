@@ -20,6 +20,7 @@ class GroupWiseLedgerReportProvider extends StateNotifier<AsyncValue<List<dynami
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
+        print(result);
         state = AsyncValue.data(result);
 
       }

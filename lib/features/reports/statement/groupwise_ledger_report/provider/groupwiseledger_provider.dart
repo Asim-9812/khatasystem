@@ -20,7 +20,7 @@ class GroupWiseLedgerReportProvider extends StateNotifier<AsyncValue<List<dynami
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
-        print(result);
+
         state = AsyncValue.data(result);
 
       }
@@ -28,4 +28,56 @@ class GroupWiseLedgerReportProvider extends StateNotifier<AsyncValue<List<dynami
       throw DioException().getDioError(err);
     }
   }
+
+}
+
+
+
+final groupWiseDetailProvider = StateNotifierProvider<GroupWiseDetailReportProvider, AsyncValue<List<dynamic>>>((ref) =>GroupWiseDetailReportProvider());
+
+class GroupWiseDetailReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
+  GroupWiseDetailReportProvider() : super(const AsyncValue.data([]));
+
+  Future<void> getTableValues(FilterAnyModel2 filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+
+        state = AsyncValue.data(result);
+
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+
+}
+
+final ledgerDetailGroupWiseProvider = StateNotifierProvider<LedgerDetailGroupWiseProvider, AsyncValue<List<dynamic>>>((ref) =>LedgerDetailGroupWiseProvider());
+
+class LedgerDetailGroupWiseProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
+  LedgerDetailGroupWiseProvider() : super(const AsyncValue.data([]));
+
+  Future<void> getTableValues(FilterAnyModel2 filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+        print(result);
+
+        state = AsyncValue.data(result);
+
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+
 }

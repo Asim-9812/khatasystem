@@ -199,6 +199,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                             const SizedBox(
                               height: 10,
                             ),
+
                             Container(
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(
@@ -209,67 +210,44 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                               ),
                               child: Column(
                                 children: [
-                                  TextField(
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter
-                                          .digitsOnly,
-                                      DateInputFormatter(),
-                                      LengthLimitingTextInputFormatter(10)
-                                    ],
-                                    keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.next,
-                                    controller: dateFrom,
-                                    decoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                              color: Colors.black
-                                                  .withOpacity(0.45),
-                                              width: 1,
-                                            )),
-                                        contentPadding:
-                                        const EdgeInsets.all(10),
-                                        focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(10),
-                                            borderSide: BorderSide(
-                                              color: ColorManager.primary,
-                                              width: 1,
-                                            )),
-                                        floatingLabelStyle: TextStyle(
-                                            color: ColorManager.primary),
-                                        labelText: 'Current Date',
-                                        labelStyle: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                        alignLabelWithHint: true,
-                                        suffixIcon: IconButton(
-                                          onPressed: () async {
-                                            DateTime? pickDate =
-                                            await showDatePicker(
-                                              context: context,
-                                              initialDate: DateTime.now(),
-                                              firstDate: DateTime(2022,7,17),
-                                              lastDate: DateTime.now(),
-                                            );
-                                            if (pickDate != null) {
-                                                dateFrom.text =
-                                                    DateFormat('yyyy/MM/dd')
-                                                        .format(pickDate);
-
-                                            }
-                                          },
-                                          icon: Icon(
+                                  InkWell(
+                                    onTap:() async {
+                                      DateTime? pickDate =
+                                      await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime.parse(mainInfo.startDate!),
+                                        lastDate: DateTime.now(),
+                                      );
+                                      if (pickDate != null) {
+                                        setState(() {
+                                          dateFrom.text =
+                                              DateFormat('yyyy/MM/dd')
+                                                  .format(pickDate);
+                                        });
+                                      }
+                                    } ,
+                                    child: Container(
+                                      padding: const EdgeInsets.all(15),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border.all(
+                                              color: ColorManager.black.withOpacity(0.45)
+                                          )
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(dateFrom.text.isEmpty? 'From': dateFrom.text,style:TextStyle(fontSize: 18),),
+                                          Icon(
                                             Icons.edit_calendar,
                                             size: 30,
                                             color: ColorManager.primary,
                                           ),
-                                        )),
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
+
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                   SizedBox(
                                     height: 20,

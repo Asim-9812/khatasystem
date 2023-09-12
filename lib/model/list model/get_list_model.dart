@@ -138,6 +138,7 @@ class MainInfoModel2 {
   String? fromDate;
   String? toDate;
   int? id;
+  String? searchText;
 
   MainInfoModel2({
     this.userId,
@@ -157,7 +158,8 @@ class MainInfoModel2 {
     this.sessionId,
     this.fromDate,
     this.toDate,
-    this.id
+    this.id,
+    this.searchText
   });
 
   MainInfoModel2.fromJson(Map<String, dynamic> json) {
@@ -177,6 +179,7 @@ class MainInfoModel2 {
     strId = json['strId'];
     sessionId = json['sessionId'];
     id = json['id'];
+    searchText=json['searchtext'];
   }
 
   Map<String, dynamic> toJson() {
@@ -199,6 +202,7 @@ class MainInfoModel2 {
     data['fromDate'] = fromDate;
     data['toDate'] = toDate;
     data['id'] = id;
+    data['searchtext']=searchText;
     return data;
   }
 }

@@ -73,7 +73,7 @@ class _MonthlyState extends State<Monthly> {
                     allList.add(e);
                   }
 
-                  List<String> branches = ['Select a Branch'];
+                  List<String> branches = [];
 
 
                   data[0].forEach((key, _) {
@@ -83,7 +83,7 @@ class _MonthlyState extends State<Monthly> {
                   String branchItem = branches[0];
 
 
-                  final branchItemData = ref.watch(itemProvider).branchItem;
+                  final branchItemData = ref.watch(itemProvider).branchItem2;
 
 
 
@@ -178,7 +178,7 @@ class _MonthlyState extends State<Monthly> {
                                       ),
                                     ),
                                     onChanged: (dynamic value) {
-                                      ref.read(itemProvider).updateBranch(value);
+                                      ref.read(itemProvider).updateBranch2(value);
                                         name=value;
                                     },
                                   ),

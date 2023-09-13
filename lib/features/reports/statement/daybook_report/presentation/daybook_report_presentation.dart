@@ -34,6 +34,8 @@ class DayBookReport extends ConsumerStatefulWidget {
 class _DayBookReportState extends ConsumerState<DayBookReport> {
   TextEditingController dateFrom = TextEditingController();
   TextEditingController dateTo = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  List<DayBookModel> filteredList = [];
   late int _currentPage;
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
@@ -51,7 +53,10 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
+    dateFrom.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
+
+
 
   //
   // String processSelectedItems(List voucherTypes) {
@@ -122,8 +127,8 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                   }
 
                   List<Map<String,dynamic>> vouchers = [{'text': 'All', 'value': 'all'}];
-                  List<String> ledgers = ['Select a Ledger'];
-                  List<String> branches = ['Select a branch'];
+                  List<String> ledgers = [];
+                  List<String> branches = [];
 
                   data[0].forEach((key, _) {
                     branches.add(key);
@@ -140,12 +145,13 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                   String branchItem = branches[0];
 
 
-                  final ledgerItemData = ref.watch(itemProvider).ledgerItem;
-                  final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem;
+                  final ledgerItemData = ref.watch(itemProvider).ledgerItem2;
+                  final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem2;
 
-                  final branchItemData = ref.watch(itemProvider).branchItem;
+                  final branchItemData = ref.watch(itemProvider).branchItem2;
                   final voucherItemData = ref.watch(itemProvider).voucherTypeItem;
                   final isDetailed = ref.watch(itemProvider).isDetailed;
+
 
                   String getLedgerValue(String ledgerVal) {
                     if (ledgerVal == "ALL") {
@@ -210,13 +216,19 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                               ),
                               child: Column(
                                 children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text('Date',style: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.bold),)),
+                                  ),
                                   InkWell(
                                     onTap:() async {
                                       DateTime? pickDate =
                                       await showDatePicker(
                                         context: context,
                                         initialDate: DateTime.now(),
-                                        firstDate: DateTime.parse(mainInfo.startDate!),
+                                        firstDate: DateTime(2022,7,17),
                                         lastDate: DateTime.now(),
                                       );
                                       if (pickDate != null) {
@@ -228,7 +240,7 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                       }
                                     } ,
                                     child: Container(
-                                      padding: const EdgeInsets.all(15),
+                                      padding: const EdgeInsets.all(10),
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.circular(10),
                                           border: Border.all(
@@ -352,10 +364,14 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                       ref.read(itemProvider).updateBranch(value);
                                     },
                                   ),
-                                  const SizedBox(
-                                    height: 20,
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text('Voucher Type',style: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.bold),)),
                                   ),
                                   MultiSelectDialogField(
+                                    
                                     decoration: BoxDecoration(
                                       border: Border.all(
                                         color: Colors.black.withOpacity(0.5),
@@ -480,74 +496,116 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                             ),
                             res.when(
                               data: (data) {
+
+                                final list = ref.watch(itemProvider).filteredList;
                                 if(isDetailed == false){
                                   List<DayBookModel> newList = <DayBookModel>[];
                                   if (data.isNotEmpty) {
+
                                     final tableReport = ReportData.fromJson(data[1]);
                                     _totalPages = tableReport.totalPages!;
                                     for (var e in data[0]) {
                                       newList.add(DayBookModel.fromJson(e));
                                     }
+                                    ref.read(itemProvider.notifier).updateList(newList);
                                   } else {
                                     return Container();
                                   }
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      physics: const ClampingScrollPhysics(),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          DataTable(
-                                            columns: [
-                                              buildDataColumn(
-                                                  60, 'S.N', TextAlign.start),
-                                              buildDataColumn(200, 'Voucher No.',
-                                                  TextAlign.start),
-                                              buildDataColumn(
-                                                  200, 'Ref No', TextAlign.start),
-                                              buildDataColumn(
-                                                  160, 'Voucher Type', TextAlign.end),
-                                              buildDataColumn(
-                                                  160, 'Amount', TextAlign.end),
-                                              buildDataColumn(200, 'Narration',
-                                                  TextAlign.end),
-                                              buildDataColumn(160, 'View',
-                                                  TextAlign.end),
-                                            ],
-                                            rows: List.generate(
-                                              newList.length,
-                                                  (index) => buildDayBookReportRow(index, newList[index],voucherItemData,getBranchValue(branchItemData), context),
-                                            ),
-                                            columnSpacing: 0,
-                                            horizontalMargin: 0,
+
+
+
+
+                                  // Define a filter function to filter the data
+                                  void filterData() {
+                                    String searchText = ref.watch(itemProvider).search;
+                                    // Use the query to filter your data and update the UI accordingly
+                                    List<DayBookModel> filteredList = newList.where((item) {
+                                      // Customize this logic to match your filtering criteria
+                                      return item.voucherNo!.contains(searchText);
+                                    }).toList();
+                                    ref.read(itemProvider.notifier).updateList(filteredList);
+                                  }
+
+                                  return Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: TextFormField(
+                                          controller: _searchController,
+                                          decoration: InputDecoration(
+                                            hintText: 'Search',
+                                            prefixIcon: Icon(Icons.search),
+                                            border: OutlineInputBorder(),
                                           ),
-                                          /// Pager package used for pagination
-                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                            currentItemsPerPage: _rowPerPage,
-                                            currentPage: _currentPage,
-                                            totalPages: _totalPages,
-                                            onPageChanged: (page) {
-                                              _currentPage = page;
-                                              /// updates current page number of filterModel, because it does not update on its own
-                                              fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(dayBookProvider.notifier).fetchTableData(fModel);
-                                            },
-                                            showItemsPerPage: true,
-                                            onItemsPerPageChanged: (itemsPerPage) {
-                                              _rowPerPage = itemsPerPage;
-                                              _currentPage = 1;
-                                              /// updates row per page of filterModel, because it does not update on its own
-                                              fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                              ref.read(tableDataProvider.notifier).getTableValues(fModel);
-                                            },
-                                            itemsPerPageList: rowPerPageItems,
-                                          ),
-                                        ],
+                                          onChanged: (value) {
+                                            // Call your filter function when search input changes
+                                            ref.read(itemProvider.notifier).updateSearch(value);
+                                            filterData();
+                                          },
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          physics: const ClampingScrollPhysics(),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              DataTable(
+                                                columns: [
+                                                  buildDataColumn(
+                                                      60, 'S.N', TextAlign.center),
+                                                  buildDataColumn(200, 'Voucher No.',
+                                                      TextAlign.center),
+                                                  buildDataColumn(
+                                                      200, 'Ref No', TextAlign.center),
+                                                  buildDataColumn(
+                                                      160, 'Voucher Type', TextAlign.center),
+                                                  buildDataColumn(
+                                                      160, 'Amount', TextAlign.center),
+                                                  buildDataColumn(200, 'Narration',
+                                                      TextAlign.center),
+                                                  buildDataColumn(160, 'View',
+                                                      TextAlign.center),
+                                                ],
+                                                rows: List.generate(
+                                                  newList.length,
+                                                      (index) => buildDayBookReportRow(index, newList[index],voucherItemData,getBranchValue(branchItemData), context),
+                                                ),
+                                                columnSpacing: 0,
+                                                horizontalMargin: 0,
+                                              ),
+                                              /// Pager package used for pagination
+                                              _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
+                                                currentItemsPerPage: _rowPerPage,
+                                                currentPage: _currentPage,
+                                                totalPages: _totalPages,
+                                                onPageChanged: (page) {
+                                                  _currentPage = page;
+                                                  /// updates current page number of filterModel, because it does not update on its own
+                                                  fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                                  ref.read(dayBookProvider.notifier).fetchTableData(fModel);
+                                                },
+                                                showItemsPerPage: true,
+                                                onItemsPerPageChanged: (itemsPerPage) {
+                                                  _rowPerPage = itemsPerPage;
+                                                  _currentPage = 1;
+                                                  /// updates row per page of filterModel, because it does not update on its own
+                                                  fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                                  ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                                },
+                                                itemsPerPageList: rowPerPageItems,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   );
+
+
+
                                 }
                                 else{
                                   List<DayBookDetailedModel> newList = <DayBookDetailedModel>[];
@@ -571,25 +629,25 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                           DataTable(
                                             columns: [
                                               buildDataColumn(
-                                                  60, 'S.N', TextAlign.start),
+                                                  60, 'S.N', TextAlign.center),
                                               buildDataColumn(200, 'Voucher No.',
-                                                  TextAlign.start),
+                                                  TextAlign.center),
                                               buildDataColumn(
-                                                  200, 'Ref No', TextAlign.start),
+                                                  200, 'Ref No', TextAlign.center),
                                               buildDataColumn(
-                                                  160, 'Cheque No', TextAlign.end),
+                                                  160, 'Cheque No', TextAlign.center),
                                               buildDataColumn(
-                                                  160, 'Voucher Type', TextAlign.end),
+                                                  160, 'Voucher Type', TextAlign.center),
                                               buildDataColumn(160, 'Particular',
-                                                  TextAlign.end),
-                                              buildDataColumn(160, 'Dr',
-                                                  TextAlign.end),
-                                              buildDataColumn(160, 'Cr',
-                                                  TextAlign.end),
+                                                  TextAlign.center),
+                                              buildDataColumn(80, 'Dr',
+                                                  TextAlign.center),
+                                              buildDataColumn(80, 'Cr',
+                                                  TextAlign.center),
                                               buildDataColumn(200, 'Narration',
-                                                  TextAlign.end),
+                                                  TextAlign.center),
                                               buildDataColumn(160, 'View',
-                                                  TextAlign.end)
+                                                  TextAlign.center)
                                             ],
                                             rows: List.generate(
                                               newList.length,
@@ -624,6 +682,8 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
                                     ),
                                   );
                                 }
+
+
 
 
                               },
@@ -691,6 +751,9 @@ class _DayBookReportState extends ConsumerState<DayBookReport> {
   void dispose() {
     super.dispose();
   }
+
+
+
 }
 
 

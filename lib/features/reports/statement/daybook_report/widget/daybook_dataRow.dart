@@ -21,17 +21,17 @@ DataRow buildDayBookReportRow(int index, DayBookModel tblData,String voucherType
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildDataCell(
-          60, (index+1).toString(), TextAlign.start, 2),
+          60, (index+1).toString(), TextAlign.center, 2),
       buildDataCell(
-          200, '${tblData.voucherNo}', TextAlign.start, 2),
-      buildDataCell(200, '${tblData.refNo}', TextAlign.start,
+          200, '${tblData.voucherNo}', TextAlign.center, 2),
+      buildDataCell(200, '${tblData.refNo}', TextAlign.center,
           2),
       buildDataCell(
-          160, '${tblData.voucherTypeName}', TextAlign.end, 2),
+          160, '${tblData.voucherTypeName}', TextAlign.center, 2),
       buildDataCell(
-          160, '${tblData.totalAmount}', TextAlign.end, 2),
+          160, '${tblData.totalAmount}', TextAlign.center, 2),
       buildDataCell(
-          160, tblData.narration!, TextAlign.end, 2),
+          160, tblData.narration!, TextAlign.center, 2),
        DataCell(
         Center(
           child: ElevatedButton(
@@ -72,23 +72,23 @@ DataRow buildDayBookDetailedReportRow(int index, DayBookDetailedModel tblData, S
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildDayBookDetailedDataCell(
-          60, (index+1).toString(), TextAlign.start, 2),
+          60, (index+1).toString(), TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          200, tblData.voucherNo??'-', TextAlign.start, 2),
-      buildDayBookDetailedDataCell(200, tblData.refNo??'-', TextAlign.start,
+          200, tblData.voucherNo??'-', TextAlign.center, 2),
+      buildDayBookDetailedDataCell(200, tblData.refNo??'-', TextAlign.center,
           2),
       buildDayBookDetailedDataCell(
-          160, tblData.chequeNo??'-', TextAlign.end, 2),
+          160, tblData.chequeNo??'-', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          160, '${tblData.voucherName}', TextAlign.end, 2),
+          160, '${tblData.voucherName}', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          160, tblData.particulars??'', TextAlign.end, 2),
+          160, tblData.particulars??'', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          160, '${tblData.strDebit}', TextAlign.end, 2),
+          80, '${tblData.strDebit}', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          160, '${tblData.strCredit}', TextAlign.end, 2),
+          80, '${tblData.strCredit}', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          200, tblData.narration??'', TextAlign.end, 2),
+          200, tblData.narration??'', TextAlign.center, 2),
       tblData.voucherNo!=''?DataCell(
         Center(
           child: ElevatedButton(
@@ -127,21 +127,21 @@ DataRow buildDayBookViewRow(int index, DayBookDetailedModel tblData, String vouc
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildDayBookDetailedDataCell(
-          60, tblData.sno??'', TextAlign.start, 2),
+          60, tblData.sno??'', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          200, tblData.particulars??'-', TextAlign.start, 2),
-      buildDayBookDetailedDataCell(200, tblData.refNo??'-', TextAlign.start,
+          200, tblData.particulars??'-', TextAlign.center, 2),
+      buildDayBookDetailedDataCell(200, tblData.refNo??'-', TextAlign.center,
           2),
       buildDayBookDetailedDataCell(
-          160, tblData.strDebit??'-', TextAlign.end, 2),
+          160, tblData.strDebit??'-', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          160, '${tblData.strCredit}', TextAlign.end, 2),
+          160, '${tblData.strCredit}', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          160, tblData.chequeNo??'', TextAlign.end, 2),
+          160, tblData.chequeNo??'', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          160, '${tblData.chequeDate}', TextAlign.end, 2),
+          160, '${tblData.chequeDate}', TextAlign.center, 2),
       buildDayBookDetailedDataCell(
-          200, tblData.narration??'', TextAlign.end, 2),
+          200, tblData.narration??'', TextAlign.center, 2),
     ],
   );
 }

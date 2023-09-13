@@ -55,6 +55,8 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
+    dateFrom.text = DateTime.parse(mainInfo.startDate!).toString();
+    dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 
 
@@ -96,7 +98,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                   List<Map<String,dynamic>> particulars = [
                     {'text': 'All', 'value': 'all'}
                   ];
-                  List<String> branches = ['Select a branch'];
+                  List<String> branches = [];
 
                   data[0].forEach((key, _) {
                     branches.add(key);
@@ -111,7 +113,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
 
 
 
-                  final branchItemData = ref.watch(itemProvider).branchItem;
+                  final branchItemData = ref.watch(itemProvider).branchItem2;
                   final particularItemData = ref.watch(itemProvider).particularTypeItem;
 
 
@@ -314,7 +316,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                       ),
                                     ),
                                     onChanged: (dynamic value) {
-                                      ref.read(itemProvider).updateBranch(value);
+                                      ref.read(itemProvider).updateBranch2(value);
                                     },
                                   ),
                                   const SizedBox(

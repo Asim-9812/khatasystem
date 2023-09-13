@@ -42,6 +42,8 @@ class _VatReportTabState extends State<VatReportTab> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
+    dateFrom.text = DateTime.parse(mainInfo.startDate!).toString();
+    dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 
   @override
@@ -74,7 +76,7 @@ class _VatReportTabState extends State<VatReportTab> {
                     allList.add(e);
                   }
 
-                  List<String> branches = ['Select a branch'];
+                  List<String> branches = [];
 
 
                   data[0].forEach((key, _) {
@@ -83,7 +85,7 @@ class _VatReportTabState extends State<VatReportTab> {
 
                   String branchItem = branches[0];
 
-                  final branchItemData = ref.watch(itemProvider).branchItem;
+                  final branchItemData = ref.watch(itemProvider).branchItem2;
 
 
 
@@ -285,7 +287,7 @@ class _VatReportTabState extends State<VatReportTab> {
                                       ),
                                     ),
                                     onChanged: (dynamic value) {
-                                      ref.read(itemProvider).updateBranch(value);
+                                      ref.read(itemProvider).updateBranch2(value);
                                     },
                                   ),
                                   SizedBox(

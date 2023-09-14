@@ -55,7 +55,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
-    dateFrom.text = DateTime.parse(mainInfo.startDate!).toString();
+    dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
     dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 
@@ -452,17 +452,17 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                           DataTable(
                                             columns: [
                                               buildDataColumn(
-                                                  60, 'S.N', TextAlign.start),
+                                                  60, 'S.N', TextAlign.center),
                                               buildDataColumn(200, 'PAN',
-                                                  TextAlign.start),
+                                                  TextAlign.center),
                                               buildDataColumn(
-                                                  200, 'Tax Payer', TextAlign.start),
+                                                  200, 'Tax Payer', TextAlign.center),
                                               buildDataColumn(
-                                                  160, 'Trade Name Type', TextAlign.end),
+                                                  160, 'Trade Name Type', TextAlign.center),
                                               buildDataColumn(
-                                                  160, 'Taxable Amount', TextAlign.end),
+                                                  160, 'Taxable Amount', TextAlign.center),
                                               buildDataColumn(160, 'Exempted Amount',
-                                                  TextAlign.end),
+                                                  TextAlign.center),
                                             ],
                                             rows: List.generate(
                                               newList.length,
@@ -519,23 +519,23 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                           DataTable(
                                             columns: [
                                               buildDataColumn(
-                                                  60, 'S.N', TextAlign.start),
+                                                  60, 'S.N', TextAlign.center),
                                               buildDataColumn(200, 'Voucher No.',
-                                                  TextAlign.start),
+                                                  TextAlign.center),
                                               buildDataColumn(
-                                                  200, 'Ref No', TextAlign.start),
+                                                  200, 'Ref No', TextAlign.center),
                                               buildDataColumn(
-                                                  160, 'Cheque No', TextAlign.end),
+                                                  160, 'Cheque No', TextAlign.center),
                                               buildDataColumn(
-                                                  160, 'Voucher Type', TextAlign.end),
+                                                  160, 'Voucher Type', TextAlign.center),
                                               buildDataColumn(160, 'Particular',
-                                                  TextAlign.end),
+                                                  TextAlign.center),
                                               buildDataColumn(160, 'Dr',
-                                                  TextAlign.end),
+                                                  TextAlign.center),
                                               buildDataColumn(160, 'Cr',
-                                                  TextAlign.end),
+                                                  TextAlign.center),
                                               buildDataColumn(200, 'Narration',
-                                                  TextAlign.end)
+                                                  TextAlign.center)
                                             ],
                                             rows: List.generate(
                                               newList.length,

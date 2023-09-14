@@ -44,7 +44,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
-    dateFrom.text = DateTime.parse(mainInfo.startDate!).toString();
+    dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
     dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 

@@ -31,7 +31,7 @@ DataRow buildVatRow(int index, VatReportModel tblData,  String branchId, String 
           160, '${tblData.vatDr}', TextAlign.center, 2),
       buildVatCell(
           160, '${tblData.vatCr}', TextAlign.center, 2),
-       DataCell(
+      tblData.sno!=''? DataCell(
         Center(
           child: ElevatedButton(
             onPressed: () {
@@ -43,6 +43,7 @@ DataRow buildVatRow(int index, VatReportModel tblData,  String branchId, String 
                       voucherTypeId: tblData.vouchertypeID,
                       dateFrom: dateFrom,
                       dateTo: dateTo,
+                      rowName: tblData.particulars
                     ),
                   ));
             },
@@ -55,7 +56,7 @@ DataRow buildVatRow(int index, VatReportModel tblData,  String branchId, String 
             ),
           ),
         ),
-      ),
+      ):DataCell(SizedBox()),
     ],
   );
 }
@@ -78,7 +79,7 @@ DataRow buildVatRow2(int index, VatReportModel tblData, String branchId, String 
           160, '${tblData.vatDr}', TextAlign.center, 2),
       buildVatCell(
           160, '${tblData.vatCr}', TextAlign.center, 2),
-      DataCell(
+      tblData.sno!=''? DataCell(
         Center(
           child: ElevatedButton(
             onPressed: () {
@@ -90,6 +91,7 @@ DataRow buildVatRow2(int index, VatReportModel tblData, String branchId, String 
                       voucherTypeId: tblData.vouchertypeID,
                       dateFrom: dateFrom,
                       dateTo: dateTo,
+                      rowName: tblData.particulars,
                     ),
                   ));
             },
@@ -102,7 +104,7 @@ DataRow buildVatRow2(int index, VatReportModel tblData, String branchId, String 
             ),
           ),
         ),
-      ),
+      ):const DataCell(SizedBox()),
     ],
   );
 }
@@ -211,7 +213,7 @@ DataRow buildMonthlyRow(int index, MonthlyModel tblData,
 DataCell buildVatCell(double cellWidth, String cellText, TextAlign cellTextAlign, int layerPosition) {
   return DataCell(
     Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       width: cellWidth,
       child: Padding(
         padding: const EdgeInsets.only(left: 15),

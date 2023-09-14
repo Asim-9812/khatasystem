@@ -43,6 +43,8 @@ class _CustomerLedgerReportState extends State<CustomerLedgerReport> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
+    dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
+    dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 
   @override

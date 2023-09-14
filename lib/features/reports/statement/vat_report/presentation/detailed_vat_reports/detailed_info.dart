@@ -22,8 +22,9 @@ class DetailedVatReport extends StatefulWidget {
   final String branchId;
   final String dateFrom;
   final String dateTo;
+  final String rowName;
   final int voucherTypeId;
-  DetailedVatReport({required this.voucherTypeId,required this.branchId,required this.dateTo,required this.dateFrom});
+  DetailedVatReport({required this.rowName,required this.voucherTypeId,required this.branchId,required this.dateTo,required this.dateFrom});
 
   @override
   State<DetailedVatReport> createState() => _DetailedVatReportState();
@@ -150,6 +151,10 @@ class _DetailedVatReportState extends State<DetailedVatReport> {
                           ),
                           child: Column(
                             children: [
+                              Text('Vat details of ${widget.rowName}',style:const TextStyle(fontWeight: FontWeight.bold),),
+                              const SizedBox(
+                                height: 10,
+                              ),
                               Row(
                                 children: [
                                   Expanded(

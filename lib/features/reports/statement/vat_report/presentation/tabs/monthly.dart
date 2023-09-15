@@ -50,6 +50,7 @@ class _MonthlyState extends State<Monthly> {
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
     modelRef.listNameId = "[\"monthly_branch\"]";
+    mainInfo.dbName = 'khataC_00001';
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
 

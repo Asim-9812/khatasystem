@@ -206,8 +206,9 @@ class VatListProvider {
     List<Map<String, dynamic>> myList = [];
 
     try {
-      final response = await dio.post(Api.getSubList, data: jsonData);
       print(jsonData);
+      final response = await dio.post(Api.getSubList, data: jsonData);
+
       Map<String, dynamic> branch = {};
 
       if (response.statusCode == 200) {

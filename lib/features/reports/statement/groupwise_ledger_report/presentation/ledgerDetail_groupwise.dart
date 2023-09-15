@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -33,11 +34,12 @@ import '../widgets/groupwise_dataRow.dart';
 class LedgerDetailGroupWiseReport extends ConsumerStatefulWidget {
 
   final String groupName;
+  final String branchName;
   final int id;
   final String dateFrom;
   final String dateTo;
   final String branchId;
-  LedgerDetailGroupWiseReport({required this.dateTo,required this.dateFrom,required this.branchId,required this.id,required this.groupName});
+  LedgerDetailGroupWiseReport({required this.branchName,required this.dateTo,required this.dateFrom,required this.branchId,required this.id,required this.groupName});
 
   @override
   ConsumerState<LedgerDetailGroupWiseReport> createState() => _DayBookReportState();
@@ -232,11 +234,35 @@ class _DayBookReportState extends ConsumerState<LedgerDetailGroupWiseReport> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
 
-                                  Text('Group:',style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 24),),
+                                  Text('Group:',style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
                                   const SizedBox(
                                     width: 10,
                                   ),
-                                  Text(widget.groupName,style: const TextStyle(color: Colors.black,fontSize: 24),),
+                                  Html(data: widget.groupName,shrinkWrap: true,)
+                                ],
+                              ),),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black.withOpacity(0.7),
+                                ),
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+
+                                  Text('Branch:',style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Html(data: widget.branchName,shrinkWrap: true,)
                                 ],
                               ),),
                           ),

@@ -60,6 +60,7 @@ class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
         myList = [branch,voucher, ledger,date];
       }else{
       }
+      print(myList);
       return myList;
     }on DioError catch(err){
       throw DioException().getDioError(err);

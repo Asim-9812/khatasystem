@@ -35,7 +35,7 @@ DataRow buildGroupWiseRow(int index,GroupwiseLedgerReportModel tblData, String b
           160, '${tblData.creditAmount}', TextAlign.end, 2),
       buildDataCell(
           160,  '${tblData.strClosingBalance}', TextAlign.end, 2),
-      DataCell(
+      tblData.sno != '' ?DataCell(
         Center(
           child: ElevatedButton(
             onPressed: () {
@@ -60,13 +60,14 @@ DataRow buildGroupWiseRow(int index,GroupwiseLedgerReportModel tblData, String b
             ),
           ),
         ),
-      ),
+      )
+      : DataCell(SizedBox()),
     ],
   );
 }
 
 
-DataRow buildGroupWiseDetailRow(int index,GroupWiseDetailModel tblData, String dateFrom,String dateTo, String branchId,
+DataRow buildGroupWiseDetailRow(int index,GroupWiseDetailModel tblData,String branchName, String dateFrom,String dateTo, String branchId,
     [BuildContext? context]) {
   return DataRow(
     color:
@@ -86,7 +87,7 @@ DataRow buildGroupWiseDetailRow(int index,GroupWiseDetailModel tblData, String d
           160,  '${tblData.creditAmount}', TextAlign.end, 2),
       buildDataCell(
           200,  '${tblData.strClosingBalance}', TextAlign.end, 2),
-      DataCell(
+      tblData.sno != ''? DataCell(
         Center(
           child: ElevatedButton(
             onPressed: () {
@@ -94,6 +95,7 @@ DataRow buildGroupWiseDetailRow(int index,GroupWiseDetailModel tblData, String d
                   context!,
                   MaterialPageRoute(
                     builder: (context) => LedgerDetailGroupWiseReport(
+                      branchName: branchName,
                   dateTo: dateTo,
                   dateFrom: dateFrom,
                   branchId: branchId,
@@ -110,7 +112,9 @@ DataRow buildGroupWiseDetailRow(int index,GroupWiseDetailModel tblData, String d
             ),
           ),
         ),
-      ),
+      )
+          
+          : DataCell(SizedBox()),
     ],
   );
 }
@@ -154,7 +158,7 @@ DataRow buildLedgerDetailGroupWiseRow(int index,LedgerDetailGroupWiseModel tblDa
 DataCell buildHtmlDataCell(double cellWidth, String cellText, TextAlign cellTextAlign, int layerPosition) {
   return DataCell(
     Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       width: cellWidth,
       child: Padding(
         padding: const EdgeInsets.only(left: 15),

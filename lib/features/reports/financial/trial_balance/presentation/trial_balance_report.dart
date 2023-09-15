@@ -199,88 +199,106 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                 Row(
                                   children: [
                                     Expanded(
-                                      child: InkWell(
-                                        onTap:() async {
-                                          DateTime? pickDate =
-                                          await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.parse(mainInfo.startDate!),
-                                            lastDate: DateTime.now(),
-                                          );
-                                          if (pickDate != null) {
-                                            setState(() {
-                                              dateFrom.text =
-                                                  DateFormat('yyyy/MM/dd')
-                                                      .format(pickDate);
-                                            });
-                                          }
-                                        } ,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              border: Border.all(
-                                                  color: ColorManager.black.withOpacity(0.45)
-                                              )
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text('From Date',style: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.bold),),
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(dateFrom.text.isEmpty? 'From': dateFrom.text,style:TextStyle(fontSize: 18),),
-                                              Icon(
-                                                Icons.edit_calendar,
-                                                size: 30,
-                                                color: ColorManager.primary,
+                                          InkWell(
+                                            onTap:() async {
+                                              DateTime? pickDate =
+                                              await showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.parse(mainInfo.startDate!),
+                                                firstDate: DateTime.parse(mainInfo.startDate!),
+                                                lastDate: DateTime.now(),
+                                              );
+                                              if (pickDate != null) {
+                                                setState(() {
+                                                  dateFrom.text =
+                                                      DateFormat('yyyy/MM/dd')
+                                                          .format(pickDate);
+                                                });
+                                              }
+                                            } ,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(15),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  border: Border.all(
+                                                      color: ColorManager.black.withOpacity(0.45)
+                                                  )
                                               ),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(dateFrom.text.isEmpty? 'From': dateFrom.text,style:TextStyle(fontSize: 18),),
+                                                  Icon(
+                                                    Icons.edit_calendar,
+                                                    size: 30,
+                                                    color: ColorManager.primary,
+                                                  ),
 
-                                            ],
+                                                ],
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ),
                                     const SizedBox(
                                       width: 10,
                                     ),
                                     Expanded(
-                                      child: InkWell(
-                                        onTap:() async {
-                                          DateTime? pickDate =
-                                          await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now(),
-                                            firstDate: DateTime.parse(mainInfo.startDate!),
-                                            lastDate: DateTime.now(),
-                                          );
-                                          if (pickDate != null) {
-                                            setState(() {
-                                              dateTo.text =
-                                                  DateFormat('yyyy/MM/dd')
-                                                      .format(pickDate);
-                                            });
-                                          }
-                                        } ,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(15),
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              border: Border.all(
-                                                  color: ColorManager.black.withOpacity(0.45)
-                                              )
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text('To Date',style: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.bold),),
                                           ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(dateTo.text.isEmpty? 'To': dateTo.text,style:TextStyle(fontSize: 18),),
-                                              Icon(
-                                                Icons.edit_calendar,
-                                                size: 30,
-                                                color: ColorManager.primary,
+                                          InkWell(
+                                            onTap:() async {
+                                              DateTime? pickDate =
+                                              await showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.now(),
+                                                firstDate: DateTime.parse(mainInfo.startDate!),
+                                                lastDate: DateTime.now(),
+                                              );
+                                              if (pickDate != null) {
+                                                setState(() {
+                                                  dateTo.text =
+                                                      DateFormat('yyyy/MM/dd')
+                                                          .format(pickDate);
+                                                });
+                                              }
+                                            } ,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(15),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  border: Border.all(
+                                                      color: ColorManager.black.withOpacity(0.45)
+                                                  )
                                               ),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(dateTo.text.isEmpty? 'To': dateTo.text,style:TextStyle(fontSize: 18),),
+                                                  Icon(
+                                                    Icons.edit_calendar,
+                                                    size: 30,
+                                                    color: ColorManager.primary,
+                                                  ),
 
-                                            ],
+                                                ],
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
                                     ),
                                   ],

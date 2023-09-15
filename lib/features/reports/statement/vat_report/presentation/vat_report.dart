@@ -78,7 +78,7 @@ class _VatReportState extends ConsumerState<VatReport> with TickerProviderStateM
                 text: 'Vat Report',
               ),
               Tab(text: 'Above 1 lakh'),
-              Tab(text: 'Monthly'),
+              Tab(text: 'Monthly Vat Report'),
             ]),
       ),
           Expanded(

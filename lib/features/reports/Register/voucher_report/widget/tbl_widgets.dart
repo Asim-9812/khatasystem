@@ -105,7 +105,7 @@ DataRow voucherReportDataRowDetailed({required int index, required VoucherReport
 DataCell buildDataCell(double cellWidth, String cellText, TextAlign cellTextAlign, int layerPosition) {
   return DataCell(
     Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       width: cellWidth,
       child: layerPosition == 2 ? Padding(
         padding: const EdgeInsets.only(left: 15),

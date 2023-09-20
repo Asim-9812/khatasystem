@@ -59,6 +59,8 @@ class _CustomerLedgerReportState extends State<CustomerLedgerReport> {
 
     return Consumer(
       builder: (context, ref, child) {
+        final fromDate = ref.watch(itemProvider).fromDate;
+        final toDate = ref.watch(itemProvider).toDate;
         final outCome = ref.watch(listProvider(modelRef));
         final res = ref.watch(customerLedgerReportProvider);
         return WillPopScope(

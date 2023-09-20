@@ -40,10 +40,13 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
   @override
   void initState() {
     super.initState();
+    dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
+    dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 
   @override
   Widget build(BuildContext context) {
+
     GetListModel modelRef = GetListModel();
     modelRef.refName = 'AccountLedgerReport';
     modelRef.isSingleList = 'false';
@@ -54,6 +57,8 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
 
     return Consumer(
       builder: (context, ref, child) {
+        final fromDate = ref.watch(itemProvider).fromDate;
+        final toDate = ref.watch(itemProvider).toDate;
         final outCome = ref.watch(listProvider(modelRef));
         return WillPopScope(
           onWillPop: () async {

@@ -61,6 +61,8 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
       builder: (context, ref, child) {
         final outCome = ref.watch(listProvider(modelRef));
         final res = ref.watch(groupWiseLedgerProvider);
+        final fromDate = ref.watch(itemProvider).fromDate;
+        final toDate = ref.watch(itemProvider).toDate;
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(groupWiseLedgerProvider);

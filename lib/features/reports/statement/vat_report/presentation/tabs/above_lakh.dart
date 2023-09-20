@@ -74,6 +74,8 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
 
     return Consumer(
       builder: (context, ref, child) {
+        final fromDate = ref.watch(itemProvider).fromDate;
+        final toDate = ref.watch(itemProvider).toDate;
         final outCome = ref.watch(aboveLakhProvider(modelRef));
         final res = ref.watch(vatReportProvider3);
         return WillPopScope(

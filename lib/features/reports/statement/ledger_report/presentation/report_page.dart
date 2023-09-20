@@ -62,6 +62,8 @@ class _ReportPageViewState extends State<ReportPageView> {
       builder: (context, ref, child) {
         final outCome = ref.watch(listProvider(modelRef));
         final res = ref.watch(tableDataProvider);
+        final fromDate = ref.watch(itemProvider).fromDate;
+        final toDate = ref.watch(itemProvider).toDate;
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(tableDataProvider);

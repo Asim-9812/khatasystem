@@ -16,6 +16,7 @@ import 'package:khata_app/utils/util_functions.dart';
 import '../../../common/colors.dart';
 import '../../../model/dashboard_model.dart';
 import '../../../model/list model/get_list_model.dart';
+import '../../fiscalYear/presentation/change_fiscal_year.dart';
 
 final userIdProvider = Provider<String>((ref) => userId);
 
@@ -30,6 +31,10 @@ class HomePageScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final fromDate = ref.watch(itemProvider).fromDate;
+    final toDate = ref.watch(itemProvider).toDate;
+    final fy = ref.watch(itemProvider).fiscalYear;
+    print('$fy , $fromDate, $toDate');
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     var result = sessionBox.get('userReturn');
@@ -44,7 +49,7 @@ class HomePageScreen extends ConsumerWidget {
     userId = "${res["userReturn"]["intUserId"]}-${res["ownerCompanyList"]["databaseName"]}";
 
     String companyName = res["ownerCompanyList"]["companyName"];
-    String fiscalYear = res["fiscalYearInfo"]["fiscalYear"];
+    String fiscalYear = fy == ''? res["fiscalYearInfo"]["fiscalYear"] : fy;
 
 
     mainInfo = MainInfoModel(
@@ -86,6 +91,7 @@ class HomePageScreen extends ConsumerWidget {
     );
 
 
+
     return OrientationBuilder(
       builder: (context, orientation) {
         final dashBoardType = ref.watch(dashBoardTypeProvider);
@@ -94,6 +100,7 @@ class HomePageScreen extends ConsumerWidget {
           return Consumer(
             builder: (context, ref, child) {
               final dashData = ref.watch(dashBoardDataProvider(infoModel));
+
               return Scaffold(
                 key: scaffoldKey,
                 body: CustomScrollView(
@@ -108,6 +115,7 @@ class HomePageScreen extends ConsumerWidget {
                     dashBoardType == 'Financial' ? SliverToBoxAdapter(
                       child: dashData.when(
                         data: (data) {
+
                           return buildDashBoard(false, data);
                         },
                         error: (error, stackTrace) => Text('$error'),
@@ -202,6 +210,19 @@ class HomePageScreen extends ConsumerWidget {
                             )
                         ),
                         const SizedBox(height: 10,),
+                        ListTile(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const FiscalYear(),));
+                          },
+                          title: const Text('Change Fiscal Year',
+                            style: TextStyle(
+                              fontFamily: 'Ubuntu',
+                              fontSize: 18,
+                            ),
+                          ),
+                          leading: Icon(Icons.calendar_month, size: 28,
+                            color: ColorManager.iconGray,),
+                        ),
                         ListTile(
                           onTap: (){
                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalReminderPage(),));
@@ -382,6 +403,18 @@ class HomePageScreen extends ConsumerWidget {
                             )
                         ),
                         const SizedBox(height: 10,),
+                        ListTile(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalReminderPage(),));
+                          },
+                          title: const Text('Change Fiscal Year', style: TextStyle(
+                            fontFamily: 'Ubuntu',
+                            fontSize: 18,
+                          ),
+                          ),
+                          leading: Icon(Icons.calendar_month, size: 28,
+                            color: ColorManager.iconGray,),
+                        ),
                         ListTile(
                           onTap: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalReminderPage(),));

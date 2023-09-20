@@ -51,6 +51,8 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
     _rowPerPage = 10;
     _totalPages = 0;
 
+    dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
+    dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 
 
@@ -70,6 +72,8 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
 
     return Consumer(
       builder: (context, ref, child) {
+        final fromDate = ref.watch(itemProvider).fromDate;
+        final toDate = ref.watch(itemProvider).toDate;
         final outCome = ref.watch(listProvider(modelRef));
         return WillPopScope(
           onWillPop: () async {

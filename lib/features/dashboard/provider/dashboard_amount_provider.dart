@@ -63,6 +63,7 @@ class DashboardAmountProvider {
     try{
 
       final jsonData = jsonEncode(infoModel.toJson());
+
       final response = await dio.post(Api.getDashBoardAmount, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;

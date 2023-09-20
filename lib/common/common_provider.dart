@@ -68,7 +68,10 @@ class GroupItem extends ChangeNotifier{
   String voucherTypeItem = 'All';
   String statusType = 'All';
   String particularTypeItem = 'All';
+  String fromDate = '';
+  String toDate = '';
   String search = '';
+  String fiscalYear = '';
   List filteredList = [];
   bool isDetailed = false;
 
@@ -84,6 +87,21 @@ class GroupItem extends ChangeNotifier{
 
   void updateSearch(String text){
     search = text;
+    notifyListeners();
+  }
+
+  void updateFiscalYear(String text){
+    fiscalYear = text;
+    notifyListeners();
+  }
+
+  void updateFromDate(String text){
+    fromDate = text;
+    notifyListeners();
+  }
+
+  void updateToDate(String text){
+    toDate = text;
     notifyListeners();
   }
 

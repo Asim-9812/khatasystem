@@ -55,6 +55,8 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
     _rowPerPage = _isDetailed! ? 5 : 10;
     _totalPages = 0;
     voucherReports = [];
+    dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
+    dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 
   @override
@@ -69,6 +71,8 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
 
     return Consumer(
       builder: (context, ref, child) {
+        final fromDate = ref.watch(itemProvider).fromDate;
+        final toDate = ref.watch(itemProvider).toDate;
         final listData = ref.watch(voucherListProvider(modelRef));
         final groupReport = ref.watch(voucherReportProvider);
         return GestureDetector(

@@ -58,6 +58,8 @@ class _VatReportTabState extends State<VatReportTab> {
 
     return Consumer(
       builder: (context, ref, child) {
+        final fromDate = ref.watch(itemProvider).fromDate;
+        final toDate = ref.watch(itemProvider).toDate;
         final outCome = ref.watch(vatListProvider(modelRef));
         final res = ref.watch(vatReportProvider);
         return WillPopScope(

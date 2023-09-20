@@ -63,6 +63,8 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
       builder: (context, ref, child) {
         final outCome = ref.watch(listProvider(modelRef));
         final res = ref.watch(supplierLedgerReportProvider);
+        final fromDate = ref.watch(itemProvider).fromDate;
+        final toDate = ref.watch(itemProvider).toDate;
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(supplierLedgerReportProvider);

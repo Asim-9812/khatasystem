@@ -80,6 +80,8 @@ class _TestState extends ConsumerState<DayBookReport> {
   Widget build(BuildContext context) {
     final outCome = ref.watch(dayBookListProvider(modelRef2));
     final res = ref.watch(dayBookProvider);
+    final fromDate = ref.watch(itemProvider).fromDate;
+    final toDate = ref.watch(itemProvider).toDate;
     return WillPopScope(
       onWillPop: () async {
         ref.invalidate(dayBookProvider);

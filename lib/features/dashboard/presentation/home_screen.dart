@@ -34,6 +34,7 @@ class HomePageScreen extends ConsumerWidget {
     final fromDate = ref.watch(itemProvider).fromDate;
     final toDate = ref.watch(itemProvider).toDate;
     final fy = ref.watch(itemProvider).fiscalYear;
+    final fyId = ref.watch(itemProvider).fiscalId;
     print('$fy , $fromDate, $toDate');
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -54,7 +55,7 @@ class HomePageScreen extends ConsumerWidget {
 
     mainInfo = MainInfoModel(
       userId: res["userReturn"]["intUserId"],
-      fiscalID: res["fiscalYearInfo"]["financialYearId"],
+      fiscalID:fyId == 0? res["fiscalYearInfo"]["financialYearId"]:fyId,
       branchDepartmentId: branchDepartmentId,
       branchId: branchId,
       isEngOrNepaliDate: res["otherInfo"]["isEngOrNepali"],
@@ -65,8 +66,8 @@ class HomePageScreen extends ConsumerWidget {
       strId: '',
       dbName: res["ownerCompanyList"]["databaseName"],
       decimalPlace:res["otherInfo"]["decimalPlace"],
-      startDate: res["fiscalYearInfo"]["fromDate"],
-      endDate: res["fiscalYearInfo"]["toDate"],
+      startDate: fromDate == '' ? res["fiscalYearInfo"]["fromDate"]:fromDate,
+      endDate:toDate == ''? res["fiscalYearInfo"]["toDate"]:toDate,
       sessionId: res["userReturn"]["sessionId"],
     );
 

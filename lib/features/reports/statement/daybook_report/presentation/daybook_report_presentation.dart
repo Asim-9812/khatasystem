@@ -59,7 +59,8 @@ class _TestState extends ConsumerState<DayBookReport> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
-    dateFrom.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
+    dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.now()).toString();
+
   }
 
   void getList() {
@@ -222,9 +223,9 @@ class _TestState extends ConsumerState<DayBookReport> {
                                   DateTime? pickDate =
                                   await showDatePicker(
                                     context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime(2022,7,17),
-                                    lastDate: DateTime.now(),
+                                    initialDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
+                                    firstDate: DateTime.parse(mainInfo.startDate!),
+                                    lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
                                   );
                                   if (pickDate != null) {
                                     setState(() {

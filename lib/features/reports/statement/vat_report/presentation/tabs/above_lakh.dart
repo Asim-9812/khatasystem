@@ -56,7 +56,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
     _rowPerPage = 10;
     _totalPages = 0;
     dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
-    dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
+    dateTo.text =!DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateFormat('yyyy/MM/dd').format(DateTime.parse(mainInfo.endDate!)):DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 
 
@@ -201,7 +201,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                                   context: context,
                                                   initialDate: DateTime.parse(mainInfo.startDate!),
                                                   firstDate: DateTime.parse(mainInfo.startDate!),
-                                                  lastDate: DateTime.now(),
+                                                  lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
                                                 );
                                                 if (pickDate != null) {
                                                   setState(() {
@@ -252,9 +252,9 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                                 DateTime? pickDate =
                                                 await showDatePicker(
                                                   context: context,
-                                                  initialDate: DateTime.now(),
+                                                  initialDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
                                                   firstDate: DateTime.parse(mainInfo.startDate!),
-                                                  lastDate: DateTime.now(),
+                                                  lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
                                                 );
                                                 if (pickDate != null) {
                                                   setState(() {

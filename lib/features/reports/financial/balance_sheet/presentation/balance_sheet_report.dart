@@ -25,24 +25,27 @@ import '../../../../../common/snackbar.dart';
 import '../widgets/table_widget.dart';
 
 
-class BalanceSheetReportPage extends StatefulWidget {
+class BalanceSheetReportPage extends ConsumerStatefulWidget {
   const BalanceSheetReportPage({Key? key}) : super(key: key);
 
   @override
-  State<BalanceSheetReportPage> createState() => _BalanceSheetReportState();
+  ConsumerState<BalanceSheetReportPage> createState() => _BalanceSheetReportState();
 }
 
-class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
+class _BalanceSheetReportState extends ConsumerState<BalanceSheetReportPage> {
   TextEditingController dateFrom = TextEditingController();
   TextEditingController dateTo = TextEditingController();
+
 
 
   @override
   void initState() {
     super.initState();
     dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
-    dateTo.text = DateFormat('yyyy/MM/dd').format(DateTime.now());
+    dateTo.text =!DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateFormat('yyyy/MM/dd').format(DateTime.parse(mainInfo.endDate!)):DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +57,12 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
     modelRef.listNameId = "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
+    print(mainInfo.toJson());
 
     return Consumer(
       builder: (context, ref, child) {
-        final fromDate = ref.watch(itemProvider).fromDate;
-        final toDate = ref.watch(itemProvider).toDate;
+        // final fromDate = ref.watch(itemProvider).fromDate;
+        // final toDate = ref.watch(itemProvider).toDate;
         final outCome = ref.watch(listProvider(modelRef));
         return WillPopScope(
           onWillPop: () async {
@@ -198,7 +202,7 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
                                                   context: context,
                                                   initialDate: DateTime.parse(mainInfo.startDate!),
                                                   firstDate: DateTime.parse(mainInfo.startDate!),
-                                                  lastDate: DateTime.now(),
+                                                  lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
                                                 );
                                                 if (pickDate != null) {
                                                   setState(() {
@@ -249,9 +253,9 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
                                                 DateTime? pickDate =
                                                 await showDatePicker(
                                                   context: context,
-                                                  initialDate: DateTime.now(),
+                                                  initialDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
                                                   firstDate: DateTime.parse(mainInfo.startDate!),
-                                                  lastDate: DateTime.now(),
+                                                  lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
                                                 );
                                                 if (pickDate != null) {
                                                   setState(() {
@@ -487,32 +491,3 @@ class _BalanceSheetReportState extends State<BalanceSheetReportPage> {
   }
 }
 
-// TableRow buildRow(List<String> cells, {bool isHeader = false, int id = 0}) =>
-//       TableRow(
-//         decoration: BoxDecoration(
-//           color: isHeader
-//               ? ColorManager.drawerPrimary
-//               : (id % 2 == 0 ? Colors.white : ColorManager.background),
-//         ),
-//         children: cells.map((cell) {
-//           final style = TextStyle(
-//             fontFamily: 'Ubuntu',
-//             fontSize: isHeader ? 22 : 20,
-//             fontWeight: isHeader ? FontWeight.w500 : FontWeight.w400,
-//             color: isHeader ? Colors.white : ColorManager.textBlack,
-//           );
-//
-//           return TableCell(
-//             child: SizedBox(
-//               height: 40,
-//               child: Padding(
-//                 padding: const EdgeInsets.only(left: 10, top: 5),
-//                 child: Text(
-//                   cell,
-//                   style: style,
-//                 ),
-//               ),
-//             ),
-//           );
-//         }).toList(),
-//       );

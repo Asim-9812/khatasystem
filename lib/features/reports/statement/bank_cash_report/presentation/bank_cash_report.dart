@@ -263,7 +263,7 @@ class _BankCashReportState extends State<BankCashReport> {
                                                     context: context,
                                                     initialDate: DateTime.now(),
                                                     firstDate: DateTime(2000),
-                                                    lastDate: DateTime.now(),
+                                                    lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
                                                   );
                                                   if (pickDate != null) {
                                                    setState(() {
@@ -333,7 +333,7 @@ class _BankCashReportState extends State<BankCashReport> {
                                                     initialDate:
                                                     DateTime.now(),
                                                     firstDate: DateTime(2000),
-                                                  lastDate: DateTime.now());
+                                                  lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now());
                                                 if (pickDate != null) {
                                                   setState(() {
                                                     print(pickDate);

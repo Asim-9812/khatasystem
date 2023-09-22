@@ -11,4 +11,5 @@ class Api {
   static const getDashBoardAmount = '$baseUrl/api/MyFunction/DashBoardAccountGroupwithsub';
   static const getSubList = '$baseUrl/api/MyFunction/GetList_Report';
   static const getNotification = '$baseUrl/api/GlobalNotification';
+  static const getFiscalYear = '$baseUrl/api/FiscalYear/Getall';
 }

@@ -64,6 +64,7 @@ class GroupItem extends ChangeNotifier{
   String updateLedgerItem = 'All';
   String updateLedgerItem2 = 'ALL';
   String branchItem = 'All';
+  String branchItem3 = 'Select a branch';
   String branchItem2 = 'ALL';
   String voucherTypeItem = 'All';
   String statusType = 'All';
@@ -72,6 +73,7 @@ class GroupItem extends ChangeNotifier{
   String toDate = '';
   String search = '';
   String fiscalYear = '';
+  int fiscalId = 0;
   List filteredList = [];
   bool isDetailed = false;
 
@@ -92,6 +94,11 @@ class GroupItem extends ChangeNotifier{
 
   void updateFiscalYear(String text){
     fiscalYear = text;
+    notifyListeners();
+  }
+
+  void updateFiscalId(int text){
+    fiscalId = text;
     notifyListeners();
   }
 
@@ -148,6 +155,11 @@ class GroupItem extends ChangeNotifier{
   }
   void updateBranch2(String text){
     branchItem2= text;
+    notifyListeners();
+  }
+
+  void updateBranch3(String text){
+    branchItem3= text;
     notifyListeners();
   }
 

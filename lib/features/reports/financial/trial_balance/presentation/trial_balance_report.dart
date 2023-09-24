@@ -65,7 +65,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
     modelRef.listNameId =
-        "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
+    "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
 
@@ -74,6 +74,8 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
         final fromDate = ref.watch(itemProvider).fromDate;
         final toDate = ref.watch(itemProvider).toDate;
         final outCome = ref.watch(listProvider(modelRef));
+        final typeData = ref.watch(itemProvider).typeData;
+        final _isDetailed = ref.watch(itemProvider).isDetailed;
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(trialBalanceGroupProvider);
@@ -169,7 +171,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                 filterModel.underIntID = 0;
                 filterModel.columnName = null;
                 filterModel.filterColumnsString =
-                    "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"typeWise--$typeItemData\",\"isDetail--$_isChecked\",\"${getBranchValue(branchItemData)}\"]";
+                "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"typeWise--$typeItemData\",\"isDetail--$_isChecked\",\"${getBranchValue(branchItemData)}\"]";
                 filterModel.pageRowCount = _rowPerPage;
                 filterModel.currentPageNumber = _currentPage;
                 filterModel.strListNames = "";
@@ -329,7 +331,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                               color: ColorManager.primary,
                                               width: 1)),
                                       floatingLabelStyle:
-                                          TextStyle(color: ColorManager.primary),
+                                      TextStyle(color: ColorManager.primary),
                                       labelText: 'Branch',
                                       labelStyle: const TextStyle(fontSize: 18),
                                     ),
@@ -372,7 +374,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                               color: ColorManager.primary,
                                               width: 1)),
                                       floatingLabelStyle:
-                                          TextStyle(color: ColorManager.primary),
+                                      TextStyle(color: ColorManager.primary),
                                       labelText: 'Type',
                                       labelStyle: const TextStyle(fontSize: 18),
                                     ),
@@ -402,9 +404,9 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                       },
                                       checkColor: Colors.white,
                                       fillColor:
-                                          MaterialStateProperty.resolveWith(
+                                      MaterialStateProperty.resolveWith(
                                               (states) =>
-                                                  getCheckBoxColor(states)),
+                                              getCheckBoxColor(states)),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(2),
                                       ),
@@ -451,23 +453,15 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                         );
                                       } else{
                                         if(typeItemData != "Group"){
-                                          setState(() {
-                                            typeData = 2;
-                                          });
+                                          ref.read(itemProvider.notifier).updateTypeData(2);
                                           await ref.read(trialBalanceLedgerProvider.notifier).getTableData(fModel);
                                         }else{
-                                          setState(() {
-                                            typeData =1;
-                                          });
+                                          ref.read(itemProvider.notifier).updateTypeData(1);
                                           await ref.read(trialBalanceGroupProvider.notifier).getTableData(fModel);
                                           if(_isChecked == true){
-                                            setState(() {
-                                              _isDetailed = true;
-                                            });
+                                            ref.read(itemProvider.notifier).updateIsDetailed(true);
                                           }else{
-                                            setState(() {
-                                              _isDetailed = false;
-                                            });
+                                            ref.read(itemProvider.notifier).updateIsDetailed(false);
                                           }
                                         }
                                       }
@@ -607,156 +601,156 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                             builder: (context, ref, child) {
                               final ledgerReport = ref.watch(trialBalanceLedgerProvider);
                               return ledgerReport.when(
-                                  data: (data) {
-                                    List<LedgerWiseModel> tableData = <LedgerWiseModel>[];
-                                    List<String> reportTotal = <String>[];
-                                    if (data.isNotEmpty) {
-                                      final tableReport = ReportData.fromJson(data[2]);
-                                      _totalPages = tableReport.totalPages!;
+                                data: (data) {
+                                  List<LedgerWiseModel> tableData = <LedgerWiseModel>[];
+                                  List<String> reportTotal = <String>[];
+                                  if (data.isNotEmpty) {
+                                    final tableReport = ReportData.fromJson(data[2]);
+                                    _totalPages = tableReport.totalPages!;
 
-                                      for (var e in data[0]) {
-                                        tableData.add(LedgerWiseModel.fromJson(e));
-                                      }
-                                      data[1].forEach((key, value) {
-                                        reportTotal.add(value);
-                                      });
-
-                                    } else{
-                                      return SizedBox();
+                                    for (var e in data[0]) {
+                                      tableData.add(LedgerWiseModel.fromJson(e));
                                     }
-                                    return SizedBox(
-                                      width: double.infinity,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        physics: const ClampingScrollPhysics(),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                DataTable(
-                                                  headingRowHeight: 60,
-                                                  columns: [
-                                                    trialBalanceColumn(80, 'S.N', TextAlign.start),
-                                                    trialBalanceColumn(270, 'Particulars', TextAlign.start)
-                                                  ],
-                                                  rows: List.generate(tableData.length, (index) => trialBalanceLedgerRow(index, tableData[index])),
-                                                  columnSpacing: 0,
-                                                  horizontalMargin: 0,
-                                                ),
-                                                DataTable(
-                                                  headingRowHeight: 60,
-                                                  columns: [
-                                                    trialBalanceColumn(180, 'Opening Balance', TextAlign.start),
-                                                  ],
-                                                  rows: List.generate(tableData.length, (index) => trialBalanceOpeningRow(index, tableData[index])),
-                                                  columnSpacing: 0,
-                                                  horizontalMargin: 0,
-                                                ),
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      width: 400,
-                                                      height: 30,
-                                                      decoration: BoxDecoration(
-                                                          color: ColorManager.primary,
-                                                          border: const Border(
-                                                              bottom: BorderSide(
-                                                                  color: Colors.white,
-                                                                  width: 1
-                                                              )
-                                                          )
-                                                      ),
-                                                      child:  const Center(
-                                                        child: Text(
-                                                          'Transaction',
-                                                          style: TextStyle(
-                                                            fontFamily: 'Ubuntu',
-                                                            fontWeight: FontWeight.w500,
-                                                            color: Colors.white,
-                                                          ),
+                                    data[1].forEach((key, value) {
+                                      reportTotal.add(value);
+                                    });
+
+                                  } else{
+                                    return SizedBox();
+                                  }
+                                  return SizedBox(
+                                    width: double.infinity,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      physics: const ClampingScrollPhysics(),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              DataTable(
+                                                headingRowHeight: 60,
+                                                columns: [
+                                                  trialBalanceColumn(80, 'S.N', TextAlign.start),
+                                                  trialBalanceColumn(270, 'Particulars', TextAlign.start)
+                                                ],
+                                                rows: List.generate(tableData.length, (index) => trialBalanceLedgerRow(index, tableData[index])),
+                                                columnSpacing: 0,
+                                                horizontalMargin: 0,
+                                              ),
+                                              DataTable(
+                                                headingRowHeight: 60,
+                                                columns: [
+                                                  trialBalanceColumn(180, 'Opening Balance', TextAlign.start),
+                                                ],
+                                                rows: List.generate(tableData.length, (index) => trialBalanceOpeningRow(index, tableData[index])),
+                                                columnSpacing: 0,
+                                                horizontalMargin: 0,
+                                              ),
+                                              Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: 400,
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                        color: ColorManager.primary,
+                                                        border: const Border(
+                                                            bottom: BorderSide(
+                                                                color: Colors.white,
+                                                                width: 1
+                                                            )
+                                                        )
+                                                    ),
+                                                    child:  const Center(
+                                                      child: Text(
+                                                        'Transaction',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Ubuntu',
+                                                          fontWeight: FontWeight.w500,
+                                                          color: Colors.white,
                                                         ),
                                                       ),
                                                     ),
-                                                    DataTable(
-                                                      headingRowHeight: 30,
-                                                      columns: [
-                                                        trialBalanceColumnRow(200, 'Debit', TextAlign.end),
-                                                        trialBalanceColumnRow(200, 'Credit', TextAlign.end),
-                                                      ],
-                                                      rows: List.generate(tableData.length, (index) => trialBalanceClosingBalanceRow(index, tableData[index])),
-                                                      columnSpacing: 0,
-                                                      horizontalMargin: 0,
-                                                    ),
-                                                  ],
-                                                ),
-                                                DataTable(
-                                                  headingRowHeight: 60,
-                                                  columns: [
-                                                    trialBalanceColumn(180, 'Closing Balance', TextAlign.end),
-                                                  ],
-                                                  rows: List.generate(tableData.length, (index) => trialBalanceClosingRow(index, tableData[index])),
-                                                  columnSpacing: 0,
-                                                  horizontalMargin: 0,
-                                                ),
-                                              ],
-                                            ),
-                                            Table(
-                                              columnWidths: const <int,
-                                                  TableColumnWidth>{
-                                                0: FixedColumnWidth(350),
-                                                1: FixedColumnWidth(180),
-                                                2: FixedColumnWidth(200),
-                                                3: FixedColumnWidth(200),
-                                                4: FixedColumnWidth(180),
-                                              },
-                                              children: [
-                                                TableRow(
-                                                  decoration: BoxDecoration(
-                                                    color: ColorManager.primary,
                                                   ),
-                                                  children: [
-                                                    trialTblCell('Grand Total', TextAlign.end),
-                                                    trialTblCell(reportTotal[0], TextAlign.start),
-                                                    trialTblCell(reportTotal[1], TextAlign.end),
-                                                    trialTblCell(reportTotal[2], TextAlign.end),
-                                                    trialTblCell(reportTotal[3], TextAlign.end),
-                                                  ],
+                                                  DataTable(
+                                                    headingRowHeight: 30,
+                                                    columns: [
+                                                      trialBalanceColumnRow(200, 'Debit', TextAlign.end),
+                                                      trialBalanceColumnRow(200, 'Credit', TextAlign.end),
+                                                    ],
+                                                    rows: List.generate(tableData.length, (index) => trialBalanceClosingBalanceRow(index, tableData[index])),
+                                                    columnSpacing: 0,
+                                                    horizontalMargin: 0,
+                                                  ),
+                                                ],
+                                              ),
+                                              DataTable(
+                                                headingRowHeight: 60,
+                                                columns: [
+                                                  trialBalanceColumn(180, 'Closing Balance', TextAlign.end),
+                                                ],
+                                                rows: List.generate(tableData.length, (index) => trialBalanceClosingRow(index, tableData[index])),
+                                                columnSpacing: 0,
+                                                horizontalMargin: 0,
+                                              ),
+                                            ],
+                                          ),
+                                          Table(
+                                            columnWidths: const <int,
+                                                TableColumnWidth>{
+                                              0: FixedColumnWidth(350),
+                                              1: FixedColumnWidth(180),
+                                              2: FixedColumnWidth(200),
+                                              3: FixedColumnWidth(200),
+                                              4: FixedColumnWidth(180),
+                                            },
+                                            children: [
+                                              TableRow(
+                                                decoration: BoxDecoration(
+                                                  color: ColorManager.primary,
                                                 ),
-                                              ],
-                                            ),
-                                            /// Pager package used for pagination
-                                            _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),
-                                            ) : Pager(
-                                              currentItemsPerPage: _rowPerPage,
-                                              currentPage: _currentPage,
-                                              totalPages: _totalPages,
-                                              onPageChanged: (page) {
-                                                _currentPage = page;
-                                                /// updates current page number of filterModel, because it does not update on its own
-                                                fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                                ref.read(trialBalanceLedgerProvider.notifier).getTableData(fModel);
-                                              },
-                                              showItemsPerPage: true,
-                                              onItemsPerPageChanged: (itemsPerPage) {
-                                                _rowPerPage = itemsPerPage;
-                                                _currentPage = 1;
-                                                /// updates row per page of filterModel, because it does not update on its own
-                                                fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                                ref.read(trialBalanceLedgerProvider.notifier).getTableData(fModel);
-                                              },
-                                              itemsPerPageList: rowPerPageItems,
-                                            ),
-                                          ],
-                                        ),
+                                                children: [
+                                                  trialTblCell('Grand Total', TextAlign.end),
+                                                  trialTblCell(reportTotal[0], TextAlign.start),
+                                                  trialTblCell(reportTotal[1], TextAlign.end),
+                                                  trialTblCell(reportTotal[2], TextAlign.end),
+                                                  trialTblCell(reportTotal[3], TextAlign.end),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          /// Pager package used for pagination
+                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),
+                                          ) : Pager(
+                                            currentItemsPerPage: _rowPerPage,
+                                            currentPage: _currentPage,
+                                            totalPages: _totalPages,
+                                            onPageChanged: (page) {
+                                              _currentPage = page;
+                                              /// updates current page number of filterModel, because it does not update on its own
+                                              fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                              ref.read(trialBalanceLedgerProvider.notifier).getTableData(fModel);
+                                            },
+                                            showItemsPerPage: true,
+                                            onItemsPerPageChanged: (itemsPerPage) {
+                                              _rowPerPage = itemsPerPage;
+                                              _currentPage = 1;
+                                              /// updates row per page of filterModel, because it does not update on its own
+                                              fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                              ref.read(trialBalanceLedgerProvider.notifier).getTableData(fModel);
+                                            },
+                                            itemsPerPageList: rowPerPageItems,
+                                          ),
+                                        ],
                                       ),
-                                    );
+                                    ),
+                                  );
 
-                                  }, error: (error, stackTrace) => const Center(child: Text('error'),),
-                                  loading: () => Center(
-                                      child: Image.asset("assets/gif/loading-img2.gif", height: 80, width: 80,)
-                                  ),
+                                }, error: (error, stackTrace) => const Center(child: Text('error'),),
+                                loading: () => Center(
+                                    child: Image.asset("assets/gif/loading-img2.gif", height: 80, width: 80,)
+                                ),
                               );
                             },
                           ),
@@ -848,9 +842,9 @@ TableCell buildTableCellMedium(String cellText, [TextAlign? cellTxtAlign]) {
       height: 40,
       decoration: const BoxDecoration(
           border: Border(
-        right: BorderSide(color: Colors.white, width: 1),
-        bottom: BorderSide(color: Colors.white, width: 2),
-      )),
+            right: BorderSide(color: Colors.white, width: 1),
+            bottom: BorderSide(color: Colors.white, width: 2),
+          )),
       child: Padding(
         padding: const EdgeInsets.only(top: 5, right: 10),
         child: Center(

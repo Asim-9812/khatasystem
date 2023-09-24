@@ -74,6 +74,7 @@ class GroupItem extends ChangeNotifier{
   String search = '';
   String fiscalYear = '';
   int fiscalId = 0;
+  int typeData = 1;
   List filteredList = [];
   bool isDetailed = false;
 
@@ -83,7 +84,13 @@ class GroupItem extends ChangeNotifier{
     notifyListeners();
   }
   void updateIsDetailed(bool isChecked){
-    isDetailed = !isDetailed;
+    isDetailed = isChecked;
+    notifyListeners();
+  }
+
+
+  void updateTypeData(int text){
+    typeData = text;
     notifyListeners();
   }
 

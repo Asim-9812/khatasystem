@@ -167,7 +167,7 @@ class _ProfitLossReportState extends ConsumerState<ProfitLossReport> {
                             height: 10,
                           ),
                           Container(
-                            height: 250,
+                            height: 300,
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 15),

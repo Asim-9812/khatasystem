@@ -1,9 +1,11 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:khata_app/common/colors.dart';
+import 'package:khata_app/common/common_provider.dart';
 import 'package:khata_app/service/update_service/update_service.dart';
 import 'package:khata_app/service/update_service/update_service_impl.dart';
 
@@ -12,15 +14,16 @@ import '../features/dashboard/presentation/home_screen.dart';
 import '../features/menu/presentation/menu_screen.dart';
 import '../features/notification/presentation/notification_page.dart';
 
-class MainView extends StatefulWidget {
+class MainView extends ConsumerStatefulWidget {
   const MainView({Key? key}) : super(key: key);
 
   @override
-  State<MainView> createState() => _MainViewState();
+  ConsumerState<MainView> createState() => _MainViewState();
 }
 
-class _MainViewState extends State<MainView> {
+class _MainViewState extends ConsumerState<MainView> {
   final UpdateService _updateService = UpdateServiceImpl();
+
 
   void _onUpdateSuccess() {
     Widget alertDialogOkButton = TextButton(
@@ -77,12 +80,13 @@ class _MainViewState extends State<MainView> {
   }
 
 
-  int _currentIndex = 0;
+
 
   DateTime timeBackPressed = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+    int currentIndex = ref.watch(itemProvider).mainIndex;
 
 
     List<Widget> screenList = [
@@ -117,16 +121,18 @@ class _MainViewState extends State<MainView> {
         builder: (context, orientation) {
           if(orientation == Orientation.portrait){
             return Scaffold(
-              body: screenList[_currentIndex],
+              body: screenList[currentIndex],
               bottomNavigationBar: BottomNavyBar(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 containerHeight: 70,
-                selectedIndex: _currentIndex,
+                selectedIndex: currentIndex,
                 showElevation: true,
                 itemCornerRadius: 20,
                 iconSize: 26,
                 curve: Curves.easeIn,
-                onItemSelected: (index) => setState(() => _currentIndex = index),
+                onItemSelected: (index) {
+                  ref.read(itemProvider.notifier).updateIndex(index);
+                },
                 items: <BottomNavyBarItem>[
                   BottomNavyBarItem(
                     icon: const FaIcon(FontAwesomeIcons.house),
@@ -161,16 +167,18 @@ class _MainViewState extends State<MainView> {
             );
           }else{
             return Scaffold(
-              body: screenList[_currentIndex],
+              body: screenList[currentIndex],
               bottomNavigationBar: BottomNavyBar(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 containerHeight: 70,
-                selectedIndex: _currentIndex,
+                selectedIndex: currentIndex,
                 showElevation: true,
                 itemCornerRadius: 10,
                 iconSize: 26,
                 curve: Curves.easeIn,
-                onItemSelected: (index) => setState(() => _currentIndex = index),
+                onItemSelected: (index){
+                  ref.read(itemProvider.notifier).updateIndex(index);
+                },
                 items: <BottomNavyBarItem>[
                   BottomNavyBarItem(
                     icon: const FaIcon(FontAwesomeIcons.house),

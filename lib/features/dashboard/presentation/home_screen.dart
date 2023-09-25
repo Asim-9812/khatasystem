@@ -17,12 +17,12 @@ import '../../../common/colors.dart';
 import '../../../model/dashboard_model.dart';
 import '../../../model/list model/get_list_model.dart';
 import '../../fiscalYear/presentation/change_fiscal_year.dart';
-
 final userIdProvider = Provider<String>((ref) => userId);
 
 String userId = "";
 
 late MainInfoModel mainInfo;
+
 
 class HomePageScreen extends ConsumerWidget {
   const HomePageScreen({super.key,});
@@ -73,7 +73,7 @@ class HomePageScreen extends ConsumerWidget {
 
     MainInfoModel infoModel = MainInfoModel(
       userId: res["userReturn"]["intUserId"],
-      fiscalID: res["fiscalYearInfo"]["financialYearId"],
+      fiscalID:fyId == 0? res["fiscalYearInfo"]["financialYearId"]:fyId,
       branchDepartmentId: branchDepartmentId,
       branchId: branchId,
       isEngOrNepaliDate: res["otherInfo"]["isEngOrNepali"],
@@ -84,8 +84,8 @@ class HomePageScreen extends ConsumerWidget {
       strId: '',
       dbName: res["ownerCompanyList"]["databaseName"],
       decimalPlace:res["otherInfo"]["decimalPlace"],
-      startDate: res["fiscalYearInfo"]["fromDate"],
-      endDate: res["fiscalYearInfo"]["toDate"],
+      startDate: fromDate == '' ? res["fiscalYearInfo"]["fromDate"]:fromDate,
+      endDate:toDate == ''? res["fiscalYearInfo"]["toDate"]:toDate,
       sessionId: res["userReturn"]["sessionId"],
       fromDate: "2023-05-31T00:00:00",
       toDate: "2023-05-31T00:00:00",

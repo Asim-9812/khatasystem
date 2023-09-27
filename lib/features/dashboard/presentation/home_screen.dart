@@ -4,6 +4,7 @@ import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 import 'package:khata_app/common/common_provider.dart';
 import 'package:khata_app/common/shimmer_loading.dart';
 import 'package:khata_app/features/dashboard/provider/dashboard_amount_provider.dart';
@@ -29,8 +30,11 @@ class HomePageScreen extends ConsumerWidget {
 
 
 
+
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final now =  DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(DateTime.now());
     final fromDate = ref.watch(itemProvider).fromDate;
     final toDate = ref.watch(itemProvider).toDate;
     final fy = ref.watch(itemProvider).fiscalYear;
@@ -88,8 +92,9 @@ class HomePageScreen extends ConsumerWidget {
       endDate:toDate == ''? res["fiscalYearInfo"]["toDate"]:toDate,
       sessionId: res["userReturn"]["sessionId"],
       fromDate: "2023-05-31T00:00:00",
-      toDate: "2023-05-31T00:00:00",
+      toDate: now,
     );
+
 
 
 

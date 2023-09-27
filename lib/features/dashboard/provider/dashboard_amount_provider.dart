@@ -76,7 +76,7 @@ class DashboardAmountProvider {
             dashList.add(
                 {
                   "nature": e.accountGroupName,
-                  "total": (e.debit! - e.credit!)
+                  "total": (e.debit! - e.credit!)<=0? 0:(e.debit! - e.credit!)
                 }
             );
           }else{

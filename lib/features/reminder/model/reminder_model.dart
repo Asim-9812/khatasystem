@@ -24,12 +24,16 @@ class ReminderModel extends HiveObject{
   @HiveField(4)
   bool repeat;
 
+  @HiveField(5)
+  List<String>? dateList;
+
   ReminderModel({
     required this.id,
     required this.title,
     this.description,
     required this.timeOfDay,
     required this.repeat,
+    this.dateList,
   });
 
 

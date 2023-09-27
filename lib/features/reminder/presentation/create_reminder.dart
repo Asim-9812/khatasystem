@@ -29,6 +29,10 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
   TextEditingController dateFrom = TextEditingController();
   TimeOfDay selectedTime = TimeOfDay.now();
 
+  List<String> days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  List<bool> checkedDays = List.filled(7, true); // Initialize with all days unchecked
+
+
   DateTime selectedDate = DateTime.now();
   NotificationServices notificationServices = NotificationServices();
 
@@ -39,7 +43,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
   }
 
 
-  bool isRepeat = true;
+  bool isRepeat = false;
   bool isTimeValid = false;
 
   final MaterialStateProperty<Icon?> thumbIcon =
@@ -238,6 +242,26 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 20,),
+                    if(isRepeat)
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: days.length,
+                      itemBuilder: (context, index) {
+                        return CheckboxListTile(
+                          activeColor: ColorManager.primary,
+                          checkColor: ColorManager.primary,
+                          title: Text(days[index],style: TextStyle(fontSize: 24),),
+                          value: checkedDays[index],
+                          onChanged: (bool? value) {
+                            setState(() {
+                              checkedDays[index] = value ?? false;
+                            });
+                          },
+                        );
+                      },
+                    )
                       ],
                     ),
                   ),
@@ -271,8 +295,16 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                       child: Consumer(
                         builder: (context, ref, child) {
                           return ElevatedButton(
-                            onPressed:  titleController.text.isEmpty ? null : () async{
+                            onPressed:
+
+                            titleController.text.isEmpty ? null : () async{
                               final scaffoldMessage = ScaffoldMessenger.of(context);
+                              List<String> selectedDays = [];
+                              for (int i = 0; i < days.length; i++) {
+                                if (checkedDays[i]) {
+                                  selectedDays.add(days[i]);
+                                }
+                              }
                               final navigate = Navigator.of(context);
                               Random random = Random();
                               ReminderModel reminder = ReminderModel(
@@ -280,7 +312,8 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                                   title: titleController.text.trim(),
                                   description: detailController.text.trim(),
                                   timeOfDay: selectedTime,
-                                  repeat: isRepeat
+                                  repeat: isRepeat,
+                                dateList: isRepeat == false ? null : selectedDays
                               );
                               await ref.read(reminderProvider.notifier).addReminder(
                                   reminder

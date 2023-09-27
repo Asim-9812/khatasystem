@@ -169,6 +169,7 @@ class _PersonalReminderPageState extends State<PersonalReminderPage> {
                             child: GestureDetector(
                               onDoubleTap: () {
                                 ref.read(reminderProvider.notifier).removeItem(reminderData[index]);
+                                ref.refresh(reminderProvider);
                               },
                               child: Dismissible(
                                 key: ValueKey<int>(reminderItem.id),
@@ -260,6 +261,19 @@ class _PersonalReminderPageState extends State<PersonalReminderPage> {
                                                 const SizedBox(
                                                   width: 4,
                                                 ),
+                                                reminderItem.dateList!.length !=7 ?
+                                                Row(
+                                                  children: reminderItem.dateList!.map((day) {
+                                                    final shortenedDay = day.substring(0, 3);
+                                                    return Padding(
+                                                      padding:const EdgeInsets.symmetric(horizontal: 8),
+                                                      child: Text( shortenedDay ,style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors
+                                                              .green.shade800)),
+                                                    );
+                                                  }).toList(),
+                                                ):
                                                 Text(
                                                   'EveryDay',
                                                   style: TextStyle(

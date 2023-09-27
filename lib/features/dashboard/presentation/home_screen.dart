@@ -203,7 +203,7 @@ class HomePageScreen extends ConsumerWidget {
                                         child: const Icon(Icons.person, color: Colors.white, size: 50,),
                                       ),
                                       const SizedBox(width: 20,),
-                                      const Text('Username', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white),)
+                                      Text('${res["userReturn"]["strUsername"]}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white),)
                                     ],
                                   ),
                                 )

@@ -43,7 +43,7 @@ class NotificationServices{
     );
 
     var now = DateTime.now();
-    var scheduledDate = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    var scheduledDate = DateTime(now.year, now.month, now.day , time.hour, time.minute);
 
     NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
 
@@ -51,7 +51,7 @@ class NotificationServices{
         reminderModel.id,
         reminderModel.title,
         reminderModel.description ?? "",
-        reminderModel.repeat ? _scheduleDaily(reminderModel.timeOfDay) : tz.TZDateTime.from(scheduledDate, tz.getLocation('Asia/Kathmandu')),
+        reminderModel.repeat ? _scheduleDaily(reminderModel.timeOfDay, reminderModel.dateList!) : tz.TZDateTime.from(scheduledDate, tz.getLocation('Asia/Kathmandu')),
         notificationDetails,
         uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -59,9 +59,12 @@ class NotificationServices{
     );
   }
 
-  static tz.TZDateTime _scheduleDaily(TimeOfDay time){
+  static tz.TZDateTime _scheduleDaily(TimeOfDay time, List<String> dateList){
     var now = DateTime.now();
-    var scheduledDate = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    List<String> daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    var day = dateList.firstWhere((element) => element == now.day.toString());
+    var scheduledDate = DateTime(now.year, now.month, daysOfWeek.indexOf(day), time.hour, time.minute);
 
     return scheduledDate.isBefore(now) ? tz.TZDateTime.from(scheduledDate.add(const Duration(days: 1)), tz.getLocation('Asia/Kathmandu'))
         : tz.TZDateTime.from(scheduledDate, tz.getLocation('Asia/Kathmandu'));

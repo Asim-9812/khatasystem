@@ -59,7 +59,7 @@ class _TestState extends ConsumerState<DayBookReport> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
-    dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.now()).toString();
+    dateFrom.text =!DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateFormat('yyyy/MM/dd').format(DateTime.parse(mainInfo.endDate!)):DateFormat('yyyy/MM/dd').format(DateTime.now());
 
   }
 

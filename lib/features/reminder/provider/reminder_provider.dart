@@ -20,7 +20,8 @@ class ReminderProvider extends StateNotifier<List<ReminderModel>>{
         title: reminder.title,
         description: reminder.description,
         timeOfDay: reminder.timeOfDay,
-        repeat: reminder.repeat
+        repeat: reminder.repeat,
+        dateList: reminder.dateList
       );
       Hive.box<ReminderModel>('ReminderBox').add(newReminderItem);
       state = [newReminderItem];
@@ -35,7 +36,8 @@ class ReminderProvider extends StateNotifier<List<ReminderModel>>{
             title: reminder.title,
             description: reminder.description,
             timeOfDay: reminder.timeOfDay,
-            repeat: reminder.repeat
+            repeat: reminder.repeat,
+          dateList: reminder.dateList
         );
         Hive.box<ReminderModel>('ReminderBox').add(newReminderItem);
         state = [...state, newReminderItem];
@@ -52,7 +54,8 @@ class ReminderProvider extends StateNotifier<List<ReminderModel>>{
         title: reminder.title,
         description: reminder.description,
         timeOfDay: reminder.timeOfDay,
-        repeat: reminder.repeat
+        repeat: reminder.repeat,
+      dateList: reminder.dateList
     );
 
     Hive.box<ReminderModel>('ReminderBox').put(reminder.id, reminderItem);

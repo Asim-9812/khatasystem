@@ -29,6 +29,10 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
   TimeOfDay selectedTime = TimeOfDay.now();
   DateTime selectedDate = DateTime.now();
 
+  List<String> days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  late List<bool> checkedDays;
+
+
   bool isRepeat = true;
   
   
@@ -49,6 +53,7 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
     detailController.text = widget.reminder.description!;
     isRepeat = widget.reminder.repeat;
     selectedTime = widget.reminder.timeOfDay;
+    checkedDays = List.generate(7, (index) => widget.reminder.dateList?.contains(days[index])??true);
 
     titleController.addListener(() {
       setState(() {
@@ -252,6 +257,45 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
                             ),
                           ],
                         ),
+
+                        if(isRepeat)
+                          const SizedBox(height: 20,),
+
+                        if(isRepeat)
+                          const Text('Select days',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+
+                        if(isRepeat)
+                        const SizedBox(height: 20,),
+
+                        if(isRepeat)
+                          ListView.builder(
+                            physics: const NeverScrollableScrollPhysics() ,
+                            shrinkWrap: true,
+                            itemCount: days.length,
+                            itemBuilder: (context, index) {
+                              return CheckboxListTile(
+                                shape: Border(
+                                  top: BorderSide(
+                                    color: ColorManager.black
+                                  )
+                                ),
+                                activeColor: ColorManager.primary,
+                                title: Text(days[index],style: TextStyle(fontSize: 16),),
+                                value: isRepeat && checkedDays[index],
+                                onChanged: isRepeat ? (bool? value) {
+                                  setState(() {
+                                    checkedDays[index] = value ?? false;
+                                  });
+                                } : null,
+                              );
+                            },
+                          )
+
                       ],
                     ),
                   ),
@@ -286,6 +330,12 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
                           builder: (context, ref, child) {
                             return ElevatedButton(
                               onPressed:  titleController.text.isEmpty ? null : () async{
+                                List<String> selectedDays = [];
+                                for (int i = 0; i < days.length; i++) {
+                                  if (checkedDays[i]) {
+                                    selectedDays.add(days[i]);
+                                  }
+                                }
                                 final scaffoldMessage = ScaffoldMessenger.of(context);
                                 final navigate = Navigator.of(context);
                                 ReminderModel reminder =  ReminderModel(
@@ -293,7 +343,8 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
                                     title: titleController.text.trim(),
                                     description: detailController.text.trim(),
                                     timeOfDay: selectedTime,
-                                    repeat: isRepeat
+                                    repeat: isRepeat,
+                                  dateList: isRepeat == false ? null : selectedDays
                                 );
                                 await ref.read(reminderProvider.notifier).updateReminder(
                                    reminder

@@ -41,7 +41,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
   bool _isChecked = false;
-  List _selectedParticulars = [];
+  late List _selectedParticulars;
   String formattedList = '';
   List _allParticulars = [];
   bool allSelected = true;
@@ -56,13 +56,16 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
     _rowPerPage = 10;
     _totalPages = 0;
     dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
+
     dateTo.text =!DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateFormat('yyyy/MM/dd').format(DateTime.parse(mainInfo.endDate!)):DateFormat('yyyy/MM/dd').format(DateTime.now());
+
   }
 
 
 
   @override
   Widget build(BuildContext context) {
+    _selectedParticulars = ref.watch(itemProvider).selectedList;
     GetListModel modelRef = GetListModel();
     modelRef.refName = 'AboveLakhVATReport';
     modelRef.isSingleList = 'false';
@@ -81,9 +84,8 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(vatReportProvider3);
-            setState(() {
-              _selectedParticulars = [];
-            });
+            ref.read(itemProvider.notifier).updateSelectedList([]);
+            ref.read(itemProvider.notifier).updateIndex2(0);
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
@@ -97,9 +99,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                     allList.add(e);
                   }
 
-                  List<Map<String,dynamic>> particulars = [
-                    {'text': 'All', 'value': 'all'}
-                  ];
+                  List<Map<String,dynamic>> particulars = [];
                   List<String> branches = [];
 
                   data[0].forEach((key, _) {
@@ -111,7 +111,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
 
 
                   Map<String,dynamic> particularItem = particulars[0];
-                  String branchItem = branches[0];
+                  String branchItem = branches[ref.watch(itemProvider).index];
 
 
 
@@ -337,6 +337,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                     ),
                                     onChanged: (dynamic value) {
                                       ref.read(itemProvider).updateBranch2(value);
+                                      ref.read(itemProvider.notifier).updateIndex2(branches.indexOf(value));
                                     },
                                   ),
                                   const SizedBox(
@@ -344,11 +345,8 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                   ),
                                   MultiSelectDialogField(
                                     initialValue: _selectedParticulars,
-                                    chipDisplay: MultiSelectChipDisplay(
-                                        scroll: true,
-                                      scrollBar: HorizontalScrollBar(),
-                                      height: 100,
-                                    ),
+                                    buttonText: Text(_selectedParticulars.length == particulars.length?'All':_selectedParticulars.isNotEmpty?'${_selectedParticulars.length} items':'Select items'),
+                                    chipDisplay: MultiSelectChipDisplay.none(),
                                     decoration: BoxDecoration(
                                         border: Border.all(
                                           color: Colors.black.withOpacity(0.5),
@@ -356,22 +354,39 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                         borderRadius: BorderRadius.circular(10)
                                     ),
                                     searchable: true,
+
                                     items: particulars.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
                                     listType: MultiSelectListType.LIST,
                                     onConfirm: (values) {
-                                      if (values.contains("all")) {
-                                        // If "All" is selected, select all items except "All"
-                                        _selectedParticulars = particulars.map((e) => e['value']).toList();
-                                        _selectedParticulars.remove("all");
-                                        String formattedList = _selectedParticulars.map((e) => '$e').join(',');
-                                        ref.read(itemProvider).updateParticularType(formattedList);
-                                      } else {
-                                        // Otherwise, set the selected values as usual
-                                        _selectedParticulars = values;
-                                        String formattedList = _selectedParticulars.map((e) => '$e').join(',');
-                                        ref.read(itemProvider).updateParticularType(formattedList);
-                                      }
+                                      _selectedParticulars = values;
+                                      String formattedList = ref.watch(itemProvider).selectedList.map((e) => '$e').join(',');
+                                      ref.read(itemProvider).updateParticularType(formattedList);
                                     },
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+                                        Text(_selectedParticulars.length == particulars.length?'Unselect All':'Select All'),
+                                        Checkbox(
+                                          value: _selectedParticulars.length == particulars.length,
+                                          onChanged: (value) {
+                                            if (value!) {
+                                              // Select all items
+                                              ref.read(itemProvider.notifier).updateSelectedList(particulars.map((e) => e['value']).toList());
+                                              String formattedList = ref.watch(itemProvider).selectedList.map((e) => '$e').join(',');
+                                              ref.read(itemProvider).updateParticularType(formattedList);
+
+                                            } else {
+                                              // Unselect all items
+                                              ref.read(itemProvider.notifier).updateSelectedList([]);
+                                            }
+
+
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
 
                                   const SizedBox(

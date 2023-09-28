@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:khata_app/features/reports/statement/bank_cash_report/provider/bankCashBookProvider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:pager/pager.dart';
 
@@ -47,9 +48,10 @@ class _TestState extends ConsumerState<DayBookReport> {
   String branchName = '';
   String groupName = '';
   String voucherValue = '';
-  List _selectedVouchers = [];
+  late List _selectedVouchers;
   String searchQuery = '';
   GetListModel modelRef2 = GetListModel();
+  GetLedgerListModel ledgerRef = GetLedgerListModel();
 
 
   @override
@@ -62,6 +64,10 @@ class _TestState extends ConsumerState<DayBookReport> {
     dateFrom.text =!DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateFormat('yyyy/MM/dd').format(DateTime.parse(mainInfo.endDate!)):DateFormat('yyyy/MM/dd').format(DateTime.now());
 
   }
+
+
+
+
 
   void getList() {
     GetListModel modelRef = GetListModel();
@@ -79,13 +85,16 @@ class _TestState extends ConsumerState<DayBookReport> {
 
   @override
   Widget build(BuildContext context) {
+    _selectedVouchers =ref.watch(itemProvider).selectedList;
     final outCome = ref.watch(dayBookListProvider(modelRef2));
+    final ledgerList = ref.watch(bankCashLedgerListProvider(ledgerRef));
     final res = ref.watch(dayBookProvider);
     final fromDate = ref.watch(itemProvider).fromDate;
     final toDate = ref.watch(itemProvider).toDate;
     return WillPopScope(
       onWillPop: () async {
         ref.invalidate(dayBookProvider);
+        ref.read(itemProvider.notifier).updateSelectedList([]);
 
         // Return true to allow the back navigation, or false to prevent it
         return true;
@@ -122,7 +131,7 @@ class _TestState extends ConsumerState<DayBookReport> {
                 allList.add(e);
               }
 
-              List<Map<String,dynamic>> vouchers = [{'text': 'All', 'value': 'all'}];
+              List<Map<String,dynamic>> vouchers = [];
               List<String> ledgers = [];
               List<String> branches = [];
 
@@ -147,6 +156,7 @@ class _TestState extends ConsumerState<DayBookReport> {
               final branchItemData = ref.watch(itemProvider).branchItem2;
               final voucherItemData = ref.watch(itemProvider).voucherTypeItem;
               final isDetailed = ref.watch(itemProvider).isDetailed;
+
 
 
               String getLedgerValue(String ledgerVal) {
@@ -368,7 +378,7 @@ class _TestState extends ConsumerState<DayBookReport> {
                               ),
                               MultiSelectDialogField(
                                 title: Text('Voucher Type'),
-
+                                buttonText: Text(_selectedVouchers.length == vouchers.length?'All':_selectedVouchers.isNotEmpty?'${_selectedVouchers.length} items':'Select items'),
                                 initialValue: _selectedVouchers,
                                 decoration: BoxDecoration(
                                     border: Border.all(
@@ -376,56 +386,75 @@ class _TestState extends ConsumerState<DayBookReport> {
                                     ),
                                     borderRadius: BorderRadius.circular(10)
                                 ),
+                                chipDisplay: MultiSelectChipDisplay.none(),
                                 searchable: true,
                                 items: vouchers.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
                                 listType: MultiSelectListType.LIST,
                                 onConfirm: (values) {
-                                  if (values.contains("all")) {
-                                    // If "All" is selected, select all items except "All"
-                                    _selectedVouchers = vouchers.map((e) => e['value']).toList();
-                                    _selectedVouchers.remove("all");
-                                    String formattedList = '[${_selectedVouchers.map((e) => '\\\"$e\\\"').join(',')}]';
-                                    ref.read(itemProvider).updateVoucherType(formattedList);
-                                  } else {
-                                    // Otherwise, set the selected values as usual
-                                    _selectedVouchers = values;
-                                    String formattedList = '[${_selectedVouchers.map((e) => '\\\"$e\\\"').join(',')}]';
-                                    ref.read(itemProvider).updateVoucherType(formattedList);
-                                  }
+                                  _selectedVouchers = values;
+                                  String formattedList = '[${ref.watch(itemProvider).selectedList.map((e) => '\\\"$e\\\"').join(',')}]';
+                                  ref.read(itemProvider).updateVoucherType(formattedList);
                                 },
                               ),
-
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Row(
-                                children: [
-                                  Checkbox(
-                                    value: isDetailed,
-                                    onChanged: (val) {
-                                      if(isDetailed == true){
-                                        ref.read(itemProvider).updateIsDetailed(false);
-                                        ref.invalidate(dayBookProvider);
-                                      }
-                                      else{
-                                        ref.read(itemProvider).updateIsDetailed(true);
-                                        ref.invalidate(dayBookProvider);
-                                      }
-                                    },
-                                    checkColor: Colors.white,
-                                    fillColor:
-                                    MaterialStateProperty.resolveWith(
-                                            (states) =>
-                                            getCheckBoxColor(states)),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(2),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(_selectedVouchers.length == vouchers.length?'Unselect All':'Select All'),
+                                        Checkbox(
+                                          value: _selectedVouchers.length == vouchers.length,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              if (value!) {
+                                                // Select all items
+                                                ref.read(itemProvider.notifier).updateSelectedList(vouchers.map((e) => e['value']).toList());
+                                                String formattedList = '[${ref.watch(itemProvider).selectedList.map((e) => '\\\"$e\\\"').join(',')}]';
+                                                ref.read(itemProvider).updateVoucherType(formattedList);
+                                              } else {
+                                                // Unselect all items
+                                                ref.read(itemProvider.notifier).updateSelectedList([]);
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  const Text('Detailed',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                      ))
-                                ],
+
+
+                                    Row(
+                                      children: [
+                                        Checkbox(
+                                          value: isDetailed,
+                                          onChanged: (val) {
+                                            if(isDetailed == true){
+                                              ref.read(itemProvider).updateIsDetailed(false);
+                                              ref.invalidate(dayBookProvider);
+                                            }
+                                            else{
+                                              ref.read(itemProvider).updateIsDetailed(true);
+                                              ref.invalidate(dayBookProvider);
+                                            }
+                                          },
+                                          checkColor: Colors.white,
+                                          fillColor:
+                                          MaterialStateProperty.resolveWith(
+                                                  (states) =>
+                                                  getCheckBoxColor(states)),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(2),
+                                          ),
+                                        ),
+                                        const Text('Detailed',
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                            ))
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                               const SizedBox(
                                 height: 20,

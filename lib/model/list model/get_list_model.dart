@@ -206,3 +206,34 @@ class MainInfoModel2 {
     return data;
   }
 }
+
+
+
+class GetLedgerListModel {
+  MainInfoModel? mainInfoModel;
+  int? branchId;
+  List? accountGroupId;
+
+  GetLedgerListModel(
+      {this.mainInfoModel,
+        this.branchId,
+        this.accountGroupId,});
+
+  GetLedgerListModel.fromJson(Map<String, dynamic> json) {
+    mainInfoModel = json['mainInfoModel'] != null
+        ? MainInfoModel.fromJson(json['mainInfoModel'])
+        : null;
+    branchId = json['branchid'];
+    accountGroupId = json['accountgroupid'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (mainInfoModel != null) {
+      data['mainInfoModel'] = mainInfoModel!.toJson();
+    }
+    data['branchid'] = branchId;
+    data['accountgroupid'] = accountGroupId;
+    return data;
+  }
+}

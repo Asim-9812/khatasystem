@@ -12,4 +12,5 @@ class Api {
   static const getSubList = '$baseUrl/api/MyFunction/GetList_Report';
   static const getNotification = '$baseUrl/api/GlobalNotification';
   static const getFiscalYear = '$baseUrl/api/FiscalYear/Getall';
+  static const getLedgerList = '$baseUrl/api/BankCash/LedgerList_BankCash';
 }

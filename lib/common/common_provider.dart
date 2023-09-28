@@ -58,6 +58,7 @@ final updateTypeProvider = ChangeNotifierProvider.autoDispose((ref) => GroupItem
 
 class GroupItem extends ChangeNotifier{
   int mainIndex = 0;
+  int index = 0;
   String trialBalanceType = "Group";
   String item = 'All';
   String ledgerItem = 'All';
@@ -78,9 +79,15 @@ class GroupItem extends ChangeNotifier{
   int typeData = 1;
   List filteredList = [];
   bool isDetailed = false;
+  bool selected = false;
+  List selectedList = [];
 
   void updateIndex(int text){
     mainIndex = text;
+    notifyListeners();
+  }
+  void updateIndex2(int text){
+    index = text;
     notifyListeners();
   }
 
@@ -93,6 +100,18 @@ class GroupItem extends ChangeNotifier{
     isDetailed = isChecked;
     notifyListeners();
   }
+
+  void updateSelected(bool isChecked){
+    selected = isChecked;
+    notifyListeners();
+  }
+
+  void updateSelectedList(List list){
+    selectedList = list;
+    notifyListeners();
+  }
+
+
 
 
   void updateTypeData(int text){

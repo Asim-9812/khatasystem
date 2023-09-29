@@ -71,3 +71,27 @@ class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
 
 }
+
+
+
+final dayBookViewProvider = FutureProvider.family((ref, FilterAnyModel filterModel) => DayBookViewPro().getTableData(filterModel));
+
+class DayBookViewPro {
+  Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+        return result;
+      }else{
+        return [];
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+

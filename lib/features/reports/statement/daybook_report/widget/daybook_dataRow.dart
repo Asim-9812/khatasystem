@@ -41,6 +41,7 @@ DataRow buildDayBookReportRow(int index, DayBookModel tblData,String voucherType
                   context!,
                   MaterialPageRoute(
                     builder: (context) => DayBookReportView(
+                      refNo: tblData.refNo!,
                       voucherNo: tblData.voucherNo!,
                       voucherTypeId: voucherTypeId ,
                       branchId: branchId,
@@ -97,6 +98,7 @@ DataRow buildDayBookDetailedReportRow(int index, DayBookDetailedModel tblData, S
                   context!,
                   MaterialPageRoute(
                     builder: (context) => DayBookReportView(
+                      refNo: tblData.refNo!,
                       voucherNo: tblData.voucherNo!,
                       voucherTypeId: voucherTypeId ,
                       branchId: branchId,

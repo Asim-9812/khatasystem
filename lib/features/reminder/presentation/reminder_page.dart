@@ -160,6 +160,7 @@ class _PersonalReminderPageState extends State<PersonalReminderPage> {
                   ) :
                   Expanded(
                       child: ListView.builder(
+                        shrinkWrap: true,
                         physics: const ClampingScrollPhysics(),
                         itemCount: reminderData.length,
                         itemBuilder: (context, index) {

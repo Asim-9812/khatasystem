@@ -65,7 +65,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
 
   @override
   Widget build(BuildContext context) {
-    _selectedParticulars = ref.watch(itemProvider).selectedList;
+    _selectedParticulars = ref.watch(itemProvider).selectedVatReportList;
     GetListModel modelRef = GetListModel();
     modelRef.refName = 'AboveLakhVATReport';
     modelRef.isSingleList = 'false';
@@ -84,7 +84,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(vatReportProvider3);
-            ref.read(itemProvider.notifier).updateSelectedList([]);
+            ref.read(itemProvider.notifier).updateSelectedVatList([]);
             ref.read(itemProvider.notifier).updateIndex2(0);
 
             // Return true to allow the back navigation, or false to prevent it
@@ -343,50 +343,59 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                   const SizedBox(
                                     height: 20,
                                   ),
-                                  MultiSelectDialogField(
-                                    initialValue: _selectedParticulars,
-                                    buttonText: Text(_selectedParticulars.length == particulars.length?'All':_selectedParticulars.isNotEmpty?'${_selectedParticulars.length} items':'Select items'),
-                                    chipDisplay: MultiSelectChipDisplay.none(),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.black.withOpacity(0.5),
-                                        ),
-                                        borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    searchable: true,
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: MultiSelectDialogField(
+                                          initialValue: _selectedParticulars,
+                                          buttonText: Text(_selectedParticulars.length == particulars.length?'All':_selectedParticulars.isNotEmpty?'${_selectedParticulars.length} items':'Select items'),
+                                          chipDisplay: MultiSelectChipDisplay.none(),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                color: Colors.black.withOpacity(0.5),
+                                              ),
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          searchable: true,
 
-                                    items: particulars.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
-                                    listType: MultiSelectListType.LIST,
-                                    onConfirm: (values) {
-                                      _selectedParticulars = values;
-                                      String formattedList = ref.watch(itemProvider).selectedList.map((e) => '$e').join(',');
-                                      ref.read(itemProvider).updateParticularType(formattedList);
-                                    },
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      children: [
-                                        Text(_selectedParticulars.length == particulars.length?'Unselect All':'Select All'),
-                                        Checkbox(
-                                          value: _selectedParticulars.length == particulars.length,
-                                          onChanged: (value) {
-                                            if (value!) {
-                                              // Select all items
-                                              ref.read(itemProvider.notifier).updateSelectedList(particulars.map((e) => e['value']).toList());
-                                              String formattedList = ref.watch(itemProvider).selectedList.map((e) => '$e').join(',');
-                                              ref.read(itemProvider).updateParticularType(formattedList);
-
-                                            } else {
-                                              // Unselect all items
-                                              ref.read(itemProvider.notifier).updateSelectedList([]);
-                                            }
-
-
+                                          items: particulars.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
+                                          listType: MultiSelectListType.LIST,
+                                          onConfirm: (values) {
+                                            _selectedParticulars = values;
+                                            String formattedList = ref.watch(itemProvider).selectedVatReportList.map((e) => '$e').join(',');
+                                            ref.read(itemProvider).updateParticularType(formattedList);
                                           },
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          children: [
+                                            Text(_selectedParticulars.length == particulars.length?'Unselect All':'Select All'),
+                                            Checkbox(
+                                              value: _selectedParticulars.length == particulars.length,
+                                              onChanged: (value) {
+                                                if (value!) {
+                                                  // Select all items
+                                                  ref.read(itemProvider.notifier).updateSelectedVatList(particulars.map((e) => e['value']).toList());
+                                                  String formattedList = ref.watch(itemProvider).selectedVatReportList.map((e) => '$e').join(',');
+                                                  ref.read(itemProvider).updateParticularType(formattedList);
+
+                                                } else {
+                                                  // Unselect all items
+                                                  ref.read(itemProvider.notifier).updateSelectedVatList([]);
+                                                }
+
+
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
 
                                   const SizedBox(

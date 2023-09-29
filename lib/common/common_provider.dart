@@ -81,7 +81,9 @@ class GroupItem extends ChangeNotifier{
   List filteredList = [];
   bool isDetailed = false;
   bool selected = false;
-  List selectedList = [];
+  List selectedBankCashList = [];
+  List selectedDayBookList = [];
+  List selectedVatReportList = [];
 
   void updateIndex(int text){
     mainIndex = text;
@@ -112,8 +114,18 @@ class GroupItem extends ChangeNotifier{
     notifyListeners();
   }
 
-  void updateSelectedList(List list){
-    selectedList = list;
+  void updateSelectedBankCashList(List list){
+    selectedBankCashList = list;
+    notifyListeners();
+  }
+
+  void updateSelectedDayBookList(List list){
+    selectedDayBookList = list;
+    notifyListeners();
+  }
+
+  void updateSelectedVatList(List list){
+    selectedVatReportList = list;
     notifyListeners();
   }
 

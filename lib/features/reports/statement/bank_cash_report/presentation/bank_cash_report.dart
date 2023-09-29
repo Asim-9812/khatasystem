@@ -110,7 +110,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
     GetLedgerListModel ledref = GetLedgerListModel();
     ledref.mainInfoModel = mainInfo;
     ledref.branchId =0;
-    ledref.accountGroupId =ref.watch(itemProvider).selectedList ;
+    ledref.accountGroupId =ref.watch(itemProvider).selectedBankCashList ;
 
     setState(() {
       getLedgerListModel = ledref;
@@ -179,7 +179,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
 
 
 
-    _selectedGroups =ref.watch(itemProvider).selectedList;
+    _selectedGroups =ref.watch(itemProvider).selectedBankCashList;
     final outCome = ref.watch(bankCashListProvider(modelRef2));
     final ledgerMenu = ref.watch(bankCashLedgerListProvider(getLedgerListModel));
     final bankCash = ref.watch(bankCashProvider);
@@ -191,7 +191,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
     return WillPopScope(
       onWillPop: () async {
         ref.invalidate(bankCashProvider);
-        ref.read(itemProvider.notifier).updateSelectedList([]);
+        ref.read(itemProvider.notifier).updateSelectedBankCashList([]);
         ref.invalidate(bankCashLedgerListProvider(getLedgerListModel));
 
 
@@ -205,7 +205,9 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
             elevation: 0,
             leading: IconButton(
               onPressed: () {
-                // ref.invalidate(dayBookProvider);
+                ref.invalidate(bankCashProvider);
+                ref.read(itemProvider.notifier).updateSelectedBankCashList([]);
+                ref.invalidate(bankCashLedgerListProvider(getLedgerListModel));
                 Navigator.pop(context, true);
               },
               icon: const Icon(
@@ -243,7 +245,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
 
 
               if(ref.watch(itemProvider).selected){
-                ref.read(itemProvider.notifier).updateSelectedList(groups.map((e) => e['value']).toList());
+                ref.read(itemProvider.notifier).updateSelectedBankCashList(groups.map((e) => e['value']).toList());
                 if (!ledgerListExecuted) {
                   ledgerList();
                   setState(() {
@@ -486,60 +488,73 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                               Align(
                                 alignment: Alignment.centerLeft,
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.only(left: 8.0),
                                   child: Text('Group',style: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.bold),),
                                 ),
                               ),
-                              MultiSelectDialogField(
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: MultiSelectDialogField(
 
-                                initialValue: ref.watch(itemProvider).selectedList,
-                                buttonText: Text(ref.watch(itemProvider).selectedList.length == groups.length?'All':ref.watch(itemProvider).selectedList.isNotEmpty?'${ref.watch(itemProvider).selectedList.length} items':'Select items'),
-                                chipDisplay: MultiSelectChipDisplay.none(),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.black.withOpacity(0.5),
-                                    ),
-                                    borderRadius: BorderRadius.circular(10)
-                                ),
-                                searchable: true,
-
-
-                                items: groups.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
-                                listType: MultiSelectListType.LIST,
-                                onConfirm: (values) {
-                                  ref.read(itemProvider.notifier).updateSelectedList(values);
-                                  ledgerList();
-                                  print(getLedgerListModel.toJson());
-                                },
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Text(ref.watch(itemProvider).selectedList.length == groups.length?'Unselect All':'Select All'),
-                                    Checkbox(
-                                      value: ref.watch(itemProvider).selectedList.length == groups.length,
-                                      onChanged: (value) {
-                                        if (value!) {
-                                          // Select all items
-                                          ref.read(itemProvider.notifier).updateSelected(true);
-                                          ref.read(itemProvider.notifier).updateSelectedList(groups.map((e) => e['value']).toList());
-                                          ledgerList();
-                                          print(getLedgerListModel.toJson());
-
-                                        } else {
-                                          // Unselect all items
-                                          ref.read(itemProvider.notifier).updateSelected(false);
-                                          ref.read(itemProvider.notifier).updateSelectedList([]);
-
-                                          ledgerList();
-                                        }
+                                      initialValue: ref.watch(itemProvider).selectedBankCashList,
+                                      buttonText: Text(ref.watch(itemProvider).selectedBankCashList.length == groups.length?'All':ref.watch(itemProvider).selectedBankCashList.isNotEmpty?'${ref.watch(itemProvider).selectedBankCashList.length} items':'Select items'),
+                                      chipDisplay: MultiSelectChipDisplay.none(),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                            color: Colors.black.withOpacity(0.5),
+                                          ),
+                                          borderRadius: BorderRadius.circular(10)
+                                      ),
+                                      searchable: true,
 
 
+                                      items: groups.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
+                                      listType: MultiSelectListType.LIST,
+                                      onConfirm: (values) {
+                                        ref.read(itemProvider.notifier).updateSelectedBankCashList(values);
+                                        ledgerList();
+                                        print(getLedgerListModel.toJson());
                                       },
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
+                                      children: [
+
+                                        Checkbox(
+                                          value: ref.watch(itemProvider).selectedBankCashList.length == groups.length,
+                                          onChanged: (value) {
+                                            if (value!) {
+                                              // Select all items
+                                              ref.read(itemProvider.notifier).updateSelected(true);
+                                              ref.read(itemProvider.notifier).updateSelectedBankCashList(groups.map((e) => e['value']).toList());
+                                              ledgerList();
+                                              print(getLedgerListModel.toJson());
+
+                                            } else {
+                                              // Unselect all items
+                                              ref.read(itemProvider.notifier).updateSelected(false);
+                                              ref.read(itemProvider.notifier).updateSelectedBankCashList([]);
+
+                                              ledgerList();
+                                            }
+
+
+                                          },
+                                        ),
+                                        Text(ref.watch(itemProvider).selectedBankCashList.length == groups.length?'Unselect All':'Select All'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
                               ),
 
 
@@ -708,7 +723,6 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: [
-                                    Text('Detailed'),
                                     Checkbox(
                                       value: _isChecked,
                                       onChanged: (value) {
@@ -719,6 +733,8 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
 
                                       },
                                     ),
+                                    Text('Detailed'),
+
                                   ],
                                 ),
                               ),

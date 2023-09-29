@@ -30,7 +30,8 @@ class DayBookReportView extends ConsumerStatefulWidget {
   final int ledgerId;
   final String date;
   final String branchId;
-  DayBookReportView({required this.voucherNo,required this.date,required this.branchId,required this.ledgerId,required this.voucherTypeId});
+  final String refNo;
+  DayBookReportView({required this.refNo,required this.voucherNo,required this.date,required this.branchId,required this.ledgerId,required this.voucherTypeId});
 
   @override
   ConsumerState<DayBookReportView> createState() => _DayBookReportState();
@@ -142,8 +143,34 @@ class _DayBookReportState extends ConsumerState<DayBookReportView> {
                       child: Column(
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Voucher No:',style: TextStyle(fontWeight: FontWeight.bold),),
+                              Row(
+                                children: [
+                                  Text('Voucher No:',style: TextStyle(fontWeight: FontWeight.bold),),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(widget.voucherNo)
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('Date:',style: TextStyle(fontWeight: FontWeight.bold),),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(widget.date)
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            children: [
+                              Text('Ref No:',style: TextStyle(fontWeight: FontWeight.bold),),
                               SizedBox(
                                 width: 10,
                               ),
@@ -153,28 +180,8 @@ class _DayBookReportState extends ConsumerState<DayBookReportView> {
                           SizedBox(
                             height: 20,
                           ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              getReport(fModel);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorManager.green,
-                              minimumSize: const Size(200, 50),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: const FaIcon(
-                              FontAwesomeIcons.arrowsRotate,
-                              color: Colors.white,
-                              size: 25,
-                            ),
-                          ),
                         ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: 30,
                     ),
                     res.when(
                       data: (data) {
@@ -222,27 +229,7 @@ class _DayBookReportState extends ConsumerState<DayBookReportView> {
                                     columnSpacing: 0,
                                     horizontalMargin: 0,
                                   ),
-                                  /// Pager package used for pagination
-                                  _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                    currentItemsPerPage: _rowPerPage,
-                                    currentPage: _currentPage,
-                                    totalPages: _totalPages,
-                                    onPageChanged: (page) {
-                                      _currentPage = page;
-                                      /// updates current page number of filterModel, because it does not update on its own
-                                      fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                      ref.read(dayBookProvider.notifier).fetchTableData(fModel);
-                                    },
-                                    showItemsPerPage: true,
-                                    onItemsPerPageChanged: (itemsPerPage) {
-                                      _rowPerPage = itemsPerPage;
-                                      _currentPage = 1;
-                                      /// updates row per page of filterModel, because it does not update on its own
-                                      fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                      ref.read(tableDataProvider.notifier).getTableValues(fModel);
-                                    },
-                                    itemsPerPageList: rowPerPageItems,
-                                  ),
+
                                 ],
                               ),
                             ),

@@ -22,7 +22,7 @@ DataRow buildBankCashRow(int index, BankCashModel tblData,
     color:
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
-      buildBankCashDataCell(
+      buildDataCell(
           60, '${tblData.sno}', TextAlign.center, 2),
       buildBankCashDataCell(
           200, '${tblData.date}', TextAlign.center, 2),
@@ -117,7 +117,7 @@ DataRow buildBankCashDetailedRow(int index, BankCashDetailedModel tblData,
     color:
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
-      buildBankCashDetailedDataCell(
+      buildDataCell(
           60, '${tblData.sno}', TextAlign.center, 2),
       buildBankCashDetailedDataCell(
           200, '${tblData.date}', TextAlign.center, 2),

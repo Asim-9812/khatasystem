@@ -29,7 +29,7 @@ import '../../customer_ledger_report/widget/table_widget.dart';
 import '../../ledger_report/provider/report_provider.dart';
 
 
-class BankCashView extends ConsumerStatefulWidget {
+class BankCashView extends ConsumerWidget {
 
   final String voucherNo;
   final String date;
@@ -39,44 +39,10 @@ class BankCashView extends ConsumerStatefulWidget {
   final String refNo;
   BankCashView({required this.voucherNo,required this.date,required this.refNo,required this.dateTo,required this.dateFrom,required this.branchId});
 
-  @override
-  ConsumerState<BankCashView> createState() => _DayBookReportState();
-}
-
-class _DayBookReportState extends ConsumerState<BankCashView> {
-  late int _currentPage;
-  late int _rowPerPage;
-  List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
-  late int _totalPages;
   late MainInfoModel2 bankCashReportModel;
 
-
   @override
-  void initState() {
-    super.initState();
-    _currentPage = 1;
-    _rowPerPage = 10;
-    _totalPages = 0;
-
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move your code that uses ref and providers here.
-    // This code will run after initState.
-    ref.invalidate(bankCashProvider);
-  }
-
-  void getReport(FilterAnyModel2 fModel){
-
-    ref.read(bankCashProvider.notifier).fetchTableData(fModel);
-  }
-
-
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,ref) {
     final now =  DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(DateTime.now());
     final fromDate = ref.watch(itemProvider).fromDate;
     final toDate = ref.watch(itemProvider).toDate;
@@ -109,7 +75,7 @@ class _DayBookReportState extends ConsumerState<BankCashView> {
         endDate:toDate == ''? res["fiscalYearInfo"]["toDate"]:toDate,
         sessionId: res["userReturn"]["sessionId"],
         id: 0,
-        searchText: '${widget.voucherNo}'
+        searchText: '${voucherNo}'
     );
 
 
@@ -121,9 +87,9 @@ class _DayBookReportState extends ConsumerState<BankCashView> {
     filterModel.underIntID = 0;
     filterModel.columnName = null;
     filterModel.filterColumnsString =
-    "[\"${widget.dateFrom}\",\"${widget.dateTo}\",\"isDetailed--true\",\"${widget.branchId}\",\"ledgerId--${ref.watch(itemProvider).ledgerItem}\"]";
-    filterModel.pageRowCount = _rowPerPage;
-    filterModel.currentPageNumber = _currentPage;
+    "[\"${dateFrom}\",\"${dateTo}\",\"isDetailed--true\",\"branchId--${branchId}\",\"ledgerId--${ref.watch(itemProvider).ledgerItem}\"]";
+    filterModel.pageRowCount = 10;
+    filterModel.currentPageNumber = 1;
     filterModel.strListNames = "";
 
     FilterAnyModel2 fModel = FilterAnyModel2();
@@ -131,210 +97,228 @@ class _DayBookReportState extends ConsumerState<BankCashView> {
     fModel.mainInfoModel = bankCashReportModel;
 
 
-    final bankCash = ref.watch(bankCashProvider);
 
-    return WillPopScope(
-      onWillPop: () async {
-        ref.invalidate(bankCashProvider);
 
-        // Return true to allow the back navigation, or false to prevent it
-        return true;
-      },
-      child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: ColorManager.primary,
-            centerTitle: true,
-            elevation: 0,
-            leading: IconButton(
-              onPressed: () {
-                ref.invalidate(bankCashProvider);
-                Navigator.pop(context, true);
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 28,
-                color: Colors.white,
-              ),
-            ),
-            title: const Text('Bank Cash Book Detail'),
-            titleTextStyle: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-            toolbarHeight: 70,
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 10,
+    return Consumer(
+        builder: (context, ref, child){
+
+
+          final bankCash = ref.watch(bankCashIndividualProvider(fModel));
+          return WillPopScope(
+            onWillPop: () async {
+              ref.invalidate(bankCashProvider2);
+
+              // Return true to allow the back navigation, or false to prevent it
+              return true;
+            },
+            child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: ColorManager.primary,
+                  centerTitle: true,
+                  elevation: 0,
+                  leading: IconButton(
+                    onPressed: () {
+                      ref.invalidate(bankCashProvider2);
+                      Navigator.pop(context, true);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 28,
+                      color: Colors.white,
                     ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                  ),
+                  title: const Text('Bank Cash Book Detail'),
+                  titleTextStyle: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                  toolbarHeight: 70,
+                ),
+                body: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text('Voucher No:',style: TextStyle(fontWeight: FontWeight.bold),),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(voucherNo)
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text('Date',style: TextStyle(fontWeight: FontWeight.bold),),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(date)
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Row(
+                                  children: [
+                                    Text('Ref No',style: TextStyle(fontWeight: FontWeight.bold),),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(refNo)
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                // ElevatedButton(
+                                //   onPressed: () async {
+                                //     getReport(fModel);
+                                //   },
+                                //   style: ElevatedButton.styleFrom(
+                                //     backgroundColor: ColorManager.green,
+                                //     minimumSize: const Size(200, 50),
+                                //     shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(10),
+                                //     ),
+                                //   ),
+                                //   child: const FaIcon(
+                                //     FontAwesomeIcons.arrowsRotate,
+                                //     color: Colors.white,
+                                //     size: 25,
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          bankCash.when(
+                            data: (data) {
+                              List<BankCashViewModel> newList = <BankCashViewModel>[];
+                              if (data.isNotEmpty) {
+                                for (var e in data) {
+                                  newList.add(BankCashViewModel.fromJson(e));
+                                }
+                              } else {
+                                return Container();
+                              }
+                              return Column(
                                 children: [
-                                  Text('Voucher No:',style: TextStyle(fontWeight: FontWeight.bold),),
                                   SizedBox(
-                                    width: 10,
+                                    width: double.infinity,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      physics: const ClampingScrollPhysics(),
+                                      child: DataTable(
+                                        columns: [
+                                          buildDataColumn(
+                                              60, 'S.N', TextAlign.center),
+                                          buildDataColumn(200, 'Particulars',
+                                              TextAlign.center),
+                                          buildDataColumn(
+                                              200, 'Dr', TextAlign.center),
+                                          buildDataColumn(
+                                              160, 'Cr', TextAlign.center),
+                                          buildDataColumn(
+                                              160, 'Cheque No', TextAlign.center),
+                                          buildDataColumn(160, 'Cheque Date',
+                                              TextAlign.center),
+                                          buildDataColumn(200, 'Narration',
+                                              TextAlign.center),
+                                        ],
+                                        rows: List.generate(
+                                          newList.length,
+                                              (index) => buildBankCashViewRow(index, newList[index],'','', context),
+                                        ),
+                                        columnSpacing: 0,
+                                        horizontalMargin: 0,
+                                      ),
+                                    ),
                                   ),
-                                  Text(widget.voucherNo)
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text('Date',style: TextStyle(fontWeight: FontWeight.bold),),
-                                  SizedBox(
-                                    width: 10,
+                                  const SizedBox(
+                                    height: 20,
                                   ),
-                                  Text(widget.date)
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+
+                                        children: [
+                                          Text('Narration:',style: TextStyle(fontWeight: FontWeight.bold),),
+                                          Text('${newList[0].mainNarration}')
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          Row(
+
+                                            children: [
+                                              Text('Dr:',style: TextStyle(fontWeight: FontWeight.bold),),
+                                              Text('${newList[0].strDebit}')
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Row(
+
+                                            children: [
+                                              Text('Cr:',style: TextStyle(fontWeight: FontWeight.bold),),
+                                              Text('${newList[0].strCredit}')
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Row(
-                            children: [
-                              Text('Ref No',style: TextStyle(fontWeight: FontWeight.bold),),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(widget.refNo)
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              getReport(fModel);
+                              );
+
+
+
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorManager.green,
-                              minimumSize: const Size(200, 50),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
+                            error: (error, stackTrace) =>
+                                Center(child: Text('$error')),
+                            loading: () => Center(
+                                child: Image.asset("assets/gif/loading-img2.gif", height: 120, width: 120,)
                             ),
-                            child: const FaIcon(
-                              FontAwesomeIcons.arrowsRotate,
-                              color: Colors.white,
-                              size: 25,
-                            ),
+                          ),
+                          const SizedBox(
+                            height: 30,
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    bankCash.when(
-                      data: (data) {
-                        List<BankCashViewModel> newList = <BankCashViewModel>[];
-                        if (data.isNotEmpty) {
-                          for (var e in data) {
-                            newList.add(BankCashViewModel.fromJson(e));
-                          }
-                        } else {
-                          return Container();
-                        }
-                        return SizedBox(
-                          width: double.infinity,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            physics: const ClampingScrollPhysics(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                DataTable(
-                                  columns: [
-                                    buildDataColumn(
-                                        60, 'S.N', TextAlign.center),
-                                    buildDataColumn(200, 'Particulars',
-                                        TextAlign.center),
-                                    buildDataColumn(
-                                        200, 'Dr', TextAlign.center),
-                                    buildDataColumn(
-                                        160, 'Cr', TextAlign.center),
-                                    buildDataColumn(
-                                        160, 'Cheque No', TextAlign.center),
-                                    buildDataColumn(160, 'Cheque Date',
-                                        TextAlign.center),
-                                    buildDataColumn(200, 'Narration',
-                                        TextAlign.center),
-                                  ],
-                                  rows: List.generate(
-                                    newList.length,
-                                        (index) => buildBankCashViewRow(index, newList[index],'','', context),
-                                  ),
-                                  columnSpacing: 0,
-                                  horizontalMargin: 0,
-                                ),
-                                /// Pager package used for pagination
-                                _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                  currentItemsPerPage: _rowPerPage,
-                                  currentPage: _currentPage,
-                                  totalPages: _totalPages,
-                                  onPageChanged: (page) {
-                                    _currentPage = page;
-                                    /// updates current page number of filterModel, because it does not update on its own
-                                    fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                    ref.read(bankCashProvider.notifier).fetchTableData(fModel);
-                                  },
-                                  showItemsPerPage: true,
-                                  onItemsPerPageChanged: (itemsPerPage) {
-                                    _rowPerPage = itemsPerPage;
-                                    _currentPage = 1;
-                                    /// updates row per page of filterModel, because it does not update on its own
-                                    fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                    ref.read(bankCashProvider.notifier).fetchTableData(fModel);
-                                  },
-                                  itemsPerPageList: rowPerPageItems,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-
-
-
-                      },
-                      error: (error, stackTrace) =>
-                          Center(child: Text('$error')),
-                      loading: () => const Center(
-                          child: CircularProgressIndicator()),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )),
+                  ),
+                )),
+          );
+        }
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 

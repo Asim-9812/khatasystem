@@ -13,6 +13,7 @@ import '../../../../../model/list model/list_model.dart';
 
 
 final bankCashProvider = StateNotifierProvider<BankCashReport, AsyncValue<List<dynamic>>>((ref) =>BankCashReport());
+final bankCashProvider2 = StateNotifierProvider<BankCashReport, AsyncValue<List<dynamic>>>((ref) =>BankCashReport());
 final bankCashListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => BankCashReport().getBankCashList(model));
 final bankCashLedgerListProvider = FutureProvider.family.autoDispose((ref, GetLedgerListModel model) => BankCashReport().getBankCashLedgerList(model));
 
@@ -24,7 +25,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
     final dio = Dio();
     try{
       final jsonData = jsonEncode(filterModel.toJson());
-      print(jsonData);
+
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
@@ -34,6 +35,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
       throw DioException().getDioError(err);
     }
   }
+
 
 
 
@@ -112,3 +114,28 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
 
 }
+
+
+
+
+final bankCashIndividualProvider = FutureProvider.family((ref, FilterAnyModel2 filterModel) => BankCashIndividualProvider().getTableData(filterModel));
+
+class BankCashIndividualProvider {
+  Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+        return result;
+      }else{
+        return [];
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+

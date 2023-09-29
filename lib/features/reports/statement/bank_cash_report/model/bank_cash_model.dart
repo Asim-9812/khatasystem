@@ -158,3 +158,75 @@ class BankCashDetailedModel {
     );
   }
 }
+
+
+class BankCashViewModel {
+  final int masterEntryID;
+  final String sno;
+  final String voucherNo;
+  final String voucherDate;
+  final String refNo;
+  final String chequeNo;
+  final String voucherID;
+  final String voucherName;
+  final int ledgerID;
+  final String particulars;
+  final String drcr;
+  final double debit;
+  final String strDebit;
+  final double credit;
+  final String strCredit;
+  final String narration;
+  final String chequeDate;
+  final double debitTotal;
+  final double creditTotal;
+  final String mainNarration;
+
+  BankCashViewModel({
+    required this.masterEntryID,
+    required this.sno,
+    required this.voucherNo,
+    required this.voucherDate,
+    required this.refNo,
+    required this.chequeNo,
+    required this.voucherID,
+    required this.voucherName,
+    required this.ledgerID,
+    required this.particulars,
+    required this.drcr,
+    required this.debit,
+    required this.strDebit,
+    required this.credit,
+    required this.strCredit,
+    required this.narration,
+    required this.chequeDate,
+    required this.debitTotal,
+    required this.creditTotal,
+    required this.mainNarration,
+  });
+
+  factory BankCashViewModel.fromJson(Map<String, dynamic> json) {
+    return BankCashViewModel(
+      masterEntryID: json['masterEntryID'],
+      sno: json['sno'],
+      voucherNo: json['voucherNo'],
+      voucherDate: json['voucherDate'],
+      refNo: json['refNo'],
+      chequeNo: json['chequeNo'],
+      voucherID: json['voucherID'],
+      voucherName: json['voucherName'],
+      ledgerID: json['ledgerID'],
+      particulars: json['particulars'],
+      drcr: json['drcr'],
+      debit: json['debit'].toDouble(),
+      strDebit: json['strDebit'],
+      credit: json['credit'].toDouble(),
+      strCredit: json['strCredit'],
+      narration: json['narration'],
+      chequeDate: json['chequeDate'],
+      debitTotal: json['debitTotal'].toDouble(),
+      creditTotal: json['creditTotal'].toDouble(),
+      mainNarration: json['mainNarration'],
+    );
+  }
+}

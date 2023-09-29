@@ -35,6 +35,7 @@ class UserLogin {
           if(sessionBox.isEmpty){
             sessionBox.put('userReturn', jsonEncode(response.data));
           }
+          print(response.data["userReturn"]);
           // final companyInfo = response.data["ownerCompanyList"];
           // final userData = response.data["userReturn"];
 

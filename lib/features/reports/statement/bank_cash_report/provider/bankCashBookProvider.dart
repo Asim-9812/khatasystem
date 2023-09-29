@@ -35,6 +35,8 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
     }
   }
 
+
+
   Future<List<Map<dynamic, dynamic>>> getBankCashList(GetListModel getListModel) async {
     final dio = Dio();
     final jsonData = jsonEncode(getListModel.toJson());
@@ -61,7 +63,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
         myList = [branch,group, ledger,date];
       }else{
       }
-      print(myList);
+
       return myList;
     }on DioError catch(err){
       throw DioException().getDioError(err);
@@ -70,21 +72,41 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
 
 
-  Future<List<Map<String, dynamic>>> getBankCashLedgerList(GetLedgerListModel getListModel) async {
+  Future<List<dynamic>> getBankCashLedgerList(GetLedgerListModel getListModel) async {
     final dio = Dio();
-    final jsonData = jsonEncode(getListModel.toJson());
-    try{
-      final response = await dio.post(Api.getLedgerList, data: jsonData);
 
-      if(response.statusCode == 200){
-        final responseList = response.data as List<Map<String, dynamic>>;
-       return responseList;
-      }else{
-        throw Exception('Something went wrong');
-      }
-    }on DioError catch(err){
-      throw DioException().getDioError(err);
+
+
+    if(getListModel.accountGroupId?.length == 0){
+      throw 'Please select a group';
     }
+
+    else{
+
+      try{
+        final jsonData = jsonEncode(getListModel.toJson());
+        final response = await dio.post(Api.getLedgerList, data: jsonData);
+
+
+        if(response.statusCode == 200){
+          final responseList = response.data as List<dynamic>;
+          return responseList;
+        }else{
+          throw Exception('Something went wrong');
+        }
+
+
+      }on DioError catch(err){
+        print('error : ${err.response}');
+        throw DioException().getDioError(err);
+      }
+    }
+
+
+
+
+
+
   }
 
 

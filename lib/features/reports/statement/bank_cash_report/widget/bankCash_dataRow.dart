@@ -6,6 +6,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:khata_app/features/reports/statement/bank_cash_report/model/bank_cash_model.dart';
+import 'package:khata_app/features/reports/statement/bank_cash_report/presentation/bank_cash_view.dart';
 import 'package:khata_app/features/reports/statement/daybook_report/model/daybook_model.dart';
 import 'package:khata_app/features/reports/statement/daybook_report/presentation/daybook_report_view.dart';
 import 'package:khata_app/features/reports/statement/daybook_report/provider/daybook_report_provider.dart';
@@ -43,10 +44,10 @@ DataRow buildBankCashRow1(int index, BankCashModel tblData,
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildBankCashDataCell(
-          200, '${tblData.cashDr}', TextAlign.center, 2),
+          200, '${tblData.strCashDr}', TextAlign.center, 2),
       buildBankCashDataCell(
-          200, '${tblData.cashCr}', TextAlign.center, 2),
-      buildBankCashDataCell(200, '${tblData.cashBalance}', TextAlign.center,
+          200, '${tblData.strCashCr}', TextAlign.center, 2),
+      buildBankCashDataCell(200, '${tblData.strCashBalance}', TextAlign.center,
           2),
     ],
   );
@@ -55,20 +56,21 @@ DataRow buildBankCashRow1(int index, BankCashModel tblData,
 DataRow buildBankCashRow2(int index, BankCashModel tblData,
     [BuildContext? context]) {
   return DataRow(
+
     color:
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildBankCashDataCell(
-          200, '${tblData.bankDr}', TextAlign.center, 2),
+          200, '${tblData.strBankDr}', TextAlign.center, 2),
       buildBankCashDataCell(
-          200, '${tblData.bankCr}', TextAlign.center, 2),
-      buildBankCashDataCell(200, '${tblData.bankBalance}', TextAlign.center,
+          200, '${tblData.strBankCr}', TextAlign.center, 2),
+      buildBankCashDataCell(200, '${tblData.strBankBalance}', TextAlign.center,
           2),
     ],
   );
 }
 
-DataRow buildBankCashRow3(int index, BankCashModel tblData,
+DataRow buildBankCashRow3(int index, BankCashModel tblData, String dateTo,String dateFrom,String branchId,
     [BuildContext? context]) {
   return DataRow(
     color:
@@ -78,17 +80,17 @@ DataRow buildBankCashRow3(int index, BankCashModel tblData,
         Center(
           child: ElevatedButton(
             onPressed: () {
-              // Navigator.push(
-              //     context!,
-              //     MaterialPageRoute(
-              //       builder: (context) => DayBookReportView(
-              //         voucherNo: tblData.voucherNo!,
-              //         voucherTypeId: voucherTypeId ,
-              //         branchId: branchId,
-              //         ledgerId: tblData.ledgerID!,
-              //         date: tblData.voucherDate!,
-              //       ),
-              //     ));
+              Navigator.push(
+                  context!,
+                  MaterialPageRoute(
+                      builder: (context) => BankCashView(
+                          voucherNo: tblData.voucherNo,
+                          date: tblData.date,
+                          refNo: tblData.refNo,
+                          dateTo: dateTo,
+                          dateFrom: dateFrom,
+                          branchId: branchId
+                      )));
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: ColorManager.green,
@@ -139,10 +141,10 @@ DataRow buildBankCashDetailedRow1(int index, BankCashDetailedModel tblData,
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildBankCashDetailedDataCell(
-          200, '${tblData.cashDr}', TextAlign.center, 2),
+          200, '${tblData.strCashDr}', TextAlign.center, 2),
       buildBankCashDetailedDataCell(
-          200, '${tblData.cashCr}', TextAlign.center, 2),
-      buildBankCashDetailedDataCell(200, '${tblData.cashBalance}', TextAlign.center,
+          200, '${tblData.strCashCr}', TextAlign.center, 2),
+      buildBankCashDetailedDataCell(200, '${tblData.strCashBalance}', TextAlign.center,
           2),
 
     ],
@@ -157,17 +159,17 @@ DataRow buildBankCashDetailedRow2(int index, BankCashDetailedModel tblData,
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildBankCashDetailedDataCell(
-          200, '${tblData.bankDr}', TextAlign.center, 2),
+          200, '${tblData.strBankDr}', TextAlign.center, 2),
       buildBankCashDetailedDataCell(
-          200, '${tblData.bankCr}', TextAlign.center, 2),
-      buildBankCashDetailedDataCell(200, '${tblData.bankBalance}', TextAlign.center,
+          200, '${tblData.strBankCr}', TextAlign.center, 2),
+      buildBankCashDetailedDataCell(200, '${tblData.strBankBalance}', TextAlign.center,
           2),
 
     ],
   );
 }
 
-DataRow buildBankCashDetailedRow3(int index, BankCashDetailedModel tblData,
+DataRow buildBankCashDetailedRow3(int index, BankCashDetailedModel tblData, String dateTo,String dateFrom,String branchId,
     [BuildContext? context]) {
   return DataRow(
     color:
@@ -177,17 +179,17 @@ DataRow buildBankCashDetailedRow3(int index, BankCashDetailedModel tblData,
         Center(
           child: ElevatedButton(
             onPressed: () {
-              // Navigator.push(
-              //     context!,
-              //     MaterialPageRoute(
-              //       builder: (context) => DayBookReportView(
-              //         voucherNo: tblData.voucherNo!,
-              //         voucherTypeId: voucherTypeId ,
-              //         branchId: branchId,
-              //         ledgerId: tblData.ledgerID!,
-              //         date: tblData.voucherDate!,
-              //       ),
-              //     ));
+              Navigator.push(
+                  context!,
+                  MaterialPageRoute(
+                    builder: (context) => BankCashView(
+                  voucherNo: tblData.voucherNo,
+                  date: tblData.date,
+                  refNo: tblData.refNo,
+                  dateTo: dateTo,
+                  dateFrom: dateFrom,
+                  branchId: branchId
+              )));
             },
             style: ElevatedButton.styleFrom(
                 backgroundColor: ColorManager.green,
@@ -206,7 +208,7 @@ DataRow buildBankCashDetailedRow3(int index, BankCashDetailedModel tblData,
 
 
 
-DataRow buildBankCashViewRow(int index, DayBookDetailedModel tblData, String voucherTypeId, String branchId,
+DataRow buildBankCashViewRow(int index, BankCashViewModel tblData, String voucherTypeId, String branchId,
     [BuildContext? context]) {
   return DataRow(
     color:
@@ -216,8 +218,6 @@ DataRow buildBankCashViewRow(int index, DayBookDetailedModel tblData, String vou
           60, tblData.sno??'', TextAlign.center, 2),
       buildBankCashDetailedDataCell(
           200, tblData.particulars??'-', TextAlign.center, 2),
-      buildBankCashDetailedDataCell(200, tblData.refNo??'-', TextAlign.center,
-          2),
       buildBankCashDetailedDataCell(
           160, tblData.strDebit??'-', TextAlign.center, 2),
       buildBankCashDetailedDataCell(

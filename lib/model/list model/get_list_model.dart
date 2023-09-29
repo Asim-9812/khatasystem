@@ -220,8 +220,8 @@ class GetLedgerListModel {
         this.accountGroupId,});
 
   GetLedgerListModel.fromJson(Map<String, dynamic> json) {
-    mainInfoModel = json['mainInfoModel'] != null
-        ? MainInfoModel.fromJson(json['mainInfoModel'])
+    mainInfoModel = json['mainInfo'] != null
+        ? MainInfoModel.fromJson(json['mainInfo'])
         : null;
     branchId = json['branchid'];
     accountGroupId = json['accountgroupid'];
@@ -230,7 +230,7 @@ class GetLedgerListModel {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (mainInfoModel != null) {
-      data['mainInfoModel'] = mainInfoModel!.toJson();
+      data['mainInfo'] = mainInfoModel!.toJson();
     }
     data['branchid'] = branchId;
     data['accountgroupid'] = accountGroupId;

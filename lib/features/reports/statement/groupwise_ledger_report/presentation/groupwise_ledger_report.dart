@@ -519,7 +519,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                           ],
                                           rows: List.generate(
                                             newList.length,
-                                                (index) => buildGroupWiseRow(index, newList[index], branchItem,groupItem,getFromDate(dateFrom),getToDate(dateTo),getBranchValue(branchItemData),allList, context),
+                                                (index) => buildGroupWiseRow(index, newList[index], branchItem,groupItem,dateFrom.text,dateTo.text,getBranchValue(branchItemData),groups,branches,allList, context),
                                           ),
                                           columnSpacing: 0,
                                           horizontalMargin: 0,

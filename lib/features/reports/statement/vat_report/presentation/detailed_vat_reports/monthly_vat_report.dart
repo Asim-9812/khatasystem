@@ -15,28 +15,10 @@ import '../../../../../../../common/colors.dart';
 import '../../../../common_widgets/build_report_table.dart';
 
 
-class MonthlyVatReportTab extends StatefulWidget {
-  final MonthlyModel data;
+class MonthlyVatReportTab extends StatelessWidget {
+  final MonthlyModel vatData;
   final String branchName;
-  MonthlyVatReportTab({required this.data,required this.branchName});
-
-  @override
-  State<MonthlyVatReportTab> createState() => _MonthlyVatReportTabState();
-}
-
-class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
-  late int _currentPage;
-  late int _rowPerPage;
-  List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
-  late int _totalPages;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentPage = 1;
-    _rowPerPage = 10;
-    _totalPages = 0;
-  }
+  MonthlyVatReportTab({required this.vatData,required this.branchName});
 
   @override
   Widget build(BuildContext context) {
@@ -48,25 +30,27 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
 
+    DataFilterModel filterModel = DataFilterModel();
+    filterModel.tblName = "VatReport";
+    filterModel.strName = "";
+    filterModel.underColumnName = null;
+    filterModel.underIntID = 0;
+    filterModel.columnName = null;
+    filterModel.filterColumnsString =
+    "[\"branchId--${vatData.branchId}\",\"fromDate--${vatData.monthFromDate}\",\"toDate--${vatData.monthToDate}\"]";
+    filterModel.pageRowCount = 25;
+    filterModel.currentPageNumber = 1;
+    filterModel.strListNames = "";
+
+    FilterAnyModel fModel = FilterAnyModel();
+    fModel.dataFilterModel = filterModel;
+    fModel.mainInfoModel = mainInfo;
+
+
     return Consumer(
       builder: (context, ref, child) {
-        final outCome = ref.watch(vatListProvider(modelRef));
-        final res = ref.watch(vatReportProvider);
-        DataFilterModel filterModel = DataFilterModel();
-        filterModel.tblName = "VatReport";
-        filterModel.strName = "";
-        filterModel.underColumnName = null;
-        filterModel.underIntID = 0;
-        filterModel.columnName = null;
-        filterModel.filterColumnsString =
-        "[\"branchId--${widget.data.branchId}\",\"fromDate--${widget.data.monthFromDate}\",\"toDate--${widget.data.monthToDate}\"]";
-        filterModel.pageRowCount = _rowPerPage;
-        filterModel.currentPageNumber = _currentPage;
-        filterModel.strListNames = "";
+        final res = ref.watch(vatMonthlyProvider(fModel));
 
-        FilterAnyModel fModel = FilterAnyModel();
-        fModel.dataFilterModel = filterModel;
-        fModel.mainInfoModel = mainInfo;
 
         return WillPopScope(
           onWillPop: () async {
@@ -110,7 +94,6 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                           height: 10,
                         ),
                         Container(
-                          height: 200,
                           width: double.infinity,
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 10),
@@ -119,78 +102,31 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.black.withOpacity(0.7),
-                                          ),
-                                        borderRadius: BorderRadius.circular(10)
-                                      ),
-                                      child: Center(
-                                        child: Text(DateFormat('yyyy/MM/dd').format(widget.data.monthFromDate),style: const TextStyle(color: Colors.black),),),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.black.withOpacity(0.7),
-                                          ),
-                                          borderRadius: BorderRadius.circular(10)
-                                      ),
-                                      child: Center(
-                                        child: Text(DateFormat('yyyy/MM/dd').format(widget.data.monthToDate),style: const TextStyle(color: Colors.black),),),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              Text('Vat Report for ${vatData.month}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
                               const SizedBox(
                                 height: 20,
                               ),
-                              Expanded(
-                                child: Container(
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: Colors.black.withOpacity(0.7),
-                                      ),
-                                      borderRadius: BorderRadius.circular(10)
-                                  ),
-                                  child: Center(
-                                    child: Text(widget.branchName,style: const TextStyle(color: Colors.black),),),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  ref.read(vatReportProvider.notifier).getTableValues(fModel);
-
-
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: ColorManager.green,
-                                  minimumSize: const Size(200, 50),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: const FaIcon(
-                                  FontAwesomeIcons.arrowsRotate,
-                                  color: Colors.white,
-                                  size: 25,
-                                ),
-                              ),
+                              // ElevatedButton(
+                              //   onPressed: () async {
+                              //     ref.read(vatReportProvider.notifier).getTableValues(fModel);
+                              //
+                              //
+                              //   },
+                              //   style: ElevatedButton.styleFrom(
+                              //     backgroundColor: ColorManager.green,
+                              //     minimumSize: const Size(200, 50),
+                              //     shape: RoundedRectangleBorder(
+                              //       borderRadius: BorderRadius.circular(10),
+                              //     ),
+                              //   ),
+                              //   child: const FaIcon(
+                              //     FontAwesomeIcons.arrowsRotate,
+                              //     color: Colors.white,
+                              //     size: 25,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
@@ -200,7 +136,7 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                         res.when(
                           data: (data) {
                             List<VatReportModel> newList = <VatReportModel>[];
-                            List<String> reportTotal = <String>[];
+
                             if (data.isNotEmpty) {
                               for (var e in data) {
                                 newList.add(VatReportModel.fromJson(e));
@@ -237,32 +173,12 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                                       ],
                                       rows: List.generate(
                                         newList.length,
-                                            (index) => buildVatRow2(index, newList[index],'branchId--${widget.data.branchId}','fromDate--${DateFormat('yyyy/MM/dd').format(widget.data.monthFromDate)}','toDate--${DateFormat('yyyy/MM/dd').format(widget.data.monthToDate)}', context),
+                                            (index) => buildVatRow2(index, newList[index],'branchId--${vatData.branchId}','fromDate--${DateFormat('yyyy/MM/dd').format(vatData.monthFromDate)}','toDate--${DateFormat('yyyy/MM/dd').format(vatData.monthToDate)}', context),
                                       ),
                                       columnSpacing: 0,
                                       horizontalMargin: 0,
                                     ),
-                                    /// Pager package used for pagination
-                                    _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                      currentItemsPerPage: _rowPerPage,
-                                      currentPage: _currentPage,
-                                      totalPages: _totalPages,
-                                      onPageChanged: (page) {
-                                        _currentPage = page;
-                                        /// updates current page number of filterModel, because it does not update on its own
-                                        fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                        ref.read(vatReportProvider.notifier).getTableValues(fModel);
-                                      },
-                                      showItemsPerPage: true,
-                                      onItemsPerPageChanged: (itemsPerPage) {
-                                        _rowPerPage = itemsPerPage;
-                                        _currentPage = 1;
-                                        /// updates row per page of filterModel, because it does not update on its own
-                                        fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                        ref.read(tableDataProvider.notifier).getTableValues(fModel);
-                                      },
-                                      itemsPerPageList: rowPerPageItems,
-                                    ),
+
                                   ],
                                 ),
                               ),
@@ -270,9 +186,9 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
                           },
                           error: (error, stackTrace) =>
                               Center(child: Text('$error')),
-                          loading: () => const Center(
-                              child: CircularProgressIndicator()),
-                        ),
+                          loading: () => Center(
+                              child: Image.asset("assets/gif/loading-img2.gif", height: 120, width: 120,)
+                          ),),
                         const SizedBox(
                           height: 30,
                         ),
@@ -284,11 +200,6 @@ class _MonthlyVatReportTabState extends State<MonthlyVatReportTab> {
         );
       },
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 

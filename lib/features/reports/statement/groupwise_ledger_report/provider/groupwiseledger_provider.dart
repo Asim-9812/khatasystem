@@ -81,3 +81,27 @@ class LedgerDetailGroupWiseProvider extends StateNotifier<AsyncValue<List<dynami
   }
 
 }
+
+
+
+final ledgerDetailIndividualProvider = FutureProvider.family((ref, FilterAnyModel2 filterModel) => LedgerDetailIndividualProvider().getTableData(filterModel));
+
+class LedgerDetailIndividualProvider {
+  Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
+    final dio = Dio();
+    try{
+      final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+        return result;
+      }else{
+        return [];
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+

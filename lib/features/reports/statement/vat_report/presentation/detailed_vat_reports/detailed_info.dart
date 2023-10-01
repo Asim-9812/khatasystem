@@ -31,19 +31,8 @@ class DetailedVatReport extends StatefulWidget {
 }
 
 class _DetailedVatReportState extends State<DetailedVatReport> {
-  late int _currentPage;
-  late int _rowPerPage;
-  List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
-  late int _totalPages;
-  late MainInfoModel2 vatReportMainInfo;
 
-  @override
-  void initState() {
-    super.initState();
-    _currentPage = 1;
-    _rowPerPage = 10;
-    _totalPages = 0;
-  }
+  late MainInfoModel2 vatReportMainInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -81,28 +70,30 @@ class _DetailedVatReportState extends State<DetailedVatReport> {
       id: widget.voucherTypeId
     );
 
+    DataFilterModel filterModel = DataFilterModel();
+    filterModel.tblName = "VatReport";
+    filterModel.strName = "";
+    filterModel.underColumnName = null;
+    filterModel.underIntID = 0;
+    filterModel.columnName = null;
+    filterModel.filterColumnsString =
+    "[\"${widget.branchId}\",\"${widget.dateFrom}\",\"${widget.dateTo}\"]";
+    filterModel.pageRowCount = 10;
+    filterModel.currentPageNumber = 1;
+    filterModel.strListNames = "";
+
+    FilterAnyModel2 fModel = FilterAnyModel2();
+    fModel.dataFilterModel = filterModel;
+    fModel.mainInfoModel = vatReportMainInfo;
+
     return Consumer(
       builder: (context, ref, child) {
-        final res = ref.watch(vatReportDetailProvider);
-        DataFilterModel filterModel = DataFilterModel();
-        filterModel.tblName = "VatReport";
-        filterModel.strName = "";
-        filterModel.underColumnName = null;
-        filterModel.underIntID = 0;
-        filterModel.columnName = null;
-        filterModel.filterColumnsString =
-        "[\"${widget.branchId}\",\"${widget.dateFrom}\",\"${widget.dateTo}\"]";
-        filterModel.pageRowCount = _rowPerPage;
-        filterModel.currentPageNumber = _currentPage;
-        filterModel.strListNames = "";
+        final res = ref.watch(vatReportIndividualProvider(fModel));
 
-        FilterAnyModel2 fModel = FilterAnyModel2();
-        fModel.dataFilterModel = filterModel;
-        fModel.mainInfoModel = vatReportMainInfo;
 
         return WillPopScope(
           onWillPop: () async {
-            ref.invalidate(vatReportDetailProvider);
+            ref.invalidate(vatReportIndividualProvider);
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
@@ -114,7 +105,7 @@ class _DetailedVatReportState extends State<DetailedVatReport> {
                 elevation: 0,
                 leading: IconButton(
                   onPressed: () {
-                    ref.invalidate(vatReportDetailProvider);
+                    ref.invalidate(vatReportIndividualProvider);
                     Navigator.pop(context, true);
                   },
                   icon: const Icon(
@@ -150,66 +141,35 @@ class _DetailedVatReportState extends State<DetailedVatReport> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Vat details of ${widget.rowName}',style:const TextStyle(fontWeight: FontWeight.bold),),
+                              Text('Vat details of ${widget.rowName}',style:const TextStyle(fontWeight: FontWeight.bold,fontSize: 20),),
                               const SizedBox(
                                 height: 10,
                               ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.black.withOpacity(0.7),
-                                          ),
-                                          borderRadius: BorderRadius.circular(10)
-                                      ),
-                                      child: Center(
-                                        child: Text(widget.dateFrom,style: const TextStyle(color: Colors.black),),),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                            color: Colors.black.withOpacity(0.7),
-                                          ),
-                                          borderRadius: BorderRadius.circular(10)
-                                      ),
-                                      child: Center(
-                                        child: Text(widget.dateTo,style: const TextStyle(color: Colors.black),),),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              Text('For the period of ${widget.dateFrom} ${widget.dateTo}',style:const TextStyle(fontWeight: FontWeight.bold,fontSize: 16),),
                               const SizedBox(
                                 height: 20,
                               ),
-                              ElevatedButton(
-                                onPressed: () async {
-                                  ref.read(vatReportDetailProvider.notifier).getTableValues2(fModel);
-
-
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: ColorManager.green,
-                                  minimumSize: const Size(200, 50),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                child: const FaIcon(
-                                  FontAwesomeIcons.arrowsRotate,
-                                  color: Colors.white,
-                                  size: 25,
-                                ),
-                              ),
+                              // ElevatedButton(
+                              //   onPressed: () async {
+                              //     ref.read(vatReportDetailProvider.notifier).getTableValues2(fModel);
+                              //
+                              //
+                              //   },
+                              //   style: ElevatedButton.styleFrom(
+                              //     backgroundColor: ColorManager.green,
+                              //     minimumSize: const Size(200, 50),
+                              //     shape: RoundedRectangleBorder(
+                              //       borderRadius: BorderRadius.circular(10),
+                              //     ),
+                              //   ),
+                              //   child: const FaIcon(
+                              //     FontAwesomeIcons.arrowsRotate,
+                              //     color: Colors.white,
+                              //     size: 25,
+                              //   ),
+                              // ),
                             ],
                           ),
                         ),
@@ -219,76 +179,77 @@ class _DetailedVatReportState extends State<DetailedVatReport> {
                         res.when(
                           data: (data) {
                             List<VatReportDetailModel> newList = <VatReportDetailModel>[];
-                            List<String> reportTotal = <String>[];
+
                             if (data.isNotEmpty) {
-                              for (var e in data) {
+                              for (var e in data[0]) {
                                 newList.add(VatReportDetailModel.fromJson(e));
                               }
                             } else {
                               return Container();
                             }
 
-                            print(newList);
-                            return SizedBox(
-                              width: double.infinity,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                physics: const ClampingScrollPhysics(),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    DataTable(
-                                      columns: [
-                                        buildDataColumn(
-                                            60, 'S.N', TextAlign.start),
-                                        buildDataColumn(200, 'Invoice Date',
-                                            TextAlign.start),
-                                        buildDataColumn(
-                                            200, 'Total Amount', TextAlign.start),
-                                        buildDataColumn(
-                                            160, 'Total Taxable Amount', TextAlign.end),
-                                        buildDataColumn(
-                                            160, 'Debit (Dr)', TextAlign.end),
-                                        buildDataColumn(160, 'Credit (Cr)',
-                                            TextAlign.end),
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    physics: const ClampingScrollPhysics(),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        DataTable(
+                                          columns: [
+                                            buildDataColumn(
+                                                60, 'S.N', TextAlign.start),
+                                            buildDataColumn(200, 'Invoice Date',
+                                                TextAlign.start),
+                                            buildDataColumn(
+                                                200, 'Total Amount', TextAlign.start),
+                                            buildDataColumn(
+                                                160, 'Total Taxable Amount', TextAlign.end),
+                                            buildDataColumn(
+                                                160, 'Debit (Dr)', TextAlign.end),
+                                            buildDataColumn(160, 'Credit (Cr)',
+                                                TextAlign.end),
+                                          ],
+                                          rows: List.generate(
+                                            newList.length,
+                                                (index) => buildVatDetailRow(index, newList[index], context),
+                                          ),
+                                          columnSpacing: 0,
+                                          horizontalMargin: 0,
+                                        ),
+
                                       ],
-                                      rows: List.generate(
-                                        newList.length,
-                                            (index) => buildVatDetailRow(index, newList[index], context),
-                                      ),
-                                      columnSpacing: 0,
-                                      horizontalMargin: 0,
                                     ),
-                                    /// Pager package used for pagination
-                                    _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                      currentItemsPerPage: _rowPerPage,
-                                      currentPage: _currentPage,
-                                      totalPages: _totalPages,
-                                      onPageChanged: (page) {
-                                        _currentPage = page;
-                                        /// updates current page number of filterModel, because it does not update on its own
-                                        fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                        ref.read(vatReportProvider.notifier).getTableValues2(fModel);
-                                      },
-                                      showItemsPerPage: true,
-                                      onItemsPerPageChanged: (itemsPerPage) {
-                                        _rowPerPage = itemsPerPage;
-                                        _currentPage = 1;
-                                        /// updates row per page of filterModel, because it does not update on its own
-                                        fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                        ref.read(tableDataProvider.notifier).getTableValues2(fModel);
-                                      },
-                                      itemsPerPageList: rowPerPageItems,
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                Text('Total Amount: ${newList.last.allTotalAmount}',style:const TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text('Taxable Amount: ${newList.last.allTaxableAmount}',style:const TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text('VAT Amount Dr: ${newList.last.allVATAmountDr}',style:const TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Text('VAT Amount Cr: ${newList.last.allVATAmountCr}',style:const TextStyle(fontSize: 18,fontWeight: FontWeight.bold)),
+                              ],
                             );
                           },
                           error: (error, stackTrace) =>
                               Center(child: Text('$error')),
-                          loading: () => const Center(
-                              child: CircularProgressIndicator()),
+                          loading: () => Center(
+                              child: Image.asset("assets/gif/loading-img2.gif", height: 120, width: 120,)
+                          ),
                         ),
                         const SizedBox(
                           height: 30,

@@ -36,10 +36,11 @@ class LedgerDetailGroupWiseReport extends ConsumerStatefulWidget {
   final String groupName;
   final String branchName;
   final int id;
+  final int ledgerId;
   final String dateFrom;
   final String dateTo;
   final String branchId;
-  LedgerDetailGroupWiseReport({required this.branchName,required this.dateTo,required this.dateFrom,required this.branchId,required this.id,required this.groupName});
+  LedgerDetailGroupWiseReport({required this.ledgerId,required this.branchName,required this.dateTo,required this.dateFrom,required this.branchId,required this.id,required this.groupName});
 
   @override
   ConsumerState<LedgerDetailGroupWiseReport> createState() => _DayBookReportState();
@@ -50,6 +51,8 @@ class _DayBookReportState extends ConsumerState<LedgerDetailGroupWiseReport> {
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
+  TextEditingController dateFrom = TextEditingController();
+  TextEditingController dateTo = TextEditingController();
   late MainInfoModel2 ledgerReportMainInfo;
 
 
@@ -59,6 +62,8 @@ class _DayBookReportState extends ConsumerState<LedgerDetailGroupWiseReport> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
+    dateFrom.text = widget.dateFrom;
+    dateTo.text = widget.dateTo;
 
   }
 
@@ -122,7 +127,7 @@ class _DayBookReportState extends ConsumerState<LedgerDetailGroupWiseReport> {
     filterModel.underIntID = 0;
     filterModel.columnName = null;
     filterModel.filterColumnsString =
-    "[\"ledgerId--${widget.id}\",\"${widget.dateFrom}\",\"${widget.dateTo}\",\"accountGroupId--\",\"isInclusive--false\",\"${widget.branchId}\"]";
+    "[\"ledgerId--${widget.ledgerId}\",\"fromDate--${dateFrom.text}\",\"toDate--${dateTo.text}\",\"accountGroupId--${widget.id}\",\"isInclusive--false\",\"${widget.branchId}\"]";
     filterModel.pageRowCount = _rowPerPage;
     filterModel.currentPageNumber = _currentPage;
     filterModel.strListNames = "";
@@ -132,63 +137,174 @@ class _DayBookReportState extends ConsumerState<LedgerDetailGroupWiseReport> {
     fModel.mainInfoModel = ledgerReportMainInfo;
 
 
-    final res2 = ref.watch(ledgerDetailGroupWiseProvider);
 
-    return WillPopScope(
-      onWillPop: () async {
-        ref.invalidate(ledgerDetailGroupWiseProvider);
 
-        // Return true to allow the back navigation, or false to prevent it
-        return true;
-      },
-      child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: ColorManager.primary,
-            centerTitle: true,
-            elevation: 0,
-            leading: IconButton(
-              onPressed: () {
-                ref.invalidate(ledgerDetailGroupWiseProvider);
-                Navigator.pop(context, true);
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios_new_rounded,
-                size: 28,
-                color: Colors.white,
-              ),
-            ),
-            title: const Text('Day Book Report'),
-            titleTextStyle: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-            ),
-            toolbarHeight: 70,
-          ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: SingleChildScrollView(
-                physics: const ClampingScrollPhysics(),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 10,
+    return Consumer(
+        builder: (context,ref,child){
+          final res2 = ref.watch(ledgerDetailIndividualProvider(fModel));
+          return WillPopScope(
+            onWillPop: () async {
+              ref.invalidate(ledgerDetailGroupWiseProvider);
+
+              // Return true to allow the back navigation, or false to prevent it
+              return true;
+            },
+            child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: ColorManager.primary,
+                  centerTitle: true,
+                  elevation: 0,
+                  leading: IconButton(
+                    onPressed: () {
+                      ref.invalidate(ledgerDetailGroupWiseProvider);
+                      Navigator.pop(context, true);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      size: 28,
+                      color: Colors.white,
                     ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
+                  ),
+                  title: const Text('Ledger Detail'),
+                  titleTextStyle: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                  toolbarHeight: 70,
+                ),
+                body: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
                       child: Column(
                         children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Container(
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Column(
+                              children: [
+
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text('From Date',style: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.bold),),
+                                          ),
+                                          InkWell(
+                                            onTap:() async {
+                                              DateTime? pickDate =
+                                              await showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.parse(mainInfo.startDate!),
+                                                firstDate: DateTime.parse(mainInfo.startDate!),
+                                                lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
+                                              );
+                                              if (pickDate != null) {
+                                                setState(() {
+                                                  dateFrom.text =
+                                                      DateFormat('yyyy/MM/dd')
+                                                          .format(pickDate);
+                                                });
+                                              }
+                                            } ,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(15),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  border: Border.all(
+                                                      color: ColorManager.black.withOpacity(0.45)
+                                                  )
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(dateFrom.text.isEmpty? 'From': dateFrom.text,style:TextStyle(fontSize: 18),),
+                                                  Icon(
+                                                    Icons.edit_calendar,
+                                                    size: 30,
+                                                    color: ColorManager.primary,
+                                                  ),
+
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text('To Date',style: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.bold),),
+                                          ),
+                                          InkWell(
+                                            onTap:() async {
+                                              DateTime? pickDate =
+                                              await showDatePicker(
+                                                context: context,
+                                                initialDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
+                                                firstDate: DateTime.parse(mainInfo.startDate!),
+                                                lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
+                                              );
+                                              if (pickDate != null) {
+                                                setState(() {
+                                                  dateTo.text =
+                                                      DateFormat('yyyy/MM/dd')
+                                                          .format(pickDate);
+                                                });
+                                              }
+                                            } ,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(15),
+                                              decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  border: Border.all(
+                                                      color: ColorManager.black.withOpacity(0.45)
+                                                  )
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text(dateTo.text.isEmpty? 'To': dateTo.text,style:TextStyle(fontSize: 18),),
+                                                  Icon(
+                                                    Icons.edit_calendar,
+                                                    size: 30,
+                                                    color: ColorManager.primary,
+                                                  ),
+
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
                                   height: 50,
                                   decoration: BoxDecoration(
                                       border: Border.all(
@@ -197,14 +313,22 @@ class _DayBookReportState extends ConsumerState<LedgerDetailGroupWiseReport> {
                                       borderRadius: BorderRadius.circular(10)
                                   ),
                                   child: Center(
-                                    child: Text(widget.dateFrom,style: const TextStyle(color: Colors.black),),),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+
+                                        Text('Group:',style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Html(data: widget.groupName,shrinkWrap: true,)
+                                      ],
+                                    ),),
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Container(
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Container(
                                   height: 50,
                                   decoration: BoxDecoration(
                                       border: Border.all(
@@ -213,223 +337,164 @@ class _DayBookReportState extends ConsumerState<LedgerDetailGroupWiseReport> {
                                       borderRadius: BorderRadius.circular(10)
                                   ),
                                   child: Center(
-                                    child: Text(widget.dateTo,style: const TextStyle(color: Colors.black),),),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.black.withOpacity(0.7),
-                                ),
-                                borderRadius: BorderRadius.circular(10)
-                            ),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
 
-                                  Text('Group:',style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Html(data: widget.groupName,shrinkWrap: true,)
-                                ],
-                              ),),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            height: 50,
-                            decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.black.withOpacity(0.7),
+                                        Text('Branch:',style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Html(data: widget.branchName,shrinkWrap: true,)
+                                      ],
+                                    ),),
                                 ),
-                                borderRadius: BorderRadius.circular(10)
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                // ElevatedButton(
+                                //   onPressed: () async {
+                                //     getReport(fModel);
+                                //   },
+                                //   style: ElevatedButton.styleFrom(
+                                //     backgroundColor: ColorManager.green,
+                                //     minimumSize: const Size(200, 50),
+                                //     shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(10),
+                                //     ),
+                                //   ),
+                                //   child: const FaIcon(
+                                //     FontAwesomeIcons.arrowsRotate,
+                                //     color: Colors.white,
+                                //     size: 25,
+                                //   ),
+                                // ),
+                              ],
                             ),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          res2.when(
+                            data: (data) {
+                              List<LedgerDetailGroupWiseModel> newList = <LedgerDetailGroupWiseModel>[];
+                              List<String> reportTotal = <String>[];
+                              if (data.isNotEmpty) {
+                                final tableReport = ReportData.fromJson(data[2]);
+                                _totalPages = tableReport.totalPages!;
+                                for (var e in data[0]) {
+                                  newList.add(LedgerDetailGroupWiseModel.fromJson(e));
+                                }
+                                data[1].forEach((key, value) {
+                                  reportTotal.add(value);
+                                });
+                              } else {
+                                return Container();
+                              }
+                              return SizedBox(
+                                width: double.infinity,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  physics: const ClampingScrollPhysics(),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      DataTable(
+                                        columns: [
+                                          buildDataColumn(
+                                              60, 'S.N', TextAlign.center),
+                                          buildDataColumn(200, 'Date',
+                                              TextAlign.center),
+                                          buildDataColumn(200, 'Voucher No',
+                                              TextAlign.center),
+                                          buildDataColumn(
+                                              200, 'Ref No', TextAlign.center),
+                                          buildDataColumn(
+                                              200, 'Cheque No', TextAlign.center),
+                                          buildDataColumn(
+                                              200, 'Voucher Type', TextAlign.center),
+                                          buildDataColumn(160, 'Dr',
+                                              TextAlign.center),
+                                          buildDataColumn(160, 'Cr',
+                                              TextAlign.center),
+                                          buildDataColumn(200, 'Balance',
+                                              TextAlign.center),
+                                          buildDataColumn(200, 'Narration',
+                                              TextAlign.center),
+                                        ],
+                                        rows: List.generate(
+                                          newList.length,
+                                              (index) => buildLedgerDetailGroupWiseRow(index, newList[index],'',context),
+                                        ),
+                                        columnSpacing: 0,
+                                        horizontalMargin: 0,
+                                      ),
+                                      Table(
+                                        columnWidths: const <int,
+                                            TableColumnWidth>{
+                                          0: FixedColumnWidth(50),
+                                          1: FixedColumnWidth(200),
+                                          2: FixedColumnWidth(200),
+                                          3: FixedColumnWidth(200),
+                                          4: FixedColumnWidth(200),
+                                          5: FixedColumnWidth(200),
+                                          6: FixedColumnWidth(200),
+                                          7: FixedColumnWidth(160),
+                                          8: FixedColumnWidth(160),
+                                          9: FixedColumnWidth(200),
+                                          10: FixedColumnWidth(200),
+                                        },
+                                        children: [
+                                          TableRow(
+                                            decoration: BoxDecoration(
+                                              color: ColorManager.primary,
+                                            ),
+                                            children: [
+                                              buildTableCell(''),
+                                              buildTableCell(''),
+                                              buildTableCell(''),
+                                              buildTableCell(''),
+                                              buildTableCell(''),
+                                              buildTableCell('Total'),
+                                              buildTableCell(
+                                                  reportTotal[0],
+                                                  TextAlign.center),
+                                              buildTableCell(reportTotal[1],
+                                                  TextAlign.center),
+                                              buildTableCell(reportTotal[2],
+                                                  TextAlign.center),
+                                              buildTableCell(
+                                                  reportTotal[3],
+                                                  TextAlign.center),
 
-                                  Text('Branch:',style: const TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
-                                  const SizedBox(
-                                    width: 10,
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+
+                                    ],
                                   ),
-                                  Html(data: widget.branchName,shrinkWrap: true,)
-                                ],
-                              ),),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              getReport(fModel);
+                                ),
+                              );
+
+
+
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: ColorManager.green,
-                              minimumSize: const Size(200, 50),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: const FaIcon(
-                              FontAwesomeIcons.arrowsRotate,
-                              color: Colors.white,
-                              size: 25,
-                            ),
+                            error: (error, stackTrace) =>
+                                Center(child: Text('$error')),
+                            loading: () => const Center(
+                                child: CircularProgressIndicator()),
+                          ),
+                          const SizedBox(
+                            height: 30,
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    res2.when(
-                      data: (data) {
-                        List<LedgerDetailGroupWiseModel> newList = <LedgerDetailGroupWiseModel>[];
-                        List<String> reportTotal = <String>[];
-                        if (data.isNotEmpty) {
-                          final tableReport = ReportData.fromJson(data[2]);
-                          _totalPages = tableReport.totalPages!;
-                          for (var e in data[0]) {
-                            newList.add(LedgerDetailGroupWiseModel.fromJson(e));
-                          }
-                          data[1].forEach((key, value) {
-                            reportTotal.add(value);
-                          });
-                        } else {
-                          return Container();
-                        }
-                        return SizedBox(
-                          width: double.infinity,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            physics: const ClampingScrollPhysics(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                DataTable(
-                                  columns: [
-                                    buildDataColumn(
-                                        60, 'S.N', TextAlign.center),
-                                    buildDataColumn(200, 'Date',
-                                        TextAlign.center),
-                                    buildDataColumn(200, 'Voucher No',
-                                        TextAlign.center),
-                                    buildDataColumn(
-                                        200, 'Ref No', TextAlign.center),
-                                    buildDataColumn(
-                                        200, 'Cheque No', TextAlign.center),
-                                    buildDataColumn(
-                                        200, 'Voucher Type', TextAlign.center),
-                                    buildDataColumn(160, 'Dr',
-                                        TextAlign.center),
-                                    buildDataColumn(160, 'Cr',
-                                        TextAlign.center),
-                                    buildDataColumn(200, 'Balance',
-                                        TextAlign.center),
-                                    buildDataColumn(200, 'Narration',
-                                        TextAlign.center),
-                                  ],
-                                  rows: List.generate(
-                                    newList.length,
-                                        (index) => buildLedgerDetailGroupWiseRow(index, newList[index],'',context),
-                                  ),
-                                  columnSpacing: 0,
-                                  horizontalMargin: 0,
-                                ),
-                                Table(
-                                  columnWidths: const <int,
-                                      TableColumnWidth>{
-                                    0: FixedColumnWidth(50),
-                                    1: FixedColumnWidth(200),
-                                    2: FixedColumnWidth(200),
-                                    3: FixedColumnWidth(200),
-                                    4: FixedColumnWidth(200),
-                                    5: FixedColumnWidth(200),
-                                    6: FixedColumnWidth(200),
-                                    7: FixedColumnWidth(160),
-                                    8: FixedColumnWidth(160),
-                                    9: FixedColumnWidth(200),
-                                    10: FixedColumnWidth(200),
-                                  },
-                                  children: [
-                                    TableRow(
-                                      decoration: BoxDecoration(
-                                        color: ColorManager.primary,
-                                      ),
-                                      children: [
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell('Total'),
-                                        buildTableCell(
-                                            reportTotal[0],
-                                            TextAlign.end),
-                                        buildTableCell(reportTotal[1],
-                                            TextAlign.end),
-                                        buildTableCell(reportTotal[2],
-                                            TextAlign.end),
-                                        buildTableCell(
-                                            reportTotal[3],
-                                            TextAlign.end),
-
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                /// Pager package used for pagination
-                                _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                  currentItemsPerPage: _rowPerPage,
-                                  currentPage: _currentPage,
-                                  totalPages: _totalPages,
-                                  onPageChanged: (page) {
-                                    _currentPage = page;
-                                    /// updates current page number of filterModel, because it does not update on its own
-                                    fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                    ref.read(ledgerDetailGroupWiseProvider.notifier).getTableValues(fModel);
-                                  },
-                                  showItemsPerPage: true,
-                                  onItemsPerPageChanged: (itemsPerPage) {
-                                    _rowPerPage = itemsPerPage;
-                                    _currentPage = 1;
-                                    /// updates row per page of filterModel, because it does not update on its own
-                                    fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                    ref.read(tableDataProvider.notifier).getTableValues2(fModel);
-                                  },
-                                  itemsPerPageList: rowPerPageItems,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-
-
-
-                      },
-                      error: (error, stackTrace) =>
-                          Center(child: Text('$error')),
-                      loading: () => const Center(
-                          child: CircularProgressIndicator()),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )),
+                  ),
+                )),
+          );
+        }
     );
   }
 

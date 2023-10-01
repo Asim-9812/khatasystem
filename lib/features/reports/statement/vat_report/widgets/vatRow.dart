@@ -187,7 +187,7 @@ DataRow buildMonthlyRow(int index, MonthlyModel tblData,
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MonthlyVatReportTab(data: tblData,branchName: branchName,),
+                        builder: (context) => MonthlyVatReportTab(vatData: tblData,branchName: branchName,),
                       ));
                 },
                 style: ElevatedButton.styleFrom(

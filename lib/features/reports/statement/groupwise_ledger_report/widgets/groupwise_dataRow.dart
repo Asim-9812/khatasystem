@@ -15,7 +15,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 final HtmlUnescape unescape = HtmlUnescape();
 
-DataRow buildGroupWiseRow(int index,GroupwiseLedgerReportModel tblData, String branchName, String groupName, String dateFrom,String dateTo, String branchId,
+DataRow buildGroupWiseRow(int index,GroupwiseLedgerReportModel tblData, String branchName, String groupName, String dateFrom,String dateTo, String branchId, List<String> groups,List<String> branches,
     final List<Map<dynamic, dynamic>> dropDownList,
     [BuildContext? context]) {
   final accountGroup = unescape.convert(tblData.accountGroup!);
@@ -24,17 +24,17 @@ DataRow buildGroupWiseRow(int index,GroupwiseLedgerReportModel tblData, String b
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildDataCell(
-          60, '${tblData.sno}', TextAlign.start, 2),
+          60, '${tblData.sno}', TextAlign.center, 2),
       buildHtmlDataCell(
-          200, accountGroup, TextAlign.start, 2),
-      buildDataCell(200, tblData.strOpeningBalance.toString(), TextAlign.start,
+          200, accountGroup, TextAlign.center, 2),
+      buildDataCell(200, tblData.strOpeningBalance.toString(), TextAlign.center,
           2),
       buildDataCell(
-          160,  '${tblData.debitAmount}', TextAlign.end, 2),
+          160,  '${tblData.debitAmount}', TextAlign.center, 2),
       buildDataCell(
-          160, '${tblData.creditAmount}', TextAlign.end, 2),
+          160, '${tblData.creditAmount}', TextAlign.center, 2),
       buildDataCell(
-          160,  '${tblData.strClosingBalance}', TextAlign.end, 2),
+          160,  '${tblData.strClosingBalance}', TextAlign.center, 2),
       tblData.sno != '' ?DataCell(
         Center(
           child: ElevatedButton(
@@ -48,7 +48,10 @@ DataRow buildGroupWiseRow(int index,GroupwiseLedgerReportModel tblData, String b
                   dateFrom: dateFrom,
                   branchId: branchId,
                   id: tblData.id!,
-                  groupName: tblData.accountGroup!
+                  groupName: tblData.accountGroup!,
+                      groups: groups,
+                      branches: branches,
+                      allData: dropDownList,
               )));
             },
             style: ElevatedButton.styleFrom(
@@ -74,19 +77,19 @@ DataRow buildGroupWiseDetailRow(int index,GroupWiseDetailModel tblData,String br
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildDataCell(
-          60, '${tblData.sno}', TextAlign.start, 2),
+          60, '${tblData.sno}', TextAlign.center, 2),
       buildHtmlDataCell(
-          200, '${tblData.accountLedger}', TextAlign.start, 2),
-      buildHtmlDataCell(200, tblData.accountGroup, TextAlign.start,
+          200, '${tblData.accountLedger}', TextAlign.center, 2),
+      buildHtmlDataCell(200, tblData.accountGroup, TextAlign.center,
           2),
       buildDataCell(
-          160,  '${tblData.strOpeningBalance}', TextAlign.end, 2),
+          160,  '${tblData.strOpeningBalance}', TextAlign.center, 2),
       buildDataCell(
-          160, '${tblData.debitAmount}', TextAlign.end, 2),
+          160, '${tblData.debitAmount}', TextAlign.center, 2),
       buildDataCell(
-          160,  '${tblData.creditAmount}', TextAlign.end, 2),
+          160,  '${tblData.creditAmount}', TextAlign.center, 2),
       buildDataCell(
-          200,  '${tblData.strClosingBalance}', TextAlign.end, 2),
+          200,  '${tblData.strClosingBalance}', TextAlign.center, 2),
       tblData.sno != ''? DataCell(
         Center(
           child: ElevatedButton(
@@ -99,7 +102,8 @@ DataRow buildGroupWiseDetailRow(int index,GroupWiseDetailModel tblData,String br
                   dateTo: dateTo,
                   dateFrom: dateFrom,
                   branchId: branchId,
-                  id: tblData.ledgerId!,
+                  id: tblData.accountGroupId!,
+                  ledgerId: tblData.ledgerId!,
                   groupName: tblData.accountGroup!
               )));
             },
@@ -127,25 +131,25 @@ DataRow buildLedgerDetailGroupWiseRow(int index,LedgerDetailGroupWiseModel tblDa
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildDataCell(
-          60, '${tblData.sno}', TextAlign.start, 2),
+          60, '${tblData.sno}', TextAlign.center, 2),
       buildHtmlDataCell(
-          200, '${tblData.voucherDate}', TextAlign.start, 2),
-      buildHtmlDataCell(200, tblData.voucherNo??'-', TextAlign.start,
+          200, '${tblData.voucherDate}', TextAlign.center, 2),
+      buildHtmlDataCell(200, tblData.voucherNo??'-', TextAlign.center,
           2),
       buildDataCell(
-          200,  '${tblData.refNo}', TextAlign.end, 2),
+          200,  '${tblData.refNo}', TextAlign.center, 2),
       buildDataCell(
-          200, '${tblData.chequeNo}', TextAlign.end, 2),
+          200, '${tblData.chequeNo}', TextAlign.center, 2),
       buildDataCell(
-          200,  '${tblData.voucherTypeName}', TextAlign.end, 2),
+          200,  '${tblData.voucherTypeName}', TextAlign.center, 2),
       buildDataCell(
-          160,  '${tblData.strDebit}', TextAlign.end, 2),
+          160,  '${tblData.strDebit}', TextAlign.center, 2),
       buildDataCell(
-          160,  '${tblData.strCredit}', TextAlign.end, 2),
+          160,  '${tblData.strCredit}', TextAlign.center, 2),
       buildDataCell(
-          200,  '${tblData.strBalance}', TextAlign.end, 2),
+          200,  '${tblData.strBalance}', TextAlign.center, 2),
       buildDataCell(
-          200,  '${tblData.narration}', TextAlign.end, 2),
+          200,  '${tblData.narration}', TextAlign.center, 2),
     ],
   );
 }

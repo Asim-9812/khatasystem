@@ -4,6 +4,7 @@
 
 
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -556,13 +557,30 @@ class _TestState extends ConsumerState<DayBookReport> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: TextFormField(
+                                    child: TextField(
                                       controller: search,
                                       decoration: InputDecoration(
-                                        hintText: 'Search',
-                                        prefixIcon: Icon(Icons.search),
-                                        border: OutlineInputBorder(),
+                                          filled: true,
+                                          fillColor: ColorManager.primary.withOpacity(0.25),
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                            borderSide: BorderSide.none,
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(15),
+                                            borderSide: BorderSide(
+                                              color: ColorManager.primary,
+                                            ),
+                                          ),
+                                          contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 21),
+                                          suffixIcon: Icon(CupertinoIcons.search, color: ColorManager.iconGrey,),
+                                          hintText: 'Search Anything',
+                                          hintStyle: TextStyle(
+                                              color:  ColorManager.textGrey,
+                                              fontSize: 16
+                                          )
                                       ),
+                                      cursorColor: ColorManager.primary,
                                       onChanged: (value) {
                                         setState(() {
                                           searchQuery = value;

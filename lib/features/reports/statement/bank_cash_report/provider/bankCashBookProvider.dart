@@ -99,7 +99,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
 
       }on DioError catch(err){
-        print('error : ${err.response}');
+
         throw DioException().getDioError(err);
       }
     }

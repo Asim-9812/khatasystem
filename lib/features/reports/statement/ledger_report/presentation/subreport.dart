@@ -75,6 +75,8 @@ class _SubReportPageState extends State<SubReportPage> {
     selectedLedgerItem = widget.ledgerName;
     selectedBranchItem = branchList.first;
     newSelectedLedgerItem = widget.ledgerName;
+    dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
+    dateTo.text =!DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateFormat('yyyy/MM/dd').format(DateTime.parse(mainInfo.endDate!)):DateFormat('yyyy/MM/dd').format(DateTime.now());
   }
 
 
@@ -189,116 +191,106 @@ class _SubReportPageState extends State<SubReportPage> {
                       Row(
                         children: [
                           Expanded(
-                            child: TextField(
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                DateInputFormatter(),
-                                LengthLimitingTextInputFormatter(10)
-                              ],
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.next,
-                              controller: dateFrom,
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: Colors.black.withOpacity(0.45),
-                                        width: 1,
-                                      )),
-                                  contentPadding: const EdgeInsets.all(10),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                        color: ColorManager.primary,
-                                        width: 1,
-                                      )),
-                                  floatingLabelStyle:
-                                  TextStyle(color: ColorManager.primary),
-                                  labelText: 'From',
-                                  labelStyle: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  alignLabelWithHint: true,
-                                  suffixIcon: IconButton(
-                                    onPressed: () async {
-                                      DateTime? pickDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2000),
-                                        lastDate: DateTime(2100),);
-                                      if (pickDate != null) {
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('From Date',style: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.bold),),
+                                ),
+                                InkWell(
+                                  onTap:() async {
+                                    DateTime? pickDate =
+                                    await showDatePicker(
+                                      context: context,
+                                      initialDate: DateTime.parse(mainInfo.startDate!),
+                                      firstDate: DateTime.parse(mainInfo.startDate!),
+                                      lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
+                                    );
+                                    if (pickDate != null) {
+                                      setState(() {
                                         dateFrom.text =
-                                            DateFormat('yyyy/MM/dd').format(pickDate);
-                                      }
-                                    },
-                                    icon: Icon(
-                                      Icons.edit_calendar,
-                                      size: 30,
-                                      color: ColorManager.primary,
+                                            DateFormat('yyyy/MM/dd')
+                                                .format(pickDate);
+                                      });
+                                    }
+                                  } ,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: ColorManager.black.withOpacity(0.45)
+                                        )
                                     ),
-                                  )),
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w500),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(dateFrom.text.isEmpty? 'From': dateFrom.text,style:TextStyle(fontSize: 18),),
+                                        Icon(
+                                          Icons.edit_calendar,
+                                          size: 30,
+                                          color: ColorManager.primary,
+                                        ),
+
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           const SizedBox(
                             width: 10,
                           ),
                           Expanded(
-                            child: TextField(
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                DateInputFormatter(),
-                                LengthLimitingTextInputFormatter(10)
-                              ],
-                              keyboardType: TextInputType.number,
-                              textInputAction: TextInputAction.done,
-                              controller: dateTo,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: Colors.black.withOpacity(0.45),
-                                      width: 1,
-                                    )),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(
-                                      color: ColorManager.primary,
-                                      width: 1,
-                                    )),
-                                floatingLabelStyle: TextStyle(
-                                    color: ColorManager.primary,
-                                    fontSize: 18),
-                                contentPadding: const EdgeInsets.all(10),
-                                labelText: 'To',
-                                labelStyle: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text('To Date',style: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.bold),),
                                 ),
-                                alignLabelWithHint: true,
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    DateTime? pickDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2000),
-                                        lastDate: DateTime(2100));
+                                InkWell(
+                                  onTap:() async {
+                                    DateTime? pickDate =
+                                    await showDatePicker(
+                                      context: context,
+                                      initialDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
+                                      firstDate: DateTime.parse(mainInfo.startDate!),
+                                      lastDate: !DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateTime.parse(mainInfo.endDate!):DateTime.now(),
+                                    );
                                     if (pickDate != null) {
-                                      dateTo.text =
-                                          DateFormat('yyyy/MM/dd').format(pickDate);
+                                      setState(() {
+                                        dateTo.text =
+                                            DateFormat('yyyy/MM/dd')
+                                                .format(pickDate);
+                                      });
                                     }
-                                  },
-                                  icon: Icon(
-                                    Icons.edit_calendar,
-                                    size: 30,
-                                    color: ColorManager.primary,
+                                  } ,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(15),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: ColorManager.black.withOpacity(0.45)
+                                        )
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(dateTo.text.isEmpty? 'To': dateTo.text,style:TextStyle(fontSize: 18),),
+                                        Icon(
+                                          Icons.edit_calendar,
+                                          size: 30,
+                                          color: ColorManager.primary,
+                                        ),
+
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.w500),
+                              ],
                             ),
                           ),
                         ],

@@ -27,12 +27,12 @@ class VatReportDetailProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
     final dio = Dio();
     try{
       final jsonData = jsonEncode(filterModel.toJson());
-      print(jsonData);
+
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data[0] as List<dynamic>;
         state = AsyncValue.data(result);
-        print(result);
+
 
       }
     }on DioError catch(err){
@@ -47,12 +47,12 @@ class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
     final dio = Dio();
     try{
       final jsonData = jsonEncode(filterModel.toJson());
-      print(jsonData);
+
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
         state = AsyncValue.data(result);
-        print(result);
+
 
       }
     }on DioError catch(err){
@@ -64,12 +64,12 @@ class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
     final dio = Dio();
     try{
       final jsonData = jsonEncode(filterModel.toJson());
-      print(jsonData);
+
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
         state = AsyncValue.data(result);
-        print(result);
+
 
       }
     }on DioError catch(err){
@@ -84,12 +84,12 @@ class VatReportProvider2 extends StateNotifier<AsyncValue<List<dynamic>>>{
     final dio = Dio();
     try{
       final jsonData = jsonEncode(filterModel.toJson());
-      print(jsonData);
+
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
         state = AsyncValue.data(result);
-        print(result);
+
 
       }
     }on DioError catch(err){
@@ -104,12 +104,12 @@ class VatReportProvider3 extends StateNotifier<AsyncValue<List<dynamic>>>{
     final dio = Dio();
     try{
       final jsonData = jsonEncode(filterModel.toJson());
-      print(jsonData);
+
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
         state = AsyncValue.data(result);
-        print(result);
+
 
       }
     }on DioError catch(err){
@@ -206,7 +206,7 @@ class VatListProvider {
     List<Map<String, dynamic>> myList = [];
 
     try {
-      print(jsonData);
+
       final response = await dio.post(Api.getSubList, data: jsonData);
 
       Map<String, dynamic> branch = {};

@@ -386,7 +386,6 @@ class _VatReportTabState extends State<VatReportTab> {
                                   return Container();
                                 }
 
-                                print(newList);
                                 return SizedBox(
                                   width: double.infinity,
                                   child: SingleChildScrollView(

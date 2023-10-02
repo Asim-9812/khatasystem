@@ -103,9 +103,9 @@ class _ReportPageViewState extends State<ReportPageView> {
                     allList.add(e);
                   }
 
-                  List<String> groups = ['Select a group'];
+                  List<String> groups = ['All'];
                   List<String> ledgers = ['All'];
-                  List<String> branches = ['Select a branch'];
+                  List<String> branches = ['All'];
 
                   data[0].forEach((key, _) {
                     groups.add(key);
@@ -571,43 +571,26 @@ class _ReportPageViewState extends State<ReportPageView> {
                                           ),
                                         );
                                       }else{
-                                        if(branchName == ''||branchName =='Select a branch'){
-                                          final scaffoldMessage = ScaffoldMessenger.of(context);
-                                          scaffoldMessage.showSnackBar(
-                                            SnackbarUtil.showFailureSnackbar(
-                                              message: 'Please select a branch',
-                                              duration: const Duration(milliseconds: 1400),
-                                            ),
-                                          );
-                                        } else if (groupName == '' || groupName=='Select a group'){
-                                          final scaffoldMessage = ScaffoldMessenger.of(context);
-                                          scaffoldMessage.showSnackBar(
-                                            SnackbarUtil.showFailureSnackbar(
-                                              message: 'Please select a group',
-                                              duration: const Duration(milliseconds: 1400),
-                                            ),
-                                          );
-                                        }else{
-                                          DateFormat dateFormat = DateFormat('yyyy/MM/dd');
+                                        DateFormat dateFormat = DateFormat('yyyy/MM/dd');
 
-                                          DateTime fromDate = dateFormat.parse(dateFrom.text);
-                                          DateTime toDate = dateFormat.parse(dateTo.text);
-                                          if (toDate.isBefore(fromDate)) {
-                                            final scaffoldMessage = ScaffoldMessenger.of(context);
-                                            scaffoldMessage.showSnackBar(
-                                              SnackbarUtil.showFailureSnackbar(
-                                                message: 'From date is greater than To date',
-                                                duration: const Duration(milliseconds: 1400),
-                                              ),
-                                            );
-                                          }
-                                          else{
-                                            ref.read(tableDataProvider.notifier).getTableValues(fModel);
-                                          }
+                                        DateTime fromDate = dateFormat.parse(dateFrom.text);
+                                        DateTime toDate = dateFormat.parse(dateTo.text);
+                                        if (toDate.isBefore(fromDate)) {
+                                          final scaffoldMessage = ScaffoldMessenger.of(context);
+                                          scaffoldMessage.showSnackBar(
+                                            SnackbarUtil.showFailureSnackbar(
+                                              message: 'From date is greater than To date',
+                                              duration: const Duration(milliseconds: 1400),
+                                            ),
+                                          );
                                         }
+                                        else{
+                                          ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                        }
+                                       }
 
 
-                                      }
+
 
                                     },
                                     style: ElevatedButton.styleFrom(

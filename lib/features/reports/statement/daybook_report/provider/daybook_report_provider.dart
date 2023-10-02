@@ -23,7 +23,7 @@ class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
     final dio = Dio();
     try{
       final jsonData = jsonEncode(filterModel.toJson());
-      print(jsonData);
+
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;

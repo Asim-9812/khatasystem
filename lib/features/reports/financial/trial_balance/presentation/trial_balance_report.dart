@@ -117,7 +117,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                   allList.add(e);
                 }
 
-                List<String> branches = ['Select a branch'];
+                List<String> branches = ['All'];
                 List<String> groups = ['Group', 'Ledger'];
                 groupItem = groups.first;
 
@@ -425,15 +425,6 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                       scaffoldMessage.showSnackBar(
                                         SnackbarUtil.showFailureSnackbar(
                                           message: 'Please pick a date',
-                                          duration: const Duration(milliseconds: 1400),
-                                        ),
-                                      );
-                                    }
-                                    else if(branchItemData=='Select a branch'){
-                                      final scaffoldMessage = ScaffoldMessenger.of(context);
-                                      scaffoldMessage.showSnackBar(
-                                        SnackbarUtil.showFailureSnackbar(
-                                          message: 'Please pick a branch',
                                           duration: const Duration(milliseconds: 1400),
                                         ),
                                       );

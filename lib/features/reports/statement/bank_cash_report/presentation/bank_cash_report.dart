@@ -877,7 +877,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                               }
                               final filteredData = newList.where((item) {
                                 final voucherNo = item.voucherNo.toString().toLowerCase();
-                                final voucherName = item.voucherType.toString().toLowerCase();
+                                final voucherName = item.voucherName.toString().toLowerCase();
                                 final narration = item.date.toString().toLowerCase();
                                 return voucherNo.contains(searchQuery.toLowerCase()) || voucherName.contains(searchQuery.toLowerCase()) || narration.contains(searchQuery.toLowerCase());
                               }).toList();

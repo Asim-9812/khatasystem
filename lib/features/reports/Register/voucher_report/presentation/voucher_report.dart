@@ -32,6 +32,7 @@ class VoucherReportPage extends StatefulWidget {
 class _VoucherReportPageState extends State<VoucherReportPage> {
   TextEditingController dateFrom = TextEditingController();
   TextEditingController dateTo = TextEditingController();
+  TextEditingController search = TextEditingController();
   final searchTextController = TextEditingController();
 
   late int _currentPage;
@@ -46,6 +47,7 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
 
   late List<VoucherReportModel> voucherReports;
   String query = '';
+  late String searchQuery;
 
   @override
   void initState() {
@@ -71,6 +73,7 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
 
     return Consumer(
       builder: (context, ref, child) {
+        searchQuery = ref.watch(itemProvider).searchQuery;
         final fromDate = ref.watch(itemProvider).fromDate;
         final toDate = ref.watch(itemProvider).toDate;
         final listData = ref.watch(voucherListProvider(modelRef));
@@ -620,8 +623,7 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(height: 20,),
-                              buildTextField(context, ref),
+
                               const SizedBox(
                                 height: 20,
                               ),
@@ -637,57 +639,99 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                   } else {
                                     return Container();
                                   }
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      physics: const ClampingScrollPhysics(),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          DataTable(
-                                            columns: [
-                                              voucherReportDataColumn(60, 'S.N', TextAlign.start),
-                                              voucherReportDataColumn(150, 'Voucher Date', TextAlign.start),
-                                              voucherReportDataColumn(200, 'Voucher No', TextAlign.start),
-                                              voucherReportDataColumn(120, 'Ref No', TextAlign.start),
-                                              voucherReportDataColumn(200, 'Voucher Type', TextAlign.start),
-                                              voucherReportDataColumn(250, 'Particulars', TextAlign.start),
-                                              voucherReportDataColumn(200, 'Amount', TextAlign.start),
-                                              voucherReportDataColumn(300, 'Narration', TextAlign.start),
-                                              voucherReportDataColumn(120, 'Status', TextAlign.start),
-                                              voucherReportDataColumn(80, 'View', TextAlign.center),
-                                            ],
-                                            rows: List.generate(tableData.length, (index) => voucherReportDataRowDetailed(index: index, tblData: tableData[index], context:  context)),
-                                            columnSpacing: 0,
-                                            horizontalMargin: 0,
+                                  final filteredData = tableData.where((item) {
+                                    final voucherNo = item.voucherNo.toString().toLowerCase();
+                                    final voucherName = item.voucherName.toString().toLowerCase();
+                                    final narration = item.narration.toString().toLowerCase();
+                                    final date = item.voucherDate.toString().toLowerCase();
+                                    return voucherNo.contains(searchQuery.toLowerCase()) || voucherName.contains(searchQuery.toLowerCase()) || narration.contains(searchQuery.toLowerCase())||date.contains(searchQuery.toLowerCase());
+                                  }).toList();
+                                  return Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: TextField(
+                                          controller: search,
+                                          decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: ColorManager.primary.withOpacity(0.25),
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(15),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: ColorManager.primary,
+                                                ),
+                                              ),
+                                              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 21),
+                                              suffixIcon: Icon(CupertinoIcons.search, color: ColorManager.iconGrey,),
+                                              hintText: 'Search Anything',
+                                              hintStyle: TextStyle(
+                                                  color:  ColorManager.textGrey,
+                                                  fontSize: 16
+                                              )
                                           ),
-                                          /// Pager package used for pagination
-                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                            currentItemsPerPage: _rowPerPage,
-                                            currentPage: _currentPage,
-                                            totalPages: _totalPages,
-                                            onPageChanged: (page) {
-                                              _currentPage = page;
-                                              /// updates current page number of filterModel, because it does not update on its own
-                                              fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(voucherReportProvider.notifier).getTableData(fModel);
-                                            },
-                                            showItemsPerPage: true,
-                                            onItemsPerPageChanged: (itemsPerPage) {
-                                              _rowPerPage = itemsPerPage;
-                                              _currentPage = 1;
-                                              /// updates row per page of filterModel, because it does not update on its own
-                                              fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                              fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(voucherReportProvider.notifier).getTableData(fModel);
-                                            },
-                                            itemsPerPageList: rowPerPageItems,
-                                          ),
-                                          const SizedBox(height: 10,),
-                                        ],
+                                          cursorColor: ColorManager.primary,
+                                          onChanged: (value) {
+                                            ref.read(itemProvider.notifier).updateSearch(value);
+                                          },
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          physics: const ClampingScrollPhysics(),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              DataTable(
+                                                columns: [
+                                                  voucherReportDataColumn(60, 'S.N', TextAlign.start),
+                                                  voucherReportDataColumn(150, 'Voucher Date', TextAlign.start),
+                                                  voucherReportDataColumn(200, 'Voucher No', TextAlign.start),
+                                                  voucherReportDataColumn(120, 'Ref No', TextAlign.start),
+                                                  voucherReportDataColumn(200, 'Voucher Type', TextAlign.start),
+                                                  voucherReportDataColumn(250, 'Particulars', TextAlign.start),
+                                                  voucherReportDataColumn(200, 'Amount', TextAlign.start),
+                                                  voucherReportDataColumn(300, 'Narration', TextAlign.start),
+                                                  voucherReportDataColumn(120, 'Status', TextAlign.start),
+                                                  voucherReportDataColumn(80, 'View', TextAlign.center),
+                                                ],
+                                                rows: List.generate(filteredData.length, (index) => voucherReportDataRowDetailed(index: index, tblData: filteredData[index], context:  context)),
+                                                columnSpacing: 0,
+                                                horizontalMargin: 0,
+                                              ),
+                                              /// Pager package used for pagination
+                                              _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
+                                                currentItemsPerPage: _rowPerPage,
+                                                currentPage: _currentPage,
+                                                totalPages: _totalPages,
+                                                onPageChanged: (page) {
+                                                  _currentPage = page;
+                                                  /// updates current page number of filterModel, because it does not update on its own
+                                                  fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                                  ref.read(voucherReportProvider.notifier).getTableData(fModel);
+                                                },
+                                                showItemsPerPage: true,
+                                                onItemsPerPageChanged: (itemsPerPage) {
+                                                  _rowPerPage = itemsPerPage;
+                                                  _currentPage = 1;
+                                                  /// updates row per page of filterModel, because it does not update on its own
+                                                  fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                                  fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                                  ref.read(voucherReportProvider.notifier).getTableData(fModel);
+                                                },
+                                                itemsPerPageList: rowPerPageItems,
+                                              ),
+                                              const SizedBox(height: 10,),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   );
                                 },
                                 error: (error, stackTrace) => Text('$error'),
@@ -703,110 +747,113 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                       tableData.add(VoucherReportModel.fromJson(e));
                                     }
                                   } else {
-                                    return Container(
-                                      width: double.infinity,
-                                      color: Colors.blue.shade50,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        physics: const ClampingScrollPhysics(),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            DataTable(
-                                              columns: [
-                                                voucherReportDataColumn(
-                                                    60, 'S.N', TextAlign.start),
-                                                voucherReportDataColumn(
-                                                    200,
-                                                    'Voucher Date',
-                                                    TextAlign.start),
-                                                voucherReportDataColumn(200,
-                                                    'Voucher No', TextAlign.start),
-                                                voucherReportDataColumn(
-                                                    140, 'Ref No', TextAlign.start),
-                                                voucherReportDataColumn(
-                                                    200,
-                                                    'Voucher Type',
-                                                    TextAlign.start),
-                                                voucherReportDataColumn(
-                                                    200, 'Amount', TextAlign.start),
-                                                voucherReportDataColumn(300,
-                                                    'Narration', TextAlign.start),
-                                                voucherReportDataColumn(
-                                                    120, 'Status', TextAlign.start),
-                                                voucherReportDataColumn(
-                                                    80, 'View', TextAlign.center),
-                                              ],
-                                              rows: const [],
-                                              columnSpacing: 0,
-                                              horizontalMargin: 0,
-                                            ),
-                                          ],
+                                    return Container();
+                                  }
+                                  final filteredData = tableData.where((item) {
+                                    final voucherNo = item.voucherNo.toString().toLowerCase();
+                                    final voucherName = item.voucherName.toString().toLowerCase();
+                                    final narration = item.narration.toString().toLowerCase();
+                                    final date = item.voucherDate.toString().toLowerCase();
+                                    final particulars = item.particulars.toString().toLowerCase();
+                                    return voucherNo.contains(searchQuery.toLowerCase()) || voucherName.contains(searchQuery.toLowerCase()) || narration.contains(searchQuery.toLowerCase())||date.contains(searchQuery.toLowerCase())||particulars.contains(searchQuery.toLowerCase());
+                                  }).toList();
+
+                                  return Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: TextField(
+                                          controller: search,
+                                          decoration: InputDecoration(
+                                              filled: true,
+                                              fillColor: ColorManager.primary.withOpacity(0.25),
+                                              border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(15),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderRadius: BorderRadius.circular(15),
+                                                borderSide: BorderSide(
+                                                  color: ColorManager.primary,
+                                                ),
+                                              ),
+                                              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 21),
+                                              suffixIcon: Icon(CupertinoIcons.search, color: ColorManager.iconGrey,),
+                                              hintText: 'Search Anything',
+                                              hintStyle: TextStyle(
+                                                  color:  ColorManager.textGrey,
+                                                  fontSize: 16
+                                              )
+                                          ),
+                                          cursorColor: ColorManager.primary,
+                                          onChanged: (value) {
+                                              ref.read(itemProvider.notifier).updateSearch(value);
+
+                                          },
                                         ),
                                       ),
-                                    );
-                                  }
-                                  return SizedBox(
-                                    width: double.infinity,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      physics: const ClampingScrollPhysics(),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          DataTable(
-                                            columns: [
-                                              voucherReportDataColumn(
-                                                  60, 'S.N', TextAlign.start),
-                                              voucherReportDataColumn(200,
-                                                  'Voucher Date', TextAlign.start),
-                                              voucherReportDataColumn(200,
-                                                  'Voucher No', TextAlign.start),
-                                              voucherReportDataColumn(
-                                                  140, 'Ref No', TextAlign.start),
-                                              voucherReportDataColumn(200, 'Voucher Type', TextAlign.start),
-                                              voucherReportDataColumn(
-                                                  200, 'Amount', TextAlign.start),
-                                              voucherReportDataColumn(300,
-                                                  'Narration', TextAlign.start),
-                                              voucherReportDataColumn(
-                                                  120, 'Status', TextAlign.start),
-                                              voucherReportDataColumn(
-                                                  80, 'View', TextAlign.center),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          physics: const ClampingScrollPhysics(),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              DataTable(
+                                                columns: [
+                                                  voucherReportDataColumn(
+                                                      60, 'S.N', TextAlign.start),
+                                                  voucherReportDataColumn(200,
+                                                      'Voucher Date', TextAlign.start),
+                                                  voucherReportDataColumn(200,
+                                                      'Voucher No', TextAlign.start),
+                                                  voucherReportDataColumn(
+                                                      140, 'Ref No', TextAlign.start),
+                                                  voucherReportDataColumn(200, 'Voucher Type', TextAlign.start),
+                                                  voucherReportDataColumn(
+                                                      200, 'Amount', TextAlign.start),
+                                                  voucherReportDataColumn(300,
+                                                      'Narration', TextAlign.start),
+                                                  voucherReportDataColumn(
+                                                      120, 'Status', TextAlign.start),
+                                                  voucherReportDataColumn(
+                                                      80, 'View', TextAlign.center),
+                                                ],
+                                                rows: List.generate(
+                                                    filteredData.length,
+                                                    (index) => buildVoucherReportDataRow(index: index, tblData: filteredData[index], context:  context)),
+                                                columnSpacing: 0,
+                                                horizontalMargin: 0,
+                                              ),
+                                              /// Pager package used for pagination
+                                              _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
+                                                currentItemsPerPage: _rowPerPage,
+                                                currentPage: _currentPage,
+                                                totalPages: _totalPages,
+                                                onPageChanged: (page) {
+                                                  _currentPage = page;
+                                                  /// updates current page number of filterModel, because it does not update on its own
+                                                  fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                                  ref.read(voucherReportProvider.notifier).getTableData(fModel);
+                                                },
+                                                showItemsPerPage: true,
+                                                onItemsPerPageChanged: (itemsPerPage) {
+                                                  _rowPerPage = itemsPerPage;
+                                                  _currentPage = 1;
+                                                  /// updates row per page of filterModel, because it does not update on its own
+                                                  fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                                  fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                                  ref.read(voucherReportProvider.notifier).getTableData(fModel);
+                                                },
+                                                itemsPerPageList: rowPerPageItems,
+                                              ),
+                                              const SizedBox(height: 10,),
                                             ],
-                                            rows: List.generate(
-                                                tableData.length,
-                                                (index) => buildVoucherReportDataRow(index: index, tblData: tableData[index], context:  context)),
-                                            columnSpacing: 0,
-                                            horizontalMargin: 0,
                                           ),
-                                          /// Pager package used for pagination
-                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                            currentItemsPerPage: _rowPerPage,
-                                            currentPage: _currentPage,
-                                            totalPages: _totalPages,
-                                            onPageChanged: (page) {
-                                              _currentPage = page;
-                                              /// updates current page number of filterModel, because it does not update on its own
-                                              fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(voucherReportProvider.notifier).getTableData(fModel);
-                                            },
-                                            showItemsPerPage: true,
-                                            onItemsPerPageChanged: (itemsPerPage) {
-                                              _rowPerPage = itemsPerPage;
-                                              _currentPage = 1;
-                                              /// updates row per page of filterModel, because it does not update on its own
-                                              fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                              fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(voucherReportProvider.notifier).getTableData(fModel);
-                                            },
-                                            itemsPerPageList: rowPerPageItems,
-                                          ),
-                                          const SizedBox(height: 10,),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   );
                                 },
                                 error: (error, stackTrace) => Text('$error'),

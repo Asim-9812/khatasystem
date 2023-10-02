@@ -413,7 +413,7 @@ class _BalanceSheetReportState extends ConsumerState<BalanceSheetReportPage> {
                                           children: [
                                             DataTable(
                                               columns: [
-                                                buildDataColumn(100, 'S.N.', TextAlign.start),
+
                                                 buildDataColumn(250, 'Liabilities', TextAlign.start),
                                                 buildDataColumn(200, 'Credit', TextAlign.end),
                                                 buildDataColumn(200, 'Assets', TextAlign.start),

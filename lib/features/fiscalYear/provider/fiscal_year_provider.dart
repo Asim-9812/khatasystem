@@ -20,6 +20,7 @@ class FiscalYearProvider{
     final dio = Dio();
 
     try{
+      print(mainInfo.toJson());
       final response = await dio.post(Api.getFiscalYear,
           data: mainInfo.toJson()
       );

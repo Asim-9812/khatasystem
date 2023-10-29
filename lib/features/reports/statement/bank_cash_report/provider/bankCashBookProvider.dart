@@ -23,6 +23,8 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> fetchTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
     try{
       final jsonData = jsonEncode(filterModel.toJson());
 
@@ -41,6 +43,8 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<List<Map<dynamic, dynamic>>> getBankCashList(GetListModel getListModel) async {
     final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
     final jsonData = jsonEncode(getListModel.toJson());
     List<Map<dynamic, dynamic>> myList = [];
     try{
@@ -76,6 +80,8 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<List<dynamic>> getBankCashLedgerList(GetLedgerListModel getListModel) async {
     final dio = Dio();
+
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
 
 
 

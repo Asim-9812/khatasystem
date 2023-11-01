@@ -14,6 +14,8 @@ import '../model/entry_master_model.dart';
 
 final logProvider = StreamProvider.autoDispose<List<LogModel>>((ref) async* {
   final dio = Dio();
+  dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
 
   try{
     final response = await dio.post(Api.getLoginActivities,
@@ -93,6 +95,8 @@ Future<List<LogModel>> fetchLogActivities(StreamController logStreamController, 
 
 Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactionStreamController) async {
   final dio = Dio();
+  dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
 
 
 
@@ -126,6 +130,8 @@ Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactio
 
 final entryMasterProvider = StreamProvider<List<EntryMaster>>((ref) async* {
   final dio = Dio();
+  dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
 
   try{
     final response = await dio.post(Api.getTransactionActivities,

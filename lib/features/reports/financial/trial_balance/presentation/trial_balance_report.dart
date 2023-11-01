@@ -485,14 +485,14 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                               return groupReport.when(
                                 data: (data) {
                                   List<GroupWiseModel> groupTblData = <GroupWiseModel>[];
-                                  List<String> totalFooter = [];
+                                  // List<String> totalFooter = [];
                                   if (data.isNotEmpty) {
-                                    for (var e in data[0]) {
+                                    for (var e in data) {
                                       groupTblData.add(GroupWiseModel.fromJson(e));
                                     }
-                                    for(var e in data[1]){
-                                      totalFooter.add(e);
-                                    }
+                                    // for(var e in data[1]){
+                                    //   totalFooter.add(e);
+                                    // }
 
                                   } else {
                                     return Container();
@@ -551,26 +551,6 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                                     columnSpacing: 0,
                                                     horizontalMargin: 0,
                                                   ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          Table(
-                                            columnWidths: const <int,
-                                                TableColumnWidth>{
-                                              0: FixedColumnWidth(330),
-                                              1: FixedColumnWidth(200),
-                                              2: FixedColumnWidth(200),
-                                            },
-                                            children: [
-                                              TableRow(
-                                                decoration: BoxDecoration(
-                                                  color: ColorManager.primary,
-                                                ),
-                                                children: [
-                                                  trialTblCell('Total', TextAlign.end),
-                                                  trialTblCell(totalFooter[0], TextAlign.end),
-                                                  trialTblCell(totalFooter[1], TextAlign.end),
                                                 ],
                                               ),
                                             ],

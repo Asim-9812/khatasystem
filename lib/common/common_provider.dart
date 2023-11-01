@@ -62,6 +62,7 @@ class GroupItem extends ChangeNotifier{
   int ledgerIndex = 0;
   String trialBalanceType = "Group";
   String item = 'All';
+  String item2 = 'Primary';
   String ledgerItem = 'All';
   String ledgerItem2 = 'ALL';
   String updateLedgerItem = 'All';
@@ -191,6 +192,11 @@ class GroupItem extends ChangeNotifier{
 
   void updateItem(String text){
     item = text;
+    notifyListeners();
+  }
+
+  void updateItem2(String text){
+    item2 = text;
     notifyListeners();
   }
 

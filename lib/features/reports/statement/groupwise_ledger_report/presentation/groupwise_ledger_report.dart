@@ -102,7 +102,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                     allList.add(e);
                   }
 
-                  List<String> groups = ['Select a group'];
+                  List<String> groups = [];
                   List<String> ledgers = ['All'];
                   List<String> branches = ['All'];
 
@@ -116,11 +116,11 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                     branches.add(key);
                   });
 
-                  String groupItem = groups[0];
+                  String groupItem = groups[groups.indexOf('Primary')];
                   String ledgerItem = ledgers[0];
                   String branchItem = branches[0];
 
-                  final groupItemData = ref.watch(itemProvider).item;
+                  final groupItemData = ref.watch(itemProvider).item2;
 
                   final ledgerItemData = ref.watch(itemProvider).ledgerItem;
                   final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem;
@@ -140,7 +140,8 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                   String groupValue(String val) {
                     if (val == "All") {
                       return 'groupID--0';
-                    } else {
+                    }
+                    else {
                       return 'groupID--${data[0][groupItemData]}';
                     }
                   }
@@ -321,7 +322,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                   ),
                                   DropdownSearch<String>(
                                     items: groups,
-                                    selectedItem: groupItem,
+                                    selectedItem: groupItem ,
                                     dropdownDecoratorProps:
                                     DropDownDecoratorProps(
                                       baseStyle: const TextStyle(
@@ -362,7 +363,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                     ),
                                     onChanged: (dynamic value) {
                                       validation = value;
-                                      ref.read(itemProvider).updateItem(value);
+                                      ref.read(itemProvider).updateItem2(value);
                                       print(validation);
                                     },
                                   ),
@@ -428,16 +429,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                           ),
                                         );
                                       }else{
-                                        if(validation=='Select a group'||validation == ''){
-                                          final scaffoldMessage = ScaffoldMessenger.of(context);
-                                          scaffoldMessage.showSnackBar(
-                                            SnackbarUtil.showFailureSnackbar(
-                                              message: 'Please select a group',
-                                              duration: const Duration(milliseconds: 1400),
-                                            ),
-                                          );
-                                        }
-                                        else{
+
                                           DateFormat dateFormat = DateFormat('yyyy/MM/dd');
 
                                           DateTime fromDate = dateFormat.parse(dateFrom.text);
@@ -454,7 +446,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                           else{
                                             ref.read(groupWiseLedgerProvider.notifier).getTableValues(fModel);
                                           }
-                                        }
+
 
                                       }
 

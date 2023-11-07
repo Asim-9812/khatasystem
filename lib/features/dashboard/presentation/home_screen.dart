@@ -4,10 +4,12 @@ import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/common/common_provider.dart';
 import 'package:khata_app/common/shimmer_loading.dart';
 import 'package:khata_app/features/dashboard/provider/dashboard_amount_provider.dart';
+import 'package:khata_app/features/login/presentation/status_page.dart';
 import 'package:khata_app/features/reminder/presentation/reminder_page.dart';
 import 'package:khata_app/main.dart';
 
@@ -25,15 +27,16 @@ String userId = "";
 late MainInfoModel mainInfo;
 
 
-class HomePageScreen extends ConsumerWidget {
+class HomePageScreen extends ConsumerStatefulWidget {
   const HomePageScreen({super.key,});
 
-
-
-
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomePageScreen> createState() => _HomePageScreenState();
+}
+
+class _HomePageScreenState extends ConsumerState<HomePageScreen> {
+  @override
+  Widget build(BuildContext context) {
     final now =  DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(DateTime.now());
     final fromDate = ref.watch(itemProvider).fromDate;
     final toDate = ref.watch(itemProvider).toDate;
@@ -96,11 +99,45 @@ class HomePageScreen extends ConsumerWidget {
     );
 
 
+    void showSessionExpiredDialog(BuildContext context) {
+      showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context){
+            return AlertDialog(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text('Session Expired! Please login again.'),
+                  const SizedBox(height: 10,),
+                  TextButton(
+                    onPressed: () {
+                      sessionBox.clear();
+                      Get.offAll(const StatusPage());
+                    },
+                    child: const Text('OK'),
+                  )
+                ],
+              ),
+            );
+          }
+      );
+    }
+
+
+
+
+
 
 
     return OrientationBuilder(
       builder: (context, orientation) {
         final dashBoardType = ref.watch(dashBoardTypeProvider);
+
+
+
         if(orientation == Orientation.portrait){
 
           return Consumer(
@@ -122,9 +159,31 @@ class HomePageScreen extends ConsumerWidget {
                       child: dashData.when(
                         data: (data) {
 
+
                           return buildDashBoard(false, data);
                         },
-                        error: (error, stackTrace) => Text('$error'),
+                        error: (error, stackTrace) {
+
+                          if(error == 'Authentication failed'){
+                            Fluttertoast.showToast(
+                              msg: 'Session Expired',
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: ColorManager.primary.withOpacity(0.9),
+                              textColor: Colors.white,
+                              fontSize: 16.0,
+                            );
+                            sessionBox.clear();
+
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(builder: (context) => StatusPage()),
+                                    (Route<dynamic> route) => false,
+                              );
+                            });
+
+                          }
+                          return Text('$error');
+                        },
                         loading: () {
                           return Container(
                             padding: const EdgeInsets.symmetric(horizontal: 40,),
@@ -313,10 +372,10 @@ class HomePageScreen extends ConsumerWidget {
                     dashBoardType == 'Financial' ? SliverToBoxAdapter(
                       child: dashData.when(
                         data: (data) {
+
                           return buildDashBoard(true, data);
                         },
-                        error: (error, stackTrace) => Text(''
-                            '$error'),
+                        error: (error, stackTrace) => Text('$error'),
                         loading: () {
                           return Container(
                             padding: const EdgeInsets.symmetric(horizontal: 40,),
@@ -484,8 +543,8 @@ class HomePageScreen extends ConsumerWidget {
     );
   }
 
-
   Widget buildDashBoard(bool isLandscape, List<Map<String, dynamic>> dashData) {
+
     return  Container(
       padding: const EdgeInsets.symmetric(horizontal: 40,),
       height: 500,

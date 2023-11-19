@@ -1189,41 +1189,38 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                           /// Pager package used for pagination
                                           _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) 
                                               : Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   
-                                                  Column(
-                                                    children: [
-                                                      Pager(
+                                                  Pager(
 
-                                                        currentItemsPerPage: _rowPerPage,
-                                                        currentPage: _currentPage,
-                                                        totalPages: _totalPages,
-                                                        onPageChanged: (page) {
-                                                          _currentPage = page;
-                                                          /// updates current page number of filterModel, because it does not update on its own
-                                                          fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                                          ref.read(bankCashProvider.notifier).fetchTableData(fModel);
-                                                        },
-                                                        showItemsPerPage: true,
-                                                        onItemsPerPageChanged: (itemsPerPage) {
-                                                          setState(() {
-                                                            _rowPerPage = itemsPerPage;
-                                                          });
+                                                    currentItemsPerPage: _rowPerPage,
+                                                    currentPage: _currentPage,
+                                                    totalPages: _totalPages,
+                                                    onPageChanged: (page) {
+                                                      _currentPage = page;
+                                                      /// updates current page number of filterModel, because it does not update on its own
+                                                      fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                                      ref.read(bankCashProvider.notifier).fetchTableData(fModel);
+                                                    },
+                                                    itemsPerPageText: 'Showing ${_rowPerPage} of ${_totalRecords} :',
+                                                    itemsPerPageTextStyle: TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),
+                                                    showItemsPerPage: true,
+                                                    onItemsPerPageChanged: (itemsPerPage) {
+                                                      setState(() {
+                                                        _rowPerPage = itemsPerPage;
+                                                      });
 
-                                                          _currentPage = 1;
-                                                          /// updates row per page of filterModel, because it does not update on its own
-                                                          fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                                          ref.read(bankCashProvider.notifier).fetchTableData(fModel);
-                                                        },
-                                                        itemsPerPageList: rowPerPageItems,
-                                                      ),
-                                                      const SizedBox(height: 10,),
-                                                      Text('Showing ${_rowPerPage} of ${_totalRecords}',style: TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),)
-                                                    ],
+                                                      _currentPage = 1;
+                                                      /// updates row per page of filterModel, because it does not update on its own
+                                                      fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                                      ref.read(bankCashProvider.notifier).fetchTableData(fModel);
+                                                    },
+                                                    itemsPerPageList: rowPerPageItems,
                                                   ),
-                                                  Text('Closing balance: CASH: ${newList.last.strCashBalance} BANK: ${newList.last.strBankBalance}',style: TextStyle(fontWeight: FontWeight.bold),)
+                                                  const SizedBox(width: 1200,),
+                                                  Text('Closing balance: CASH: ${newList.last.strCashBalance}    BANK: ${newList.last.strBankBalance}',style: TextStyle(fontWeight: FontWeight.bold),)
                                                 ],
                                               ),
                                         ],

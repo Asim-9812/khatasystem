@@ -23,14 +23,37 @@ DataRow buildVatRow(int index, VatReportModel tblData,  String branchId, String 
           60, '${tblData.sno}', TextAlign.center, 2),
       buildVatCell(
           200, tblData.particulars == '' ?'${tblData.strTotalTaxableAmount}':'${tblData.particulars}', TextAlign.center, 2),
-      buildVatCell(200, '${tblData.totalAmount}', TextAlign.center,
+      buildVatCell(200, tblData.sno == ''? '':'${tblData.totalAmount}', TextAlign.center,
           2),
       buildVatCell(
-          200, '${tblData.totalTaxableAmount}', TextAlign.center, 2),
+          200, tblData.sno == ''? '':'${tblData.totalTaxableAmount}', TextAlign.center, 2),
+    ],
+  );
+}
+
+
+DataRow buildVatRowVAT(int index, VatReportModel tblData,  String branchId, String dateFrom, String dateTo,
+    final List<Map<dynamic, dynamic>> dropDownList,
+    [BuildContext? context]) {
+  return DataRow(
+    color:
+    MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+    cells: [
       buildVatCell(
-          160, '${tblData.vatDr}', TextAlign.center, 2),
+          160, tblData.sno == ''? '${tblData.strVATDr}':'${tblData.vatDr}', TextAlign.center, 2),
       buildVatCell(
-          160, '${tblData.vatCr}', TextAlign.center, 2),
+          160, tblData.sno == ''? '${tblData.strVATCr}':'${tblData.vatCr}', TextAlign.center, 2),
+    ],
+  );
+}
+
+DataRow buildVatRowView(int index, VatReportModel tblData,  String branchId, String dateFrom, String dateTo,
+    final List<Map<dynamic, dynamic>> dropDownList,
+    [BuildContext? context]) {
+  return DataRow(
+    color:
+    MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+    cells: [
       tblData.sno!=''? DataCell(
         Center(
           child: ElevatedButton(
@@ -39,11 +62,11 @@ DataRow buildVatRow(int index, VatReportModel tblData,  String branchId, String 
                   context!,
                   MaterialPageRoute(
                     builder: (context) => DetailedVatReport(
-                      branchId: branchId,
-                      voucherTypeId: tblData.vouchertypeID,
-                      dateFrom: dateFrom,
-                      dateTo: dateTo,
-                      rowName: tblData.particulars
+                        branchId: branchId,
+                        voucherTypeId: tblData.vouchertypeID,
+                        dateFrom: dateFrom,
+                        dateTo: dateTo,
+                        rowName: tblData.particulars
                     ),
                   ));
             },
@@ -60,6 +83,7 @@ DataRow buildVatRow(int index, VatReportModel tblData,  String branchId, String 
     ],
   );
 }
+
 
 DataRow buildVatRow2(int index, VatReportModel tblData, String branchId, String dateFrom, String dateTo,
     [BuildContext? context]) {
@@ -124,6 +148,17 @@ DataRow buildVatDetailRow(int index, VatReportDetailModel tblData,
           2),
       buildVatCell(
           160, '${tblData.strTaxableAmount}', TextAlign.center, 2),
+    ],
+  );
+}
+
+
+DataRow buildVatDetailRow2(int index, VatReportDetailModel tblData,
+    [BuildContext? context]) {
+  return DataRow(
+    color:
+    MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+    cells: [
       buildVatCell(
           160, '${tblData.strVATDr}', TextAlign.center, 2),
       buildVatCell(

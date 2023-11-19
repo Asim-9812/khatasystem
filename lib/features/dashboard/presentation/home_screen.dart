@@ -25,6 +25,7 @@ final userIdProvider = Provider<String>((ref) => userId);
 String userId = "";
 
 late MainInfoModel mainInfo;
+late MainInfoModel2 mainInfo2;
 
 
 class HomePageScreen extends ConsumerStatefulWidget {
@@ -78,6 +79,28 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
       sessionId: res["userReturn"]["sessionId"],
     );
 
+    mainInfo2 = MainInfoModel2(
+        userId: res["userReturn"]["intUserId"],
+        fiscalID:fyId == 0? res["fiscalYearInfo"]["financialYearId"]:fyId,
+        branchDepartmentId: branchDepartmentId,
+        branchId: branchId,
+        isEngOrNepaliDate: res["otherInfo"]["isEngOrNepali"],
+        isMenuVerified: false,
+        filterId: 0,
+        refId: 0,
+        mainId: 0,
+        strId: '',
+        dbName: res["ownerCompanyList"]["databaseName"],
+        decimalPlace:res["otherInfo"]["decimalPlace"],
+        startDate: fromDate == '' ? res["fiscalYearInfo"]["fromDate"]:fromDate,
+        endDate:toDate == ''? res["fiscalYearInfo"]["toDate"]:toDate,
+        sessionId: res["userReturn"]["sessionId"],
+        id: 0,
+        searchText: ''
+    );
+
+    // print(mainInfo.toJson());
+
     MainInfoModel infoModel = MainInfoModel(
       userId: res["userReturn"]["intUserId"],
       fiscalID:fyId == 0? res["fiscalYearInfo"]["financialYearId"]:fyId,
@@ -97,36 +120,6 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
       fromDate: "2023-05-31T00:00:00",
       toDate: now,
     );
-
-
-    void showSessionExpiredDialog(BuildContext context) {
-      showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context){
-            return AlertDialog(
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-              content: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text('Session Expired! Please login again.'),
-                  const SizedBox(height: 10,),
-                  TextButton(
-                    onPressed: () {
-                      sessionBox.clear();
-                      Get.offAll(const StatusPage());
-                    },
-                    child: const Text('OK'),
-                  )
-                ],
-              ),
-            );
-          }
-      );
-    }
-
-
 
 
 
@@ -164,7 +157,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         },
                         error: (error, stackTrace) {
 
-                          if(error == 'Authentication failed'){
+                          if(error == 'Authentication failed.'){
                             Fluttertoast.showToast(
                               msg: 'Session Expired',
                               gravity: ToastGravity.BOTTOM,

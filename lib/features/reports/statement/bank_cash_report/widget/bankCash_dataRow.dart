@@ -242,7 +242,7 @@ DataRow buildBankCashViewRow(int index, BankCashViewModel tblData, String vouche
 DataCell buildBankCashDataCell(double cellWidth, String cellText, TextAlign cellTextAlign, int layerPosition) {
   return DataCell(
     Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       width: cellWidth,
       child: Padding(
         padding: const EdgeInsets.only(left: 15),

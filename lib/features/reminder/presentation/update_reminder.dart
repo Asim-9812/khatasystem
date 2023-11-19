@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:khata_app/features/reminder/model/reminder_model.dart';
 import 'package:khata_app/features/reminder/provider/reminder_provider.dart';
 import 'package:khata_app/features/reminder/service/notification_service.dart';
@@ -170,8 +171,7 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
                               ),
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: DisplayDateTime( selectedDate: selectedDate,
-                                  selectedTime: selectedTime,)
+                                child: Text('${DateFormat('EEE, dd MMM').format(selectedDate)} ${selectedTime.hour}:${selectedTime.minute} ${selectedTime.period.name}'),
                               ),
                             ),
                             const SizedBox(width: 30,),
@@ -330,32 +330,43 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
                           builder: (context, ref, child) {
                             return ElevatedButton(
                               onPressed:  titleController.text.isEmpty ? null : () async{
-                                List<String> selectedDays = [];
-                                for (int i = 0; i < days.length; i++) {
-                                  if (checkedDays[i]) {
-                                    selectedDays.add(days[i]);
-                                  }
-                                }
                                 final scaffoldMessage = ScaffoldMessenger.of(context);
                                 final navigate = Navigator.of(context);
-                                ReminderModel reminder =  ReminderModel(
-                                    id: reminderItem.id,
-                                    title: titleController.text.trim(),
-                                    description: detailController.text.trim(),
-                                    timeOfDay: selectedTime,
-                                    repeat: isRepeat,
-                                  dateList: isRepeat == false ? null : selectedDays
-                                );
-                                await ref.read(reminderProvider.notifier).updateReminder(
-                                   reminder
-                                );
-                                NotificationServices().scheduleNotification(
-                                  reminder
-                                );
-                                scaffoldMessage.showSnackBar(
-                                    SnackBarUtil.customSnackBar('Reminder Updated')
-                                );
-                                navigate.pop(true);
+                                DateTime checkDate = DateTime(selectedDate.year,selectedDate.month,selectedDate.day,selectedTime.hour,selectedTime.minute);
+
+                                if(checkDate.isBefore(DateTime.now())){
+                                  scaffoldMessage.showSnackBar(
+                                      SnackBarUtil.customErrorSnackBar('Date is set before current time.')
+                                  );
+                                }
+                                else{
+                                  List<String> selectedDays = [];
+                                  for (int i = 0; i < days.length; i++) {
+                                    if (checkedDays[i]) {
+                                      selectedDays.add(days[i]);
+                                    }
+                                  }
+
+                                  ReminderModel reminder =  ReminderModel(
+                                      id: reminderItem.id,
+                                      title: titleController.text.trim(),
+                                      description: detailController.text.trim(),
+                                      timeOfDay: selectedTime,
+                                      repeat: isRepeat,
+                                      dateList: isRepeat == false ? null : selectedDays
+                                  );
+                                  await ref.read(reminderProvider.notifier).updateReminder(
+                                      reminder
+                                  );
+                                  NotificationServices().scheduleNotification(
+                                      reminder
+                                  );
+                                  scaffoldMessage.showSnackBar(
+                                      SnackBarUtil.customSnackBar('Reminder Updated')
+                                  );
+                                  navigate.pop(true);
+                                }
+
                               },
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size(double.infinity, 50),

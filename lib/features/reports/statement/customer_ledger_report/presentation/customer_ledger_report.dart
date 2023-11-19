@@ -61,7 +61,7 @@ class _CustomerLedgerReportState extends State<CustomerLedgerReport> {
       builder: (context, ref, child) {
         final fromDate = ref.watch(itemProvider).fromDate;
         final toDate = ref.watch(itemProvider).toDate;
-        final outCome = ref.watch(listProvider(modelRef));
+        final outCome = ref.watch(customerListProvider(modelRef));
         final res = ref.watch(customerLedgerReportProvider);
         return WillPopScope(
           onWillPop: () async {
@@ -102,17 +102,17 @@ class _CustomerLedgerReportState extends State<CustomerLedgerReport> {
                     allList.add(e);
                   }
 
-                  List<String> groups = ['All'];
-                  List<String> ledgers = ['All'];
-                  List<String> branches = ['All'];
+                  List<String> groups = [];
+                  List<String> ledgers = [];
+                  List<String> branches = [];
 
-                  data[0].forEach((key, _) {
+                  data[1].forEach((key, _) {
                     groups.add(key);
                   });
-                  data[1].forEach((key, _) {
+                  data[2].forEach((key, _) {
                     ledgers.add(key);
                   });
-                  data[2].forEach((key, _) {
+                  data[0].forEach((key, _) {
                     branches.add(key);
                   });
 

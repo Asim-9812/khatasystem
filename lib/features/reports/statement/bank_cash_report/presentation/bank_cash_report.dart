@@ -45,6 +45,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
+  late int _totalRecords;
   String branchName = '';
   String groupName = '';
   String voucherValue = '';
@@ -171,6 +172,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
         id: 0,
         searchText: ''
     );
+
 
 
 
@@ -867,6 +869,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                               if (data.isNotEmpty) {
                                 final tableReport = ReportData.fromJson(data[1]);
                                 _totalPages = tableReport.totalPages!;
+                                _totalRecords = tableReport.totalRecords!;
                                 for (var e in data[0]) {
                                   newList.add(BankCashModel.fromJson(e));
                                 }
@@ -881,6 +884,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                 final narration = item.date.toString().toLowerCase();
                                 return voucherNo.contains(searchQuery.toLowerCase()) || voucherName.contains(searchQuery.toLowerCase()) || narration.contains(searchQuery.toLowerCase());
                               }).toList();
+                              
                               return Column(
                                 children: [
                                   Padding(
@@ -1183,26 +1187,45 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                             ],
                                           ),
                                           /// Pager package used for pagination
-                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                            currentItemsPerPage: _rowPerPage,
-                                            currentPage: _currentPage,
-                                            totalPages: _totalPages,
-                                            onPageChanged: (page) {
-                                              _currentPage = page;
-                                              /// updates current page number of filterModel, because it does not update on its own
-                                              fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                              ref.read(bankCashProvider.notifier).fetchTableData(fModel);
-                                            },
-                                            showItemsPerPage: true,
-                                            onItemsPerPageChanged: (itemsPerPage) {
-                                              _rowPerPage = itemsPerPage;
-                                              _currentPage = 1;
-                                              /// updates row per page of filterModel, because it does not update on its own
-                                              fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                              ref.read(bankCashProvider.notifier).fetchTableData(fModel);
-                                            },
-                                            itemsPerPageList: rowPerPageItems,
-                                          ),
+                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) 
+                                              : Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  
+                                                  Column(
+                                                    children: [
+                                                      Pager(
+
+                                                        currentItemsPerPage: _rowPerPage,
+                                                        currentPage: _currentPage,
+                                                        totalPages: _totalPages,
+                                                        onPageChanged: (page) {
+                                                          _currentPage = page;
+                                                          /// updates current page number of filterModel, because it does not update on its own
+                                                          fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                                          ref.read(bankCashProvider.notifier).fetchTableData(fModel);
+                                                        },
+                                                        showItemsPerPage: true,
+                                                        onItemsPerPageChanged: (itemsPerPage) {
+                                                          setState(() {
+                                                            _rowPerPage = itemsPerPage;
+                                                          });
+
+                                                          _currentPage = 1;
+                                                          /// updates row per page of filterModel, because it does not update on its own
+                                                          fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                                          ref.read(bankCashProvider.notifier).fetchTableData(fModel);
+                                                        },
+                                                        itemsPerPageList: rowPerPageItems,
+                                                      ),
+                                                      const SizedBox(height: 10,),
+                                                      Text('Showing ${_rowPerPage} of ${_totalRecords}',style: TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),)
+                                                    ],
+                                                  ),
+                                                  Text('Closing balance: CASH: ${newList.last.strCashBalance} BANK: ${newList.last.strBankBalance}',style: TextStyle(fontWeight: FontWeight.bold),)
+                                                ],
+                                              ),
                                         ],
                                       ),
                                     ),
@@ -1513,7 +1536,8 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                             ],
                                           ),
                                           /// Pager package used for pagination
-                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
+                                          _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),)
+                                              : Pager(
                                             currentItemsPerPage: _rowPerPage,
                                             currentPage: _currentPage,
                                             totalPages: _totalPages,

@@ -199,29 +199,139 @@ class _DetailedVatReportState extends State<DetailedVatReport> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        DataTable(
-                                          columns: [
-                                            buildDataColumn(
-                                                60, 'S.N', TextAlign.start),
-                                            buildDataColumn(200, 'Invoice Date',
-                                                TextAlign.start),
-                                            buildDataColumn(
-                                                200, 'Total Amount', TextAlign.start),
-                                            buildDataColumn(
-                                                160, 'Total Taxable Amount', TextAlign.end),
-                                            buildDataColumn(
-                                                160, 'Debit (Dr)', TextAlign.end),
-                                            buildDataColumn(160, 'Credit (Cr)',
-                                                TextAlign.end),
-                                          ],
-                                          rows: List.generate(
-                                            newList.length,
-                                                (index) => buildVatDetailRow(index, newList[index], context),
-                                          ),
-                                          columnSpacing: 0,
-                                          horizontalMargin: 0,
-                                        ),
+                                        Row(
+                                          children: [
+                                            DataTable(
+                                              headingRowHeight: 60,
+                                              columns: [
+                                                buildDataColumn(60, 'S.N', TextAlign.center),
+                                                buildDataColumn(200, 'Invoice Date', TextAlign.center),
+                                                buildDataColumn(200, 'Total Amount', TextAlign.center),
+                                                buildDataColumn(200, 'Total Taxable Amount', TextAlign.center),
+                                              ],
+                                              rows: List.generate(
+                                                newList.length,
+                                                    (index) => buildVatDetailRow(index, newList[index], context),
+                                              ),
+                                              columnSpacing: 0,
+                                              horizontalMargin: 0,
+                                            ),
+                                            Column(
+                                              children: [
+                                                Container(
+                                                  width: 400,
+                                                  height: 30,
+                                                  decoration: BoxDecoration(
+                                                      color: ColorManager.primary,
+                                                      border: const Border(
+                                                          bottom: BorderSide(
+                                                              color: Colors.white,
+                                                              width: 1
+                                                          )
+                                                      )
+                                                  ),
+                                                  child:  const Center(
+                                                    child: Text(
+                                                      'VAT',
+                                                      style: TextStyle(
+                                                        fontFamily: 'Ubuntu',
+                                                        fontWeight: FontWeight.w500,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                DataTable(
+                                                  headingRowHeight: 30,
+                                                  columns: [
+                                                    DataColumn(
+                                                      label: Container(
+                                                        width: 200,
+                                                        height: 30,
+                                                        decoration: BoxDecoration(
+                                                          color: ColorManager.primary,
+                                                          border: const Border(
+                                                            right: BorderSide(
+                                                              color: Colors.white,
+                                                              width: 1,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        child:const Padding(
+                                                          padding: EdgeInsets.only(left: 10, top: 6, right: 10),
+                                                          child: Text(
+                                                            'Dr',
+                                                            style: TextStyle(
+                                                              fontFamily: 'Ubuntu',
+                                                              fontWeight: FontWeight.w500,
+                                                              color: Colors.white,
+                                                            ),
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    DataColumn(
+                                                      label: Container(
+                                                        width: 200,
+                                                        height: 30,
+                                                        decoration: BoxDecoration(
+                                                          color: ColorManager.primary,
+                                                          border: const Border(
+                                                            right: BorderSide(
+                                                              color: Colors.white,
+                                                              width: 1,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        child:const Padding(
+                                                          padding: EdgeInsets.only(left: 10, top: 6, right: 10),
+                                                          child: Text(
+                                                            'Cr',
+                                                            style: TextStyle(
+                                                              fontFamily: 'Ubuntu',
+                                                              fontWeight: FontWeight.w500,
+                                                              color: Colors.white,
+                                                            ),
+                                                            textAlign: TextAlign.center,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                  rows: List.generate(
+                                                    newList.length,
+                                                        (index) => buildVatDetailRow2(index, newList[index], context),
+                                                  ),
+                                                  columnSpacing: 0,
+                                                  horizontalMargin: 0,
+                                                ),
+                                              ],
+                                            ),
 
+                                          ],
+                                        ),
+                                        // /// Pager package used for pagination
+                                        // _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
+                                        //   currentItemsPerPage: _rowPerPage,
+                                        //   currentPage: _currentPage,
+                                        //   totalPages: _totalPages,
+                                        //   onPageChanged: (page) {
+                                        //     _currentPage = page;
+                                        //     /// updates current page number of filterModel, because it does not update on its own
+                                        //     fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                        //     ref.read(vatReportProvider.notifier).getTableValues(fModel);
+                                        //   },
+                                        //   showItemsPerPage: true,
+                                        //   onItemsPerPageChanged: (itemsPerPage) {
+                                        //     _rowPerPage = itemsPerPage;
+                                        //     _currentPage = 1;
+                                        //     /// updates row per page of filterModel, because it does not update on its own
+                                        //     fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                        //     ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                        //   },
+                                        //   itemsPerPageList: rowPerPageItems,
+                                        // ),
                                       ],
                                     ),
                                   ),

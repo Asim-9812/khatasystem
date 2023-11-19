@@ -23,7 +23,7 @@ class DisplayDateTime extends StatelessWidget {
       selectedTime.minute,
     );
 
-    return scheduledDate.isBefore(now) ? Text('${_formatDateString(DateTime.now().add(const Duration(days: 1)))} ${_formatTime(selectedTime)}',
+    return scheduledDate.isBefore(now) ? Text('${_formatDateString(DateTime.now())} ${_formatTime(selectedTime)}',
       style: const TextStyle(
         fontSize: 18,
       ),

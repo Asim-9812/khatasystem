@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:khata_app/features/reminder/model/reminder_model.dart';
 import 'package:khata_app/features/reminder/provider/reminder_provider.dart';
 import 'package:khata_app/features/reminder/service/notification_service.dart';
@@ -154,9 +155,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                              ),
                              child: Align(
                                alignment: Alignment.centerLeft,
-                               child: DisplayDateTime(
-                                 selectedDate: selectedDate,
-                                 selectedTime: selectedTime,),
+                               child: Text('${DateFormat('EEE, dd MMM').format(selectedDate)} ${selectedTime.hour}:${selectedTime.minute} ${selectedTime.period.name}'),
                              ),
                            ),
                            const SizedBox(width: 30,),
@@ -299,32 +298,42 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
 
                             titleController.text.isEmpty ? null : () async{
                               final scaffoldMessage = ScaffoldMessenger.of(context);
-                              List<String> selectedDays = [];
-                              for (int i = 0; i < days.length; i++) {
-                                if (checkedDays[i]) {
-                                  selectedDays.add(days[i]);
-                                }
+                              DateTime checkDate = DateTime(selectedDate.year,selectedDate.month,selectedDate.day,selectedTime.hour,selectedTime.minute);
+
+                              if(checkDate.isBefore(DateTime.now())){
+                                scaffoldMessage.showSnackBar(
+                                    SnackBarUtil.customErrorSnackBar('Date is set before current time.')
+                                );
                               }
-                              final navigate = Navigator.of(context);
-                              Random random = Random();
-                              ReminderModel reminder = ReminderModel(
-                                  id: random.nextInt(1000),
-                                  title: titleController.text.trim(),
-                                  description: detailController.text.trim(),
-                                  timeOfDay: selectedTime,
-                                  repeat: isRepeat,
-                                dateList: isRepeat == false ? null : selectedDays
-                              );
-                              await ref.read(reminderProvider.notifier).addReminder(
-                                  reminder
-                              );
-                              notificationServices.scheduleNotification(
-                                reminder
-                              );
-                              navigate.pop(true);
-                              scaffoldMessage.showSnackBar(
-                                  SnackBarUtil.customSnackBar('Reminder Saved')
-                              );
+                              else{
+                                List<String> selectedDays = [];
+                                for (int i = 0; i < days.length; i++) {
+                                  if (checkedDays[i]) {
+                                    selectedDays.add(days[i]);
+                                  }
+                                }
+                                final navigate = Navigator.of(context);
+                                Random random = Random();
+                                ReminderModel reminder = ReminderModel(
+                                    id: random.nextInt(1000),
+                                    title: titleController.text.trim(),
+                                    description: detailController.text.trim(),
+                                    timeOfDay: selectedTime,
+                                    repeat: isRepeat,
+                                    dateList: isRepeat == false ? null : selectedDays
+                                );
+                                await ref.read(reminderProvider.notifier).addReminder(
+                                    reminder
+                                );
+                                notificationServices.scheduleNotification(
+                                    reminder
+                                );
+                                navigate.pop(true);
+                                scaffoldMessage.showSnackBar(
+                                    SnackBarUtil.customSnackBar('Reminder Saved')
+                                );
+                              }
+
                             },
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size(double.infinity, 50),

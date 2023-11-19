@@ -114,6 +114,7 @@ class VatReportProvider3 extends StateNotifier<AsyncValue<List<dynamic>>>{
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
 
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
@@ -230,7 +231,7 @@ class VatListProvider {
       if (response.statusCode == 200) {
         final responseList = response.data as List<dynamic>;
 
-        for (final item in responseList) {
+        for (final item in responseList[0]) {
           if (item is Map<String, dynamic>) {
             branch[ListModel.fromJson(item).text!] = ListModel.fromJson(item).value!;
           }

@@ -50,7 +50,7 @@ class _MonthlyState extends State<Monthly> {
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
     modelRef.listNameId = "[\"monthly_branch\"]";
-    mainInfo.dbName = 'khataC_00001';
+    mainInfo.dbName = mainInfo.dbName;
     modelRef.mainInfoModel = mainInfo;
     modelRef.conditionalValues = '';
 
@@ -266,27 +266,27 @@ class _MonthlyState extends State<Monthly> {
                                           columnSpacing: 0,
                                           horizontalMargin: 0,
                                         ),
-                                        /// Pager package used for pagination
-                                        _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
-                                          currentItemsPerPage: _rowPerPage,
-                                          currentPage: _currentPage,
-                                          totalPages: _totalPages,
-                                          onPageChanged: (page) {
-                                            _currentPage = page;
-                                            /// updates current page number of filterModel, because it does not update on its own
-                                            fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                            ref.read(vatReportProvider2.notifier).getTableValues(fModel);
-                                          },
-                                          showItemsPerPage: true,
-                                          onItemsPerPageChanged: (itemsPerPage) {
-                                            _rowPerPage = itemsPerPage;
-                                            _currentPage = 1;
-                                            /// updates row per page of filterModel, because it does not update on its own
-                                            fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                            ref.read(tableDataProvider.notifier).getTableValues(fModel);
-                                          },
-                                          itemsPerPageList: rowPerPageItems,
-                                        ),
+                                        // /// Pager package used for pagination
+                                        // _totalPages == 0 ? const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),) : Pager(
+                                        //   currentItemsPerPage: _rowPerPage,
+                                        //   currentPage: _currentPage,
+                                        //   totalPages: _totalPages,
+                                        //   onPageChanged: (page) {
+                                        //     _currentPage = page;
+                                        //     /// updates current page number of filterModel, because it does not update on its own
+                                        //     fModel.dataFilterModel!.currentPageNumber = _currentPage;
+                                        //     ref.read(vatReportProvider2.notifier).getTableValues(fModel);
+                                        //   },
+                                        //   showItemsPerPage: true,
+                                        //   onItemsPerPageChanged: (itemsPerPage) {
+                                        //     _rowPerPage = itemsPerPage;
+                                        //     _currentPage = 1;
+                                        //     /// updates row per page of filterModel, because it does not update on its own
+                                        //     fModel.dataFilterModel!.pageRowCount = _rowPerPage;
+                                        //     ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                        //   },
+                                        //   itemsPerPageList: rowPerPageItems,
+                                        // ),
                                       ],
                                     ),
                                   ),

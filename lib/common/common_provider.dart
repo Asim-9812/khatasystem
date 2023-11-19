@@ -72,7 +72,7 @@ class GroupItem extends ChangeNotifier{
   String branchItem2 = 'ALL';
   String voucherTypeItem = 'All';
   String statusType = 'All';
-  String particularTypeItem = 'All';
+  String particularTypeItem = '';
   String fromDate = '';
   String toDate = '';
   String search = '';
@@ -134,7 +134,6 @@ class GroupItem extends ChangeNotifier{
     selectedVatReportList = list;
     notifyListeners();
   }
-
 
 
 

@@ -46,7 +46,7 @@ DataColumn buildDataColumn(double width, String colName, TextAlign alignTxt) {
   return DataColumn(
     label: Container(
       width: width,
-      height: 50,
+      height: 60,
       decoration: BoxDecoration(
         color: ColorManager.primary,
         border: const Border(

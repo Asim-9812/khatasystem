@@ -50,16 +50,16 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
 
   @override
   Widget build(BuildContext context) {
-    GetListModel modelRef = GetListModel();
-    modelRef.refName = 'AccountLedgerReport';
+    GetListModel2 modelRef = GetListModel2();
+    modelRef.refName = 'GroupWiseLedgerReport';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
-    modelRef.listNameId = "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
-    modelRef.mainInfoModel = mainInfo;
+    modelRef.listNameId = "[\"groupwise_ledger_branch\",\"groupwise_ledger_group\"]";
+    modelRef.mainInfoModel = mainInfo2;
     modelRef.conditionalValues = '';
     return Consumer(
       builder: (context, ref, child) {
-        final outCome = ref.watch(listProvider(modelRef));
+        final outCome = ref.watch(listProvider3(modelRef));
         final res = ref.watch(groupWiseLedgerProvider);
         final fromDate = ref.watch(itemProvider).fromDate;
         final toDate = ref.watch(itemProvider).toDate;
@@ -103,21 +103,17 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                   }
 
                   List<String> groups = [];
-                  List<String> ledgers = ['All'];
-                  List<String> branches = ['All'];
+                  List<String> branches = [];
 
-                  data[0].forEach((key, _) {
+                  data[1].forEach((key, _) {
                     groups.add(key);
                   });
-                  data[1].forEach((key, _) {
-                    ledgers.add(key);
-                  });
-                  data[2].forEach((key, _) {
+                  data[0].forEach((key, _) {
                     branches.add(key);
                   });
 
                   String groupItem = groups[groups.indexOf('Primary')];
-                  String ledgerItem = ledgers[0];
+
                   String branchItem = branches[0];
 
                   final groupItemData = ref.watch(itemProvider).item2;
@@ -127,19 +123,10 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
 
                   final branchItemData = ref.watch(itemProvider).branchItem;
 
-                  GetListModel ledgerGroupListModel = GetListModel();
-                  ledgerGroupListModel.refName = 'AccountLedgerReport';
-                  ledgerGroupListModel.isSingleList = 'true';
-                  ledgerGroupListModel.singleListNameStr = 'account';
-                  ledgerGroupListModel.listNameId =
-                  "['mainLedger-${data[0][groupItemData]}']";
-                  ledgerGroupListModel.mainInfoModel = mainInfo;
-                  ledgerGroupListModel.conditionalValues = '';
-
                   /// this function returns 'accountGroudId--' as required by the api and selected item
                   String groupValue(String val) {
-                    if (val == "All") {
-                      return 'groupID--0';
+                    if (val == "Primary") {
+                      return 'groupID--1';
                     }
                     else {
                       return 'groupID--${data[0][groupItemData]}';

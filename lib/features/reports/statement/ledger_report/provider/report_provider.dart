@@ -11,10 +11,317 @@ import '../../../../../model/list model/list_model.dart';
 
 
 
+final TPBlistProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => TBPLBSListProvider().getMenu(model));
+final supplierListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => SupplierLedgerListProvider().getMenu(model));
+final customerListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => CustomerLedgerListProvider().getMenu(model));
+final ledgerListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => LedgerReportListProvider().getMenu(model));
 final listProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => ListProvider().getMenu(model));
 final listProvider2 = FutureProvider.family.autoDispose((ref, GetListModel model) => ListProvider().getSubList(model));
+final listProvider3 = FutureProvider.family.autoDispose((ref, GetListModel2 model) => ListProvider().getSubList2(model));
 
 final ledgerItemProvider = FutureProvider.family((ref, GetListModel model) => LedgerProvider().getLedgerItem(model));
+
+
+class LedgerReportListProvider{
+  Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+
+    print(getListModel.mainInfoModel!.fiscalID);
+    print(getListModel.mainInfoModel!.branchId);
+    final jsonData = jsonEncode(getListModel.toJson());
+    List<Map<dynamic, dynamic>> myList = [];
+    try{
+      final response = await dio.post(Api.getLedgerReportList, data: {
+        "fiscalId": getListModel.mainInfoModel!.fiscalID,
+        "sessionBranch": getListModel.mainInfoModel!.branchId
+      });
+
+      if(response.statusCode == 200){
+        final responseList = [response.data[0] as List<dynamic>,response.data[2] as List<dynamic>,response.data[3] as List<dynamic>];
+
+        var branch = {};
+        var group = {};
+        var ledger = {};
+
+
+        for(final e in responseList[0]){
+          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[1]){
+          group[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[2]){
+          ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        myList = [branch,group,ledger];
+      }else{
+      }
+      return myList;
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+  Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+
+    final jsonData = jsonEncode(getListModel.toJson());
+    List<Map<dynamic, dynamic>> myList = [];
+    try{
+      final response = await dio.post(Api.getSubList, data: jsonData);
+
+      if(response.statusCode == 200){
+        final responseList = response.data as List<dynamic>;
+        var branch = {};
+        var voucher = {};
+        var ledger = {};
+
+        for(final e in responseList[0]){
+          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[1]){
+          voucher[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[2]){
+          ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        myList = [branch, voucher, ledger];
+      }else{
+      }
+      return myList;
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+
+
+
+class CustomerLedgerListProvider{
+  Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+
+    print(getListModel.mainInfoModel!.fiscalID);
+    print(getListModel.mainInfoModel!.branchId);
+    final jsonData = jsonEncode(getListModel.toJson());
+    List<Map<dynamic, dynamic>> myList = [];
+    try{
+      final response = await dio.post(Api.getCustomerLedgerList, data: {
+        "fiscalId": getListModel.mainInfoModel!.fiscalID,
+        "sessionBranch": getListModel.mainInfoModel!.branchId
+      });
+
+      if(response.statusCode == 200){
+        final responseList = [response.data[0] as List<dynamic>,response.data[1] as List<dynamic>,response.data[2] as List<dynamic>];
+
+        var branch = {};
+        var group = {};
+        var ledger = {};
+
+
+        for(final e in responseList[0]){
+          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[1]){
+          group[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[2]){
+          ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        myList = [branch,group,ledger];
+      }else{
+      }
+      return myList;
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+  Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+
+    final jsonData = jsonEncode(getListModel.toJson());
+    List<Map<dynamic, dynamic>> myList = [];
+    try{
+      final response = await dio.post(Api.getSubList, data: jsonData);
+
+      if(response.statusCode == 200){
+        final responseList = response.data as List<dynamic>;
+        var branch = {};
+        var voucher = {};
+        var ledger = {};
+
+        for(final e in responseList[0]){
+          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[1]){
+          voucher[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[2]){
+          ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        myList = [branch, voucher, ledger];
+      }else{
+      }
+      return myList;
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+
+
+class SupplierLedgerListProvider{
+  Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+
+    print(getListModel.mainInfoModel!.fiscalID);
+    print(getListModel.mainInfoModel!.branchId);
+    final jsonData = jsonEncode(getListModel.toJson());
+    List<Map<dynamic, dynamic>> myList = [];
+    try{
+      final response = await dio.post(Api.getSupplierLedgerList, data: {
+        "fiscalId": getListModel.mainInfoModel!.fiscalID,
+        "sessionBranch": getListModel.mainInfoModel!.branchId
+      });
+
+      if(response.statusCode == 200){
+        final responseList = [response.data[0] as List<dynamic>,response.data[1] as List<dynamic>,response.data[2] as List<dynamic>];
+
+        var branch = {};
+        var group = {};
+        var ledger = {};
+
+
+        for(final e in responseList[0]){
+          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[1]){
+          group[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[2]){
+          ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        myList = [branch,group,ledger];
+      }else{
+      }
+      return myList;
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+  Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+
+    final jsonData = jsonEncode(getListModel.toJson());
+    List<Map<dynamic, dynamic>> myList = [];
+    try{
+      final response = await dio.post(Api.getSubList, data: jsonData);
+
+      if(response.statusCode == 200){
+        final responseList = response.data as List<dynamic>;
+        var branch = {};
+        var voucher = {};
+        var ledger = {};
+
+        for(final e in responseList[0]){
+          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[1]){
+          voucher[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[2]){
+          ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        myList = [branch, voucher, ledger];
+      }else{
+      }
+      return myList;
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+
+class TBPLBSListProvider{
+  Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+
+    print(getListModel.mainInfoModel!.fiscalID);
+    print(getListModel.mainInfoModel!.branchId);
+    final jsonData = jsonEncode(getListModel.toJson());
+    List<Map<dynamic, dynamic>> myList = [];
+    try{
+      final response = await dio.post(Api.getTrialProfitBlcList, data: {
+        "fiscalId": getListModel.mainInfoModel!.fiscalID,
+        "sessionBranch": getListModel.mainInfoModel!.branchId
+      });
+
+      if(response.statusCode == 200){
+        final responseList = response.data[0] as List<dynamic>;
+
+        var branch = {};
+
+
+        for(final e in responseList){
+          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        myList = [branch];
+      }else{
+      }
+      return myList;
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+  Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+
+    final jsonData = jsonEncode(getListModel.toJson());
+    List<Map<dynamic, dynamic>> myList = [];
+    try{
+      final response = await dio.post(Api.getSubList, data: jsonData);
+
+      if(response.statusCode == 200){
+        final responseList = response.data as List<dynamic>;
+        var branch = {};
+        var voucher = {};
+        var ledger = {};
+
+        for(final e in responseList[0]){
+          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[1]){
+          voucher[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[2]){
+          ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        myList = [branch, voucher, ledger];
+      }else{
+      }
+      return myList;
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+
+
 
 class ListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
@@ -75,6 +382,35 @@ class ListProvider{
           ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
         }
         myList = [branch, voucher, ledger];
+      }else{
+      }
+      return myList;
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+  Future<List<Map<dynamic, dynamic>>> getSubList2(GetListModel2 getListModel) async {
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+
+    final jsonData = jsonEncode(getListModel.toJson());
+    List<Map<dynamic, dynamic>> myList = [];
+    try{
+      final response = await dio.post(Api.getSubList, data: jsonData);
+
+      if(response.statusCode == 200){
+        final responseList = [response.data[0] as List<dynamic>,response.data[1] as List<dynamic>];
+        var branch = {};
+        var group = {};
+
+        for(final e in responseList[0]){
+          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        for(final e in responseList[1]){
+          group[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+        }
+        myList = [branch, group];
       }else{
       }
       return myList;

@@ -119,10 +119,10 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                       allList.add(e);
                     }
 
-                    List<String> groups = ['All'];
-                    List<String> ledgers = ['All'];
-                    List<String> branches = ['All'];
-                    List<String> voucherTypes = ['All'];
+                    List<String> groups = [];
+                    List<String> ledgers = [];
+                    List<String> branches = [];
+                    List<String> voucherTypes = [];
                     List<String> statusTypes = ['All', 'Verified', 'Unverified'];
 
                     data[0].forEach((key, _) {

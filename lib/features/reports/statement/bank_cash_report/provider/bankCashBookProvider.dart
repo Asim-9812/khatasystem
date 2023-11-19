@@ -28,9 +28,11 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
     try{
       final jsonData = jsonEncode(filterModel.toJson());
 
+      print(jsonData);
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
+        print('length of data ${result[0].length}');
         state = AsyncValue.data(result);
       }
     }on DioError catch(err){

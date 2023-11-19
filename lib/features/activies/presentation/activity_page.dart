@@ -232,11 +232,13 @@ class DisplayBlock extends StatelessWidget {
               width: 140,
             ));
           }
+          final reverseList = snapshot.data!.reversed.toList();
           return ListView.separated(
-            itemCount: snapshot.data!.length,
+            itemCount: reverseList.length,
             itemBuilder: (context, index) {
-              final reverseIndex = snapshot.data!.length - 1 - index;
-              final item = snapshot.data![reverseIndex];
+
+              // final reverseIndex = snapshot.data!.length - 1 - index;
+              final item = reverseList[index];
               return GestureDetector(
                 onTap: () {
                   showDialog(
@@ -294,7 +296,7 @@ class DisplayBlock extends StatelessWidget {
                                                 ),
                                             ),
                                             TextSpan(
-                                              text: ' ${(item.status == 'True') ? 'Logged In' : item.statusMessage} ${formatDistanceToNowStrict(snapshot.data![reverseIndex].logInTime!)} ago',
+                                              text: ' ${(item.status == 'True') ? 'Logged In' : item.statusMessage} ${formatDistanceToNowStrict(reverseList[index].logInTime!)} ago',
                                               style: const TextStyle(
                                                   fontSize: 20,
                                                   color: Colors.black),
@@ -414,14 +416,14 @@ class DisplayBlock extends StatelessWidget {
                       RichText(
                         text: TextSpan(children: [
                           TextSpan(
-                            text: snapshot.data![reverseIndex].name,
+                            text: reverseList[index].name,
                             style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black),
                           ),
                           TextSpan(
-                              text: ' ${snapshot.data![reverseIndex].statusMessage}',
+                              text: ' ${reverseList[index].statusMessage}',
                               style: const TextStyle(
                                   fontSize: 18, color: Colors.black))
                         ]),
@@ -430,7 +432,7 @@ class DisplayBlock extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        '${formatDistanceToNowStrict(snapshot.data![reverseIndex].logInTime!)} ago',
+                        '${formatDistanceToNowStrict(reverseList[index].logInTime!)} ago',
                         style: TextStyle(
                             fontSize: 18, color: ColorManager.subtitleGrey),
                       )

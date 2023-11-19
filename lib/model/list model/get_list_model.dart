@@ -38,6 +38,46 @@ class GetListModel {
     return data;
   }
 }
+class GetListModel2 {
+  MainInfoModel2? mainInfoModel;
+  String? refName;
+  String? listNameId;
+  String? conditionalValues;
+  String? isSingleList;
+  String? singleListNameStr;
+
+  GetListModel2(
+      {this.mainInfoModel,
+        this.refName,
+        this.listNameId,
+        this.conditionalValues,
+        this.isSingleList,
+        this.singleListNameStr});
+
+  GetListModel2.fromJson(Map<String, dynamic> json) {
+    mainInfoModel = json['mainInfoModel'] != null
+        ? MainInfoModel2.fromJson(json['mainInfoModel'])
+        : null;
+    refName = json['refName'];
+    listNameId = json['listNameId'];
+    conditionalValues = json['conditionalValues'];
+    isSingleList = json['isSingleList'];
+    singleListNameStr = json['singleListNameStr'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (mainInfoModel != null) {
+      data['mainInfoModel'] = mainInfoModel!.toJson();
+    }
+    data['refName'] = refName;
+    data['listNameId'] = listNameId;
+    data['conditionalValues'] = conditionalValues;
+    data['isSingleList'] = isSingleList;
+    data['singleListNameStr'] = singleListNameStr;
+    return data;
+  }
+}
 
 class MainInfoModel {
   int? userId;

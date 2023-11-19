@@ -62,6 +62,14 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
   }
 
 
+  @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    ref.read(itemProvider.notifier).updateSelected(true);
+
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +116,14 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                   data[1].forEach((key, _) {
                     particulars.add({'text': key, 'value': _});
                   });
+
+                  if(ref.watch(itemProvider).selected){
+                    ref.read(itemProvider.notifier).updateSelectedVatList(particulars.map((e) => e['value']).toList());
+                    String formattedList = ref.watch(itemProvider).selectedVatReportList.map((e) => '$e').join(',');
+                    ref.read(itemProvider).updateParticularType(formattedList);
+
+
+                  }
 
 
                   Map<String,dynamic> particularItem = particulars[0];
@@ -347,8 +363,8 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                     children: [
                                       Expanded(
                                         child: MultiSelectDialogField(
-                                          initialValue: _selectedParticulars,
-                                          buttonText: Text(_selectedParticulars.length == particulars.length?'All':_selectedParticulars.isNotEmpty?'${_selectedParticulars.length} items':'Select items'),
+                                          initialValue: ref.watch(itemProvider).selectedVatReportList,
+                                          buttonText: Text(ref.watch(itemProvider).selectedVatReportList.length == particulars.length?'All':_selectedParticulars.isNotEmpty?'${_selectedParticulars.length} items':'Select items'),
                                           chipDisplay: MultiSelectChipDisplay.none(),
                                           decoration: BoxDecoration(
                                               border: Border.all(
@@ -361,7 +377,8 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                           items: particulars.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
                                           listType: MultiSelectListType.LIST,
                                           onConfirm: (values) {
-                                            _selectedParticulars = values;
+
+                                            ref.read(itemProvider.notifier).updateSelectedVatList(values);
                                             String formattedList = ref.watch(itemProvider).selectedVatReportList.map((e) => '$e').join(',');
                                             ref.read(itemProvider).updateParticularType(formattedList);
                                           },
@@ -374,9 +391,9 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                         padding: const EdgeInsets.all(8.0),
                                         child: Row(
                                           children: [
-                                            Text(_selectedParticulars.length == particulars.length?'Unselect All':'Select All'),
+                                            Text(ref.watch(itemProvider).selectedVatReportList.length == particulars.length?'Unselect All':'Select All'),
                                             Checkbox(
-                                              value: _selectedParticulars.length == particulars.length,
+                                              value: ref.watch(itemProvider).selectedVatReportList.length == particulars.length,
                                               onChanged: (value) {
                                                 if (value!) {
                                                   // Select all items
@@ -440,7 +457,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                             ),
                                           );
                                         }
-                                        else if(_selectedParticulars.isEmpty){
+                                        else if(ref.watch(itemProvider).selectedVatReportList.isEmpty){
                                           scaffoldMessage.showSnackBar(
                                             SnackbarUtil.showFailureSnackbar(
                                               message: 'Please pick a particular type',

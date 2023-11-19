@@ -24,22 +24,26 @@ class VoucherListProvider{
     final jsonData = jsonEncode(getListModel.toJson());
     List<Map<dynamic, dynamic>> myList = [];
     try{
-      final response = await dio.post(Api.getList, data: jsonData);
+      final response = await dio.post(Api.getVoucherList, data: {
+        "fiscalId": getListModel.mainInfoModel!.fiscalID,
+        "sessionBranch": getListModel.mainInfoModel!.branchId
+      });
 
       if(response.statusCode == 200){
-        final responseList = response.data as List<dynamic>;
+        final responseList = [response.data[0] as List<dynamic>,response.data[1] as List<dynamic>,response.data[2] as List<dynamic>,response.data[3] as List<dynamic>];
+
         var group = {};
         var ledger = {};
         var branch = {};
         var voucherType = {};
 
-        for(final e in responseList[0]){
+        for(final e in responseList[1]){
           group[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
         }
-        for(final e in responseList[1]){
+        for(final e in responseList[2]){
           ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
         }
-        for(final e in responseList[2]){
+        for(final e in responseList[0]){
           branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
         }
         for(final e in responseList[3]){

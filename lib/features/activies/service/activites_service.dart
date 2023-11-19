@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:khata_app/core/api.dart';
 import 'package:khata_app/features/activies/model/logModel.dart';
 
+import '../../dashboard/presentation/home_screen.dart';
 import '../model/entry_master_model.dart';
 
 final logProvider = StreamProvider.autoDispose<List<LogModel>>((ref) async* {
@@ -32,7 +33,7 @@ final logProvider = StreamProvider.autoDispose<List<LogModel>>((ref) async* {
         "name": "string",
         "logInTime": "2023-05-09T10:46:15.304Z",
         "sessionId": "string",
-        "dbName": "KhataC_00001"
+        "dbName": mainInfo.dbName
       }
     );
 
@@ -76,7 +77,7 @@ Future<List<LogModel>> fetchLogActivities(StreamController logStreamController, 
           "name": "string",
           "logInTime": "2023-05-09T10:46:15.304Z",
           "sessionId": "string",
-          "dbName": "KhataC_00001"
+          "dbName": mainInfo.dbName
         },
     );
     if (response.statusCode == 200) {
@@ -108,7 +109,7 @@ Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactio
           "voucherTypeName": "string",
           "voucherNo": "string",
           "entryDate": "2023-05-12T06:31:03.862Z",
-          "dbName": "KhataC_00001"
+          "dbName": mainInfo.dbName
         }
     );
 
@@ -141,7 +142,7 @@ final entryMasterProvider = StreamProvider<List<EntryMaster>>((ref) async* {
           "voucherTypeName": "string",
           "voucherNo": "string",
           "entryDate": "2023-05-12T06:31:03.862Z",
-          "dbName": "KhataC_00001"
+          "dbName": mainInfo.dbName
         }
     );
 

@@ -54,7 +54,7 @@ class _ProfitLossReportState extends ConsumerState<ProfitLossReport> {
       builder: (context, ref, child) {
         final fromDate = ref.watch(itemProvider).fromDate;
         final toDate = ref.watch(itemProvider).toDate;
-        final outCome = ref.watch(listProvider(modelRef));
+        final outCome = ref.watch(TPBlistProvider(modelRef));
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(plReportProvider);
@@ -95,9 +95,9 @@ class _ProfitLossReportState extends ConsumerState<ProfitLossReport> {
                   allList.add(e);
                 }
 
-                List<String> branches = ['All'];
+                List<String> branches = [];
 
-                data[2].forEach((key, _) {
+                data[0].forEach((key, _) {
                   branches.add(key);
                 });
 

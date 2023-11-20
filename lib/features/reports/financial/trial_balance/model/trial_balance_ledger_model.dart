@@ -12,6 +12,8 @@ class LedgerWiseModel {
   String? strDebit;
   String? strCredit;
   String? strClosing;
+  double? debit;
+  double? credit;
   int? branchId;
   bool? isPageFooter;
   bool? isBold;
@@ -28,6 +30,8 @@ class LedgerWiseModel {
         this.strDebit,
         this.strCredit,
         this.strClosing,
+        this.debit,
+        this.credit,
         this.branchId,
         this.isPageFooter,
         this.isBold,
@@ -43,6 +47,8 @@ class LedgerWiseModel {
     strOpening = json['strOpening'];
     strDebit = json['strDebit'];
     strCredit = json['strCredit'];
+    debit = json['debit'];
+    credit = json['credit'];
     strClosing = json['strClosing'];
     branchId = json['branchId'];
     isPageFooter = json['isPageFooter'];

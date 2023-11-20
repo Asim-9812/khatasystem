@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:khata_app/features/reports/financial/trial_balance/model/trial_balance_ledger_model.dart';
 
 import '../../../../../common/export.dart';
@@ -11,7 +12,7 @@ DataRow trialBalanceLedgerRow(int index, LedgerWiseModel tblData,) {
     color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildTrialBlncDataCell(80, '${tblData.sno}', TextAlign.start, tblData.sno!),
-      buildTrialBlncDataCell(270, '${tblData.sno != "" ? tblData.accountGroupName : (tblData.ledgerName?.trim())}', TextAlign.start, tblData.sno!),
+      buildTrialBlncDataCell(270,  '${(tblData.ledgerName!)}', TextAlign.start, tblData.sno!),
     ],
   );
 }
@@ -21,8 +22,8 @@ DataRow trialBalanceClosingBalanceRow(int index, LedgerWiseModel tblData) {
   return DataRow(
     color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
-      buildTrialBlncDataCell(200, '${tblData.strDebit}', TextAlign.end, tblData.sno!,),
-      buildTrialBlncDataCell(200, '${tblData.strCredit}', TextAlign.end, tblData.sno!,),
+      buildTrialBlncDataCell(200, '${tblData.debit}', TextAlign.end, tblData.sno!,),
+      buildTrialBlncDataCell(200, '${tblData.credit}', TextAlign.end, tblData.sno!,),
     ],
   );
 }
@@ -54,15 +55,7 @@ DataCell buildTrialBlncDataCell(double cellWidth, String cellText, TextAlign cel
     Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       width: cellWidth,
-      child: Text(
-        cellText,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 16,
-          fontWeight: sNum != "" ? FontWeight.w400 : FontWeight.w600,
-        ),
-        textAlign: cellTextAlign,
-      ),
+      child: Html(data: cellText),
     ),
   );
 }

@@ -37,6 +37,7 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
+  late int _totalRecords;
 
   @override
   void initState() {
@@ -153,11 +154,11 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
                     if (groupValue == "All" && ledgerVal == "All") {
                       return 'LedgerId--';
                     } else if (groupValue == "All" && ledgerVal != "All") {
-                      return 'LedgerId--${data[1][ledgerItemData]}';
+                      return data[1][ledgerItemData] == null ? 'LedgerId--':  'LedgerId--${data[1][ledgerItemData]}';
                     } else if (groupValue != "All" && updateLedgerVal == "All") {
                       return 'LedgerId--';
                     } else {
-                      return 'LedgerId--${data[1][updatedLedgerItemData]}';
+                      return data[1][ledgerItemData] == null ? 'LedgerId--':'LedgerId--${data[1][updatedLedgerItemData]}';
                     }
                   }
 
@@ -618,6 +619,7 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
                                 if (data.isNotEmpty) {
                                   final tableReport = ReportData.fromJson(data[2]);
                                   _totalPages = tableReport.totalPages!;
+                                  _totalRecords = tableReport.totalRecords!;
                                   for (var e in data[0]) {
                                     newList.add(SupplierLedgerModel.fromJson(e));
                                   }
@@ -656,7 +658,7 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
                                           ],
                                           rows: List.generate(
                                               newList.length,
-                                              (index) => buildReportDataRow(index, newList[index], allList, context),
+                                              (index) => buildReportDataRow(index, newList[index], branchItem,allList, context),
                                           ),
                                           columnSpacing: 0,
                                           horizontalMargin: 0,
@@ -710,13 +712,17 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
                                             fModel.dataFilterModel!.currentPageNumber = _currentPage;
                                             ref.read(supplierLedgerReportProvider.notifier).fetchTableData(fModel);
                                           },
+                                          itemsPerPageText: 'Showing ${_rowPerPage > _totalRecords ? _totalRecords : _rowPerPage} of $_totalRecords :',
+                                          itemsPerPageTextStyle: const TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),
                                           showItemsPerPage: true,
                                           onItemsPerPageChanged: (itemsPerPage) {
+                                            setState(() {
                                             _rowPerPage = itemsPerPage;
                                             _currentPage = 1;
+                                            });
                                             /// updates row per page of filterModel, because it does not update on its own
                                             fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                            ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                            ref.read(supplierLedgerReportProvider.notifier).fetchTableData(fModel);
                                           },
                                           itemsPerPageList: rowPerPageItems,
                                         ),

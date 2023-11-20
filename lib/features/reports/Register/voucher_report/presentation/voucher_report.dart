@@ -37,6 +37,7 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
 
   late int _currentPage;
   late int _rowPerPage;
+  int _totalRecords = 0;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
 
@@ -181,14 +182,13 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                       if (groupValue == "All" && ledgerVal == "All") {
                         return 'LedgerId--';
                       } else if (groupValue == "All" && ledgerVal != "All") {
-                        return 'LedgerId--${data[1][ledgerItemData]}';
+                        return data[1][ledgerItemData] == null ? 'LedgerId--':  'LedgerId--${data[1][ledgerItemData]}';
                       } else if (groupValue != "All" && updateLedgerVal == "All") {
                         return 'LedgerId--';
                       } else {
-                        return 'LedgerId--${data[1][updatedLedgerItemData]}';
+                        return data[1][ledgerItemData] == null ? 'LedgerId--':'LedgerId--${data[1][updatedLedgerItemData]}';
                       }
                     }
-
                     String getBranchValue(String branchVal) {
                       if (branchVal == "All") {
                         return 'BranchId--';
@@ -201,7 +201,7 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                       if (value == "All") {
                         return "voucherType--";
                       } else {
-                        return 'voucherType--${data[3][voucherTypeItemData]}';
+                        return data[3][voucherTypeItemData]==null? 'voucherType--': 'voucherType--${data[3][voucherTypeItemData]}';
                       }
                     }
 
@@ -633,6 +633,10 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                   if (data.isNotEmpty) {
                                     final tableReport = ReportData.fromJson(data[1]);
                                     _totalPages = tableReport.totalPages!;
+
+                                      _totalRecords=tableReport.totalRecords!;
+
+
                                     for (var e in data[0]) {
                                       tableData.add(VoucherReportModel.fromJson(e));
                                     }
@@ -689,15 +693,15 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                             children: [
                                               DataTable(
                                                 columns: [
-                                                  voucherReportDataColumn(60, 'S.N', TextAlign.start),
-                                                  voucherReportDataColumn(150, 'Voucher Date', TextAlign.start),
-                                                  voucherReportDataColumn(200, 'Voucher No', TextAlign.start),
-                                                  voucherReportDataColumn(120, 'Ref No', TextAlign.start),
-                                                  voucherReportDataColumn(200, 'Voucher Type', TextAlign.start),
-                                                  voucherReportDataColumn(250, 'Particulars', TextAlign.start),
-                                                  voucherReportDataColumn(200, 'Amount', TextAlign.start),
-                                                  voucherReportDataColumn(300, 'Narration', TextAlign.start),
-                                                  voucherReportDataColumn(120, 'Status', TextAlign.start),
+                                                  voucherReportDataColumn(60, 'S.N', TextAlign.center),
+                                                  voucherReportDataColumn(150, 'Voucher Date', TextAlign.center),
+                                                  voucherReportDataColumn(200, 'Voucher No', TextAlign.center),
+                                                  voucherReportDataColumn(120, 'Ref No', TextAlign.center),
+                                                  voucherReportDataColumn(200, 'Voucher Type', TextAlign.center),
+                                                  voucherReportDataColumn(250, 'Particulars', TextAlign.center),
+                                                  voucherReportDataColumn(200, 'Amount', TextAlign.center),
+                                                  voucherReportDataColumn(300, 'Narration', TextAlign.center),
+                                                  voucherReportDataColumn(120, 'Status', TextAlign.center),
                                                   voucherReportDataColumn(80, 'View', TextAlign.center),
                                                 ],
                                                 rows: List.generate(filteredData.length, (index) => voucherReportDataRowDetailed(index: index, tblData: filteredData[index], context:  context)),
@@ -715,10 +719,16 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                                   fModel.dataFilterModel!.currentPageNumber = _currentPage;
                                                   ref.read(voucherReportProvider.notifier).getTableData(fModel);
                                                 },
+                                                itemsPerPageText: 'Showing $_rowPerPage of $_totalRecords :',
+                                                itemsPerPageTextStyle: const TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),
                                                 showItemsPerPage: true,
                                                 onItemsPerPageChanged: (itemsPerPage) {
-                                                  _rowPerPage = itemsPerPage;
-                                                  _currentPage = 1;
+                                                  setState(() {
+                                                    _rowPerPage = itemsPerPage;
+                                                    _currentPage = 1;
+                                                  });
+
+
                                                   /// updates row per page of filterModel, because it does not update on its own
                                                   fModel.dataFilterModel!.pageRowCount = _rowPerPage;
                                                   fModel.dataFilterModel!.currentPageNumber = _currentPage;
@@ -743,6 +753,7 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                   if (data.isNotEmpty) {
                                     final tableReport = ReportData.fromJson(data[1]);
                                     _totalPages = tableReport.totalPages!;
+                                    _totalRecords=tableReport.totalRecords!;
                                     for (var e in data[0]) {
                                       tableData.add(VoucherReportModel.fromJson(e));
                                     }
@@ -803,20 +814,20 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                               DataTable(
                                                 columns: [
                                                   voucherReportDataColumn(
-                                                      60, 'S.N', TextAlign.start),
+                                                      60, 'S.N', TextAlign.center),
                                                   voucherReportDataColumn(200,
-                                                      'Voucher Date', TextAlign.start),
+                                                      'Voucher Date', TextAlign.center),
                                                   voucherReportDataColumn(200,
-                                                      'Voucher No', TextAlign.start),
+                                                      'Voucher No', TextAlign.center),
                                                   voucherReportDataColumn(
-                                                      140, 'Ref No', TextAlign.start),
-                                                  voucherReportDataColumn(200, 'Voucher Type', TextAlign.start),
+                                                      140, 'Ref No', TextAlign.center),
+                                                  voucherReportDataColumn(200, 'Voucher Type', TextAlign.center),
                                                   voucherReportDataColumn(
-                                                      200, 'Amount', TextAlign.start),
+                                                      200, 'Amount', TextAlign.center),
                                                   voucherReportDataColumn(300,
-                                                      'Narration', TextAlign.start),
+                                                      'Narration', TextAlign.center),
                                                   voucherReportDataColumn(
-                                                      120, 'Status', TextAlign.start),
+                                                      120, 'Status', TextAlign.center),
                                                   voucherReportDataColumn(
                                                       80, 'View', TextAlign.center),
                                                 ],
@@ -831,6 +842,8 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                                 currentItemsPerPage: _rowPerPage,
                                                 currentPage: _currentPage,
                                                 totalPages: _totalPages,
+                                                itemsPerPageText: 'Showing $_rowPerPage of $_totalRecords :',
+                                                itemsPerPageTextStyle: const TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),
                                                 onPageChanged: (page) {
                                                   _currentPage = page;
                                                   /// updates current page number of filterModel, because it does not update on its own

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:khata_app/common/colors.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/presentation/subreport.dart';
 import 'package:khata_app/features/reports/statement/supplier_ledger_report/model/supplier_ledger_report_model.dart';
+import 'package:khata_app/features/reports/statement/supplier_ledger_report/presentation/supplier_subreport.dart';
 
 import '../../../common_widgets/build_report_table.dart';
 
 
 
-DataRow buildReportDataRow(int index, SupplierLedgerModel tblData,
+DataRow buildReportDataRow(int index, SupplierLedgerModel tblData, String branch,
     final List<Map<dynamic, dynamic>> dropDownList,
     [BuildContext? context]) {
   return DataRow(
@@ -37,10 +38,13 @@ DataRow buildReportDataRow(int index, SupplierLedgerModel tblData,
                     Navigator.push(
                         context!,
                         MaterialPageRoute(
-                          builder: (context) => SubReportPage(
+                          builder: (context) => SupplierSubReportPage(
                             ledgerName: tblData.ledgerName!,
                             selectedGroup: tblData.accountGroupName!,
                             dropDownList: dropDownList,
+                            branchName: branch,
+                            tblData: tblData,
+
                           ),
                         ));
                   },

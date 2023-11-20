@@ -95,14 +95,39 @@ DataRow buildVatRow2(int index, VatReportModel tblData, String branchId, String 
           60, '${tblData.sno}', TextAlign.center, 2),
       buildVatCell(
           200, tblData.particulars == '' ?'${tblData.strTotalTaxableAmount}':'${tblData.particulars}', TextAlign.center, 2),
-      buildVatCell(200, '${tblData.totalAmount}', TextAlign.center,
+      buildVatCell(200,tblData.sno==''?'':  '${tblData.totalAmount}', TextAlign.center,
           2),
       buildVatCell(
-          160, '${tblData.totalTaxableAmount}', TextAlign.center, 2),
+          160, tblData.sno==''?'': '${tblData.totalTaxableAmount}', TextAlign.center, 2),
+
+    ],
+  );
+}
+
+
+DataRow buildVatRowMonthly(int index, VatReportModel tblData, String branchId, String dateFrom, String dateTo,
+    [BuildContext? context]) {
+  return DataRow(
+    color:
+    MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+    cells: [
+
       buildVatCell(
           160, '${tblData.vatDr}', TextAlign.center, 2),
       buildVatCell(
           160, '${tblData.vatCr}', TextAlign.center, 2),
+
+    ],
+  );
+}
+
+
+DataRow buildVatRowMonthly2(int index, VatReportModel tblData, String branchId, String dateFrom, String dateTo,
+    [BuildContext? context]) {
+  return DataRow(
+    color:
+    MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+    cells: [
       tblData.sno!=''? DataCell(
         Center(
           child: ElevatedButton(
@@ -132,6 +157,7 @@ DataRow buildVatRow2(int index, VatReportModel tblData, String branchId, String 
     ],
   );
 }
+
 
 
 DataRow buildVatDetailRow(int index, VatReportDetailModel tblData,
@@ -251,7 +277,7 @@ DataCell buildVatCell(double cellWidth, String cellText, TextAlign cellTextAlign
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       width: cellWidth,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15),
+        padding: const EdgeInsets.only(left: 10),
         child: Html(data: cellText),
       )
     ),

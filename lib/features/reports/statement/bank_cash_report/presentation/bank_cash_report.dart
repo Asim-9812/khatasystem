@@ -515,6 +515,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                       items: groups.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
                                       listType: MultiSelectListType.LIST,
                                       onConfirm: (values) {
+                                        ref.read(itemProvider.notifier).updateSelected(false);
                                         ref.read(itemProvider.notifier).updateSelectedBankCashList(values);
                                         ledgerList();
                                         print(getLedgerListModel.toJson());
@@ -1204,8 +1205,8 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                                       fModel.dataFilterModel!.currentPageNumber = _currentPage;
                                                       ref.read(bankCashProvider.notifier).fetchTableData(fModel);
                                                     },
-                                                    itemsPerPageText: 'Showing ${_rowPerPage} of ${_totalRecords} :',
-                                                    itemsPerPageTextStyle: TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),
+                                                    itemsPerPageText: 'Showing $_rowPerPage of $_totalRecords :',
+                                                    itemsPerPageTextStyle: const TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),
                                                     showItemsPerPage: true,
                                                     onItemsPerPageChanged: (itemsPerPage) {
                                                       setState(() {
@@ -1235,6 +1236,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                               if (data.isNotEmpty) {
                                 final tableReport = ReportData.fromJson(data[1]);
                                 _totalPages = tableReport.totalPages!;
+                                _totalRecords = tableReport.totalRecords!;
                                 for (var e in data[0]) {
                                   newList.add(BankCashDetailedModel.fromJson(e));
                                 }
@@ -1538,6 +1540,8 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                             currentItemsPerPage: _rowPerPage,
                                             currentPage: _currentPage,
                                             totalPages: _totalPages,
+                                            itemsPerPageText: 'Showing ${_rowPerPage > _totalRecords ? _totalRecords : _rowPerPage} of $_totalRecords :',
+                                            itemsPerPageTextStyle: const TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),
                                             onPageChanged: (page) {
                                               _currentPage = page;
                                               /// updates current page number of filterModel, because it does not update on its own
@@ -1546,8 +1550,10 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                             },
                                             showItemsPerPage: true,
                                             onItemsPerPageChanged: (itemsPerPage) {
-                                              _rowPerPage = itemsPerPage;
-                                              _currentPage = 1;
+                                              setState(() {
+                                                _rowPerPage = itemsPerPage;
+                                                _currentPage = 1;
+                                              });
                                               /// updates row per page of filterModel, because it does not update on its own
                                               fModel.dataFilterModel!.pageRowCount = _rowPerPage;
                                               ref.read(bankCashProvider.notifier).fetchTableData(fModel);

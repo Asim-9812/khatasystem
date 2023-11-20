@@ -58,6 +58,7 @@ class _ProfitLossReportState extends ConsumerState<ProfitLossReport> {
         return WillPopScope(
           onWillPop: () async {
             ref.invalidate(plReportProvider);
+            ref.read(checkProvider).updateCheck(false);
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
@@ -70,6 +71,7 @@ class _ProfitLossReportState extends ConsumerState<ProfitLossReport> {
               leading: IconButton(
                 onPressed: () {
                   ref.invalidate(plReportProvider);
+                  ref.read(checkProvider).updateCheck(false);
                   Navigator.pop(context, true);
                 },
                 icon: const Icon(
@@ -337,7 +339,7 @@ class _ProfitLossReportState extends ConsumerState<ProfitLossReport> {
                                     Checkbox(
                                       value: _isChecked,
                                       onChanged: (bool? val) {
-                                        ref.read(checkProvider).updateCheck();
+                                        ref.read(checkProvider).updateCheck(val!);
                                       },
                                       checkColor: Colors.white,
                                       fillColor:

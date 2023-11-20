@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:khata_app/features/reports/financial/trial_balance/model/trial_balance_group_model.dart';
 
 import '../../../../../common/export.dart';
@@ -67,18 +68,18 @@ DataColumn trialBalanceColumnRow(double colWidth, String colName, TextAlign alig
 DataRow buildTrialBalanceDataRow(int index, GroupWiseModel tblData, bool isDetailed) {
   if(isDetailed == false){
     return DataRow(
-      color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+      color: tblData.accountGroupName == 'Total Value' ?MaterialStateProperty.resolveWith((states) => ColorManager.primary): MaterialStateProperty.resolveWith((states) => getColor(states, index)),
       cells: [
-        buildTrialBlncDataCell(80, '${tblData.sno}', TextAlign.start, tblData.sno!),
-        buildTrialBlncDataCell(250, '${tblData.accountGroupName}', TextAlign.start, tblData.sno!),
+        buildTrialBlncDataCell(80, tblData.accountGroupName == 'Total Value'? '' :'${tblData.sno}', TextAlign.start, tblData.sno! ,tblData.accountGroupName == 'Total Value' ?true:false),
+        buildTrialBlncDataCell(250, '${tblData.accountGroupName}', TextAlign.start, tblData.sno!,tblData.accountGroupName == 'Total Value' ? true : false),
       ],
     );
   }else{
     return DataRow(
-      color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+      color: tblData.accountGroupName == 'Total Value' ?MaterialStateProperty.resolveWith((states) => ColorManager.primary): MaterialStateProperty.resolveWith((states) => getColor(states, index)),
       cells: [
-        buildTrialBlncDataCellDetailed(80, '${tblData.sno}', TextAlign.start, tblData.layerPosition!, tblData.isGroup!, ),
-        buildTrialBlncDataCellDetailed(250, '${tblData.accountGroupName}', TextAlign.start, tblData.layerPosition!, tblData.isGroup!,),
+        buildTrialBlncDataCellDetailed(80, '${tblData.sno}', TextAlign.start, 2, true,tblData.accountGroupName == 'Total Value' ?true:false ),
+        buildTrialBlncDataCellDetailed(250, '${tblData.accountGroupName}', TextAlign.start, 2, true,tblData.accountGroupName == 'Total Value' ?true:false),
       ],
     );
   }
@@ -88,51 +89,54 @@ DataRow buildTrialBalanceDataRow(int index, GroupWiseModel tblData, bool isDetai
 DataRow buildTrialBalanceDataRow1(int index, GroupWiseModel tblData, bool isDetailed) {
   if(isDetailed == false){
     return DataRow(
-      color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+      color: tblData.accountGroupName == 'Total Value' ?MaterialStateProperty.resolveWith((states) => ColorManager.primary): MaterialStateProperty.resolveWith((states) => getColor(states, index)),
       cells: [
-        buildTrialBlncDataCell(200, '${tblData.sno != "" ? tblData.strDebit : ""}', TextAlign.end, tblData.sno!,),
-        buildTrialBlncDataCell(200, '${tblData.strCredit}', TextAlign.end, tblData.sno!,),
+        buildTrialBlncDataCell(200, '${tblData.sno != "" ? tblData.strDebit : ""}', TextAlign.end, tblData.sno!,tblData.accountGroupName == 'Total Value' ?true:false),
+        buildTrialBlncDataCell(200, '${tblData.strCredit}', TextAlign.end, tblData.sno!,tblData.accountGroupName == 'Total Value' ?true:false),
       ],
     );
   }else{
     return DataRow(
-      color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+      color: tblData.accountGroupName == 'Total Value' ?MaterialStateProperty.resolveWith((states) => ColorManager.primary): MaterialStateProperty.resolveWith((states) => getColor(states, index)),
       cells: [
-        buildTrialBlncDataCellDetailed(200, '${tblData.strDebit}', TextAlign.end, tblData.layerPosition!, tblData.isGroup!,),
-        buildTrialBlncDataCellDetailed(200, '${tblData.strCredit}', TextAlign.end, tblData.layerPosition!, tblData.isGroup!),
+        buildTrialBlncDataCellDetailed(200, '${tblData.strDebit}', TextAlign.end, 2, true,tblData.accountGroupName == 'Total Value' ?true:false),
+        buildTrialBlncDataCellDetailed(200, '${tblData.strCredit}', TextAlign.end, 2, true,tblData.accountGroupName == 'Total Value' ?true:false),
       ],
     );
   }
 }
 
 
-DataCell buildTrialBlncDataCell(double cellWidth, String cellText, TextAlign cellTextAlign, String sNum,) {
+DataCell buildTrialBlncDataCell(double cellWidth, String cellText, TextAlign cellTextAlign, String sNum,bool lastRow) {
   return DataCell(
     Container(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       width: cellWidth,
-      child: Text(
-        cellText,
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 16,
-          fontWeight: sNum != "" ? FontWeight.w400 : FontWeight.w500,
-        ),
-        textAlign: cellTextAlign,
+      child: Html(
+          data: cellText,
+        style: {
+          'body': Style( color:lastRow ? Colors.white : ColorManager.black)
+        },
+
       ),
     ),
   );
 }
 
 /// if the detail checkbox is used (only works for group type for now.)
-DataCell buildTrialBlncDataCellDetailed(double cellWidth, String cellText, TextAlign cellTextAlign, int layerPosition, bool isGroup) {
+DataCell buildTrialBlncDataCellDetailed(double cellWidth, String cellText, TextAlign cellTextAlign, int layerPosition, bool isGroup,bool lastRow) {
   return DataCell(
     Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       width: cellWidth,
-      child: DisplayText(cellText: cellText, layerPosition: layerPosition, cellTextAlign: cellTextAlign, isGroup: isGroup)
-    ),
-  );
+      child: Html(
+        data: cellText,
+        style: {
+          'body': Style( color:lastRow ? Colors.white : ColorManager.black)
+        },
+
+      ),
+  ));
 }
 
 

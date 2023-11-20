@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:khata_app/common/colors.dart';
 import 'package:khata_app/features/reports/statement/customer_ledger_report/model/customer_ledger_report_model.dart';
+import 'package:khata_app/features/reports/statement/customer_ledger_report/presentation/customerSubreport.dart';
 
 import '../../ledger_report/presentation/subreport.dart';
 
@@ -25,7 +26,7 @@ TableCell buildTableCell(String cellText, [TextAlign? cellTxtAlign]) {
   );
 }
 
-DataRow buildReportDataRow(int index, CustomerLedgerModel tblData,
+DataRow buildReportDataRow(int index, CustomerLedgerModel tblData,String branch,
     final List<Map<dynamic, dynamic>> dropDownList,
     [BuildContext? context]) {
   return DataRow(
@@ -55,10 +56,12 @@ DataRow buildReportDataRow(int index, CustomerLedgerModel tblData,
                     Navigator.push(
                         context!,
                         MaterialPageRoute(
-                          builder: (context) => SubReportPage(
+                          builder: (context) => CustomerSubReportPage(
                             ledgerName: tblData.ledgerName!,
                             selectedGroup: tblData.accountGroupName!,
                             dropDownList: dropDownList,
+                            branchName: branch,
+                            tblData: tblData,
                           ),
                         ));
                   },

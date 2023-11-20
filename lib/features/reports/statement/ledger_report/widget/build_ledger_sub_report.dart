@@ -27,17 +27,35 @@ DataRow buildLedgerSubReport(int index, ShowModal tblData, [BuildContext? contex
   return DataRow(
     color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
-      buildDataCell(80, '${tblData.sno}', TextAlign.start),
-      buildDataCell(200, '${tblData.voucherDate}', TextAlign.start),
-      buildDataCell(200, '${tblData.voucherNo}', TextAlign.start),
-      buildDataCell(200, '${tblData.refNo}', TextAlign.start),
-      buildDataCell(160, '${tblData.chequeNo}', TextAlign.start),
+      buildDataCell(80, '${tblData.sno}', TextAlign.center),
+      buildDataCell(200, '${tblData.voucherDate}', TextAlign.center),
+      buildDataCell(200, '${tblData.voucherNo}', TextAlign.center),
+      buildDataCell(200, '${tblData.refNo}', TextAlign.center),
+      buildDataCell(160, '${tblData.chequeNo}', TextAlign.center),
       buildDataCell(160, '${tblData.voucherTypeName}', TextAlign.center),
-      // buildDataCell(200, '${tblData.ledgerName}', TextAlign.start),
-      buildDataCell(160, '${tblData.strDebit}', TextAlign.end),
-      buildDataCell(160, '${tblData.strCredit}', TextAlign.end),
-      buildDataCell(160, '${tblData.strBalance}', TextAlign.end),
-      buildDataCell(160, '${tblData.narration}', TextAlign.start),
+      // buildDataCell(200, '${tblData.ledgerName}', TextAlign.center),
+      buildDataCell(160, '${tblData.strDebit}', TextAlign.center),
+      buildDataCell(160, '${tblData.strCredit}', TextAlign.center),
+      buildDataCell(160, '${tblData.strBalance}', TextAlign.center),
+      buildDataCell(160, '${tblData.narration}', TextAlign.center),
+    ],
+  );
+}
+DataRow buildLedgerDetailedSubReport(int index, ShowModal tblData, [BuildContext? context]) {
+  return DataRow(
+    color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+    cells: [
+      buildDataCell(80, '${tblData.sno}', TextAlign.center),
+      buildDataCell(200, '${tblData.voucherDate}', TextAlign.center),
+      buildDataCell(200, '${tblData.voucherNo}', TextAlign.center),
+      buildDataCell(200, '${tblData.refNo}', TextAlign.center),
+      buildDataCell(160, '${tblData.chequeNo}', TextAlign.center),
+      buildDataCell(160, '${tblData.voucherTypeName}', TextAlign.center),
+      buildDataCell(200, '${tblData.ledgerName}', TextAlign.center),
+      buildDataCell(160, '${tblData.strDebit}', TextAlign.center),
+      buildDataCell(160, '${tblData.strCredit}', TextAlign.center),
+      buildDataCell(160, '${tblData.strBalance}', TextAlign.center),
+      buildDataCell(160, '${tblData.narration}', TextAlign.center),
     ],
   );
 }

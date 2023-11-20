@@ -30,8 +30,8 @@ final checkProvider = ChangeNotifierProvider((ref) => BoolProvider());
 class BoolProvider extends ChangeNotifier{
   bool isChecked = false;
 
-  void updateCheck(){
-    isChecked = !isChecked;
+  void updateCheck(bool value){
+    isChecked = value;
     notifyListeners();
   }
 

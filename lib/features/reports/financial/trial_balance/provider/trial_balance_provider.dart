@@ -29,6 +29,7 @@ class TrialBalanceReportProvider extends StateNotifier<AsyncValue<List<dynamic>>
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
+
         state = AsyncValue.data(result);
       }else{
         print(response.statusCode);

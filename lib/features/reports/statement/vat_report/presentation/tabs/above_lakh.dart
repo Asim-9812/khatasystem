@@ -40,6 +40,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
   late int _rowPerPage;
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
+  late int _totalRecords;
   bool _isChecked = false;
   late List _selectedParticulars;
   String formattedList = '';
@@ -378,6 +379,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                           listType: MultiSelectListType.LIST,
                                           onConfirm: (values) {
 
+                                            ref.read(itemProvider.notifier).updateSelected(false);
                                             ref.read(itemProvider.notifier).updateSelectedVatList(values);
                                             String formattedList = ref.watch(itemProvider).selectedVatReportList.map((e) => '$e').join(',');
                                             ref.read(itemProvider).updateParticularType(formattedList);
@@ -403,6 +405,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
 
                                                 } else {
                                                   // Unselect all items
+                                                  ref.read(itemProvider.notifier).updateSelected(false);
                                                   ref.read(itemProvider.notifier).updateSelectedVatList([]);
                                                 }
 
@@ -502,6 +505,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                   if (data.isNotEmpty) {
                                     final tableReport = ReportData.fromJson(data[1]);
                                     _totalPages = tableReport.totalPages!;
+                                    _totalRecords=tableReport.totalRecords!;
                                     for (var e in data[0]) {
                                       newList.add(AboveLakhModel.fromJson(e));
                                     }
@@ -543,6 +547,8 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                             currentItemsPerPage: _rowPerPage,
                                             currentPage: _currentPage,
                                             totalPages: _totalPages,
+                                            itemsPerPageText: 'Showing ${_rowPerPage > _totalRecords ? _totalRecords : _rowPerPage} of $_totalRecords :',
+                                            itemsPerPageTextStyle: const TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),
                                             onPageChanged: (page) {
                                               _currentPage = page;
                                               /// updates current page number of filterModel, because it does not update on its own
@@ -551,11 +557,14 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                             },
                                             showItemsPerPage: true,
                                             onItemsPerPageChanged: (itemsPerPage) {
-                                              _rowPerPage = itemsPerPage;
-                                              _currentPage = 1;
+                                              setState(() {
+                                                _rowPerPage = itemsPerPage;
+                                                _currentPage = 1;
+                                              });
+
                                               /// updates row per page of filterModel, because it does not update on its own
                                               fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                              ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                              ref.read(vatReportProvider3.notifier).getTableValues(fModel);
                                             },
                                             itemsPerPageList: rowPerPageItems,
                                           ),
@@ -569,6 +578,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                   if (data.isNotEmpty) {
                                     final tableReport = ReportData.fromJson(data[1]);
                                     _totalPages = tableReport.totalPages!;
+                                    _totalRecords = tableReport.totalRecords!;
                                     for (var e in data[0]) {
                                       newList.add(AboveLakhModel.fromJson(e));
                                     }
@@ -624,8 +634,11 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                                             },
                                             showItemsPerPage: true,
                                             onItemsPerPageChanged: (itemsPerPage) {
-                                              _rowPerPage = itemsPerPage;
-                                              _currentPage = 1;
+                                              setState(() {
+                                                _rowPerPage = itemsPerPage;
+                                                _currentPage = 1;
+                                              });
+
                                               /// updates row per page of filterModel, because it does not update on its own
                                               fModel.dataFilterModel!.pageRowCount = _rowPerPage;
                                               ref.read(tableDataProvider.notifier).getTableValues(fModel);

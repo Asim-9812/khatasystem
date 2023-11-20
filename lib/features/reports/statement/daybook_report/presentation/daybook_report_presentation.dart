@@ -85,6 +85,15 @@ class _TestState extends ConsumerState<DayBookReport> {
 
 
   @override
+  void didChangeDependencies(){
+    super.didChangeDependencies();
+    ref.read(itemProvider.notifier).updateSelected(true);
+
+  }
+
+
+
+  @override
   Widget build(BuildContext context) {
     _selectedVouchers =ref.watch(itemProvider).selectedDayBookList;
     final outCome = ref.watch(dayBookListProvider(modelRef2));
@@ -97,6 +106,7 @@ class _TestState extends ConsumerState<DayBookReport> {
         ref.invalidate(dayBookProvider);
         ref.read(itemProvider.notifier).updateSelectedDayBookList([]);
 
+        ref.read(itemProvider).updateIsDetailed(false);
         // Return true to allow the back navigation, or false to prevent it
         return true;
       },
@@ -108,6 +118,8 @@ class _TestState extends ConsumerState<DayBookReport> {
             leading: IconButton(
               onPressed: () {
                 ref.invalidate(dayBookProvider);
+                ref.read(itemProvider.notifier).updateSelectedDayBookList([]);
+                ref.read(itemProvider).updateIsDetailed(false);
                 Navigator.pop(context, true);
               },
               icon: const Icon(
@@ -146,6 +158,14 @@ class _TestState extends ConsumerState<DayBookReport> {
               data[2].forEach((key, _) {
                 ledgers.add(key);
               });
+
+              if(ref.watch(itemProvider).selected){
+                ref.read(itemProvider.notifier).updateSelectedDayBookList(vouchers.map((e) => e['value']).toList());
+                String formattedList = ref.watch(itemProvider).selectedDayBookList.map((e) => '\\\"$e\\\"').join(',');
+                ref.read(itemProvider).updateVoucherType('[$formattedList]');
+
+
+              }
 
               String ledgerItem = ledgers[0];
               String branchItem = branches[0];
@@ -382,8 +402,8 @@ class _TestState extends ConsumerState<DayBookReport> {
                                   Expanded(
                                     child: MultiSelectDialogField(
                                       title: Text('Voucher Type'),
-                                      buttonText: Text(_selectedVouchers.length == vouchers.length?'All':_selectedVouchers.isNotEmpty?'${_selectedVouchers.length} items':'Select items'),
-                                      initialValue: _selectedVouchers,
+                                      buttonText: Text(ref.watch(itemProvider).selectedDayBookList.length == vouchers.length?'All':_selectedVouchers.isNotEmpty?'${_selectedVouchers.length} items':'Select items'),
+                                      initialValue: ref.watch(itemProvider).selectedDayBookList,
                                       decoration: BoxDecoration(
                                           border: Border.all(
                                             color: Colors.black.withOpacity(0.5),
@@ -395,7 +415,8 @@ class _TestState extends ConsumerState<DayBookReport> {
                                       items: vouchers.map((e) => MultiSelectItem(e['value'],e['text'])).toList(),
                                       listType: MultiSelectListType.LIST,
                                       onConfirm: (values) {
-                                        _selectedVouchers = values;
+                                        ref.read(itemProvider.notifier).updateSelected(false);
+                                        ref.read(itemProvider.notifier).updateSelectedDayBookList(values);
                                         String formattedList = '[${ref.watch(itemProvider).selectedDayBookList.map((e) => '\\\"$e\\\"').join(',')}]';
                                         ref.read(itemProvider).updateVoucherType(formattedList);
                                       },
@@ -408,16 +429,18 @@ class _TestState extends ConsumerState<DayBookReport> {
                                     children: [
 
                                       Checkbox(
-                                        value: _selectedVouchers.length == vouchers.length,
+                                        value: ref.watch(itemProvider).selectedDayBookList.length == vouchers.length,
                                         onChanged: (value) {
                                           setState(() {
                                             if (value!) {
+
                                               // Select all items
                                               ref.read(itemProvider.notifier).updateSelectedDayBookList(vouchers.map((e) => e['value']).toList());
                                               String formattedList = '[${ref.watch(itemProvider).selectedDayBookList.map((e) => '\\\"$e\\\"').join(',')}]';
                                               ref.read(itemProvider).updateVoucherType(formattedList);
                                             } else {
                                               // Unselect all items
+                                              ref.read(itemProvider.notifier).updateSelected(false);
                                               ref.read(itemProvider.notifier).updateSelectedDayBookList([]);
                                             }
                                           });

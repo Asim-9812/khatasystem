@@ -80,6 +80,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
           onWillPop: () async {
             ref.invalidate(trialBalanceGroupProvider);
             ref.invalidate(trialBalanceLedgerProvider);
+            ref.read(checkProvider).updateCheck(false);
 
             // Return true to allow the back navigation, or false to prevent it
             return true;
@@ -93,7 +94,9 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                 onPressed: () {
                   ref.invalidate(trialBalanceGroupProvider);
                   ref.invalidate(trialBalanceLedgerProvider);
+                  ref.read(checkProvider).updateCheck(false);
                   Navigator.pop(context, true);
+
                 },
                 icon: const Icon(
                   Icons.arrow_back_ios_new_rounded,
@@ -400,7 +403,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                     Checkbox(
                                       value: _isChecked,
                                       onChanged: (bool? val) {
-                                        ref.read(checkProvider).updateCheck();
+                                        ref.read(checkProvider).updateCheck(val!);
                                       },
                                       checkColor: Colors.white,
                                       fillColor:
@@ -574,9 +577,9 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                               return ledgerReport.when(
                                 data: (data) {
                                   List<LedgerWiseModel> tableData = <LedgerWiseModel>[];
-                                  List<String> reportTotal = <String>[];
+                                  List reportTotal = [];
                                   if (data.isNotEmpty) {
-                                    final tableReport = ReportData.fromJson(data[2]);
+                                    final tableReport = ReportData.fromJson(data[1]);
                                     _totalPages = tableReport.totalPages!;
 
                                     for (var e in data[0]) {
@@ -683,10 +686,11 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                                 ),
                                                 children: [
                                                   trialTblCell('Grand Total', TextAlign.end),
-                                                  trialTblCell(reportTotal[0], TextAlign.start),
-                                                  trialTblCell(reportTotal[1], TextAlign.end),
-                                                  trialTblCell(reportTotal[2], TextAlign.end),
-                                                  trialTblCell(reportTotal[3], TextAlign.end),
+                                                  trialTblCell(
+                                                            '${reportTotal[0]}', TextAlign.start),
+                                                  trialTblCell('${reportTotal[1]}', TextAlign.end),
+                                                  trialTblCell('${reportTotal[2]}', TextAlign.end),
+                                                  trialTblCell('${reportTotal[3]}', TextAlign.end),
                                                 ],
                                               ),
                                             ],

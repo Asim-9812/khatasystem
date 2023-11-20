@@ -154,29 +154,128 @@ class MonthlyVatReportTab extends StatelessWidget {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    DataTable(
-                                      columns: [
-                                        buildDataColumn(
-                                            60, 'S.N', TextAlign.start),
-                                        buildDataColumn(200, 'Particulars',
-                                            TextAlign.start),
-                                        buildDataColumn(
-                                            200, 'Total Amount', TextAlign.start),
-                                        buildDataColumn(
-                                            160, 'Total Taxable Amount', TextAlign.end),
-                                        buildDataColumn(
-                                            160, 'Debit (Dr)', TextAlign.end),
-                                        buildDataColumn(160, 'Credit (Cr)',
-                                            TextAlign.end),
-                                        buildDataColumn(
-                                            80, 'View', TextAlign.center),
+                                    Row(
+                                      children: [
+                                        DataTable(
+                                          headingRowHeight: 60,
+                                          columns: [
+                                            buildDataColumn(60, 'S.N', TextAlign.center),
+                                            buildDataColumn(200, 'Particulars', TextAlign.center),
+                                            buildDataColumn(200, 'Total Amount', TextAlign.center),
+                                            buildDataColumn(200, 'Total Taxable Amount', TextAlign.center),
+                                          ],
+                                          rows: List.generate(
+                                            newList.length,
+                                                (index) => buildVatRow2(index, newList[index],'branchId--${vatData.branchId}','fromDate--${DateFormat('yyyy/MM/dd').format(vatData.monthFromDate)}','toDate--${DateFormat('yyyy/MM/dd').format(vatData.monthToDate)}', context),
+                                          ),
+                                          columnSpacing: 0,
+                                          horizontalMargin: 0,
+                                        ),
+                                        Column(
+                                          children: [
+                                            Container(
+                                              width: 400,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                  color: ColorManager.primary,
+                                                  border: const Border(
+                                                      bottom: BorderSide(
+                                                          color: Colors.white,
+                                                          width: 1
+                                                      )
+                                                  )
+                                              ),
+                                              child:  const Center(
+                                                child: Text(
+                                                  'VAT',
+                                                  style: TextStyle(
+                                                    fontFamily: 'Ubuntu',
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            DataTable(
+                                              headingRowHeight: 30,
+                                              columns: [
+                                                DataColumn(
+                                                  label: Container(
+                                                    width: 200,
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                      color: ColorManager.primary,
+                                                      border: const Border(
+                                                        right: BorderSide(
+                                                          color: Colors.white,
+                                                          width: 1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child:const Padding(
+                                                      padding: EdgeInsets.only(left: 10, top: 6, right: 10),
+                                                      child: Text(
+                                                        'Dr',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Ubuntu',
+                                                          fontWeight: FontWeight.w500,
+                                                          color: Colors.white,
+                                                        ),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                DataColumn(
+                                                  label: Container(
+                                                    width: 200,
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                      color: ColorManager.primary,
+                                                      border: const Border(
+                                                        right: BorderSide(
+                                                          color: Colors.white,
+                                                          width: 1,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    child:const Padding(
+                                                      padding: EdgeInsets.only(left: 10, top: 6, right: 10),
+                                                      child: Text(
+                                                        'Cr',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Ubuntu',
+                                                          fontWeight: FontWeight.w500,
+                                                          color: Colors.white,
+                                                        ),
+                                                        textAlign: TextAlign.center,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                              rows: List.generate(
+                                                newList.length,
+                                                    (index) => buildVatRowMonthly(index, newList[index],'branchId--${vatData.branchId}','fromDate--${DateFormat('yyyy/MM/dd').format(vatData.monthFromDate)}','toDate--${DateFormat('yyyy/MM/dd').format(vatData.monthToDate)}', context),
+                                              ),
+                                              columnSpacing: 0,
+                                              horizontalMargin: 0,
+                                            ),
+                                          ],
+                                        ),
+                                        DataTable(
+                                          headingRowHeight: 60,
+                                          columns: [
+                                            buildDataColumn(60, 'View', TextAlign.center),
+                                          ],
+                                          rows: List.generate(
+                                            newList.length,
+                                                (index) => buildVatRowMonthly2(index, newList[index],'branchId--${vatData.branchId}','fromDate--${DateFormat('yyyy/MM/dd').format(vatData.monthFromDate)}','toDate--${DateFormat('yyyy/MM/dd').format(vatData.monthToDate)}', context),
+                                          ),
+                                          columnSpacing: 0,
+                                          horizontalMargin: 0,
+                                        ),
                                       ],
-                                      rows: List.generate(
-                                        newList.length,
-                                            (index) => buildVatRow2(index, newList[index],'branchId--${vatData.branchId}','fromDate--${DateFormat('yyyy/MM/dd').format(vatData.monthFromDate)}','toDate--${DateFormat('yyyy/MM/dd').format(vatData.monthToDate)}', context),
-                                      ),
-                                      columnSpacing: 0,
-                                      horizontalMargin: 0,
                                     ),
 
                                   ],

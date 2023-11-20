@@ -30,14 +30,14 @@ DataRow buildVoucherReportDataRow({required int index, required VoucherReportMod
     color:
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
-      buildDataCell(60, '${tblData.sno}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(200, '${tblData.strVoucherDate}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(200, '${tblData.voucherNo}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(140, '${tblData.refNo}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(200, '${tblData.voucherName}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(200, '${tblData.strAmount}', TextAlign.end, tblData.layerPosition!),
-      buildDataCell(300, '${tblData.narration}', TextAlign.end, tblData.layerPosition!),
-      buildDataCell(120, '${tblData.strStatus}', TextAlign.end, tblData.layerPosition!),
+      buildDataCell(60, '${tblData.sno}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(200, '${tblData.strVoucherDate}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(200, '${tblData.voucherNo}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(140, '${tblData.refNo}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(200, '${tblData.voucherName}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(200, '${tblData.strAmount}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(300, '${tblData.narration}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(120, '${tblData.strStatus}', TextAlign.center, tblData.layerPosition!),
       DataCell(
         Center(
           child: ElevatedButton(
@@ -68,15 +68,15 @@ DataRow voucherReportDataRowDetailed({required int index, required VoucherReport
     color:
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
-      buildDataCell(60, '${tblData.isParent! ? tblData.sno : ""}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(150, '${tblData.isParent! ? tblData.strVoucherDate : ""}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(200, '${tblData.isParent! ? tblData.voucherNo : ""}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(120, '${tblData.isParent! ? tblData.refNo : ""}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(200, '${tblData.isParent! ? tblData.voucherName : ""}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(250, '${tblData.particulars}', TextAlign.start, tblData.layerPosition!),
-      buildDataCell(200, '${tblData.isParent! ? tblData.strAmount : ""}', TextAlign.end, tblData.layerPosition!),
-      buildDataCell(300, '${tblData.isParent! ? tblData.narration : ""}', TextAlign.end, tblData.layerPosition!),
-      buildDataCell(120, '${tblData.isParent! ? tblData.strStatus : ""}', TextAlign.end, tblData.layerPosition!),
+      buildDataCell(60, '${tblData.isParent! ? tblData.sno : ""}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(150, '${tblData.isParent! ? tblData.strVoucherDate : ""}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(200, '${tblData.isParent! ? tblData.voucherNo : ""}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(120, '${tblData.isParent! ? tblData.refNo : ""}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(200, '${tblData.isParent! ? tblData.voucherName : ""}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(250, '${tblData.particulars}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(200, '${tblData.isParent! ? tblData.strAmount : ""}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(300, '${tblData.isParent! ? tblData.narration : ""}', TextAlign.center, tblData.layerPosition!),
+      buildDataCell(120, '${tblData.isParent! ? tblData.strStatus : ""}', TextAlign.center, tblData.layerPosition!),
       tblData.isParent! ? DataCell(
         Center(
           child: ElevatedButton(
@@ -162,13 +162,13 @@ DataRow voucherReportIndividualRow(int index, VoucherIndividualReportModel tblDa
     color:
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
-      buildDataCellVoucherIndividualRow(50, '${tblData.sno != "" ? tblData.sno : ""}', TextAlign.start, tblData),
-      buildDataCellVoucherIndividualRow(300, '${tblData.ledgerName}', TextAlign.start, tblData),
-      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.dr : ""}', TextAlign.start, tblData),
-      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.cr : ""}', TextAlign.start, tblData),
-      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.chequeNo : ""}', TextAlign.start, tblData),
-      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.chequeDate : ""}', TextAlign.start, tblData),
-      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.narration : ""}', TextAlign.end, tblData),
+      buildDataCellVoucherIndividualRow(50, '${tblData.sno != "" ? tblData.sno : ""}', TextAlign.center, tblData),
+      buildDataCellVoucherIndividualRow(300, '${tblData.ledgerName}', TextAlign.center, tblData),
+      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.dr : ""}', TextAlign.center, tblData),
+      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.cr : ""}', TextAlign.center, tblData),
+      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.chequeNo : ""}', TextAlign.center, tblData),
+      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.chequeDate : ""}', TextAlign.center, tblData),
+      buildDataCellVoucherIndividualRow(150, '${tblData.sno != "" ? tblData.narration : ""}', TextAlign.center, tblData),
     ],
   );
 }

@@ -10,6 +10,7 @@ import 'package:khata_app/features/reports/common_widgets/date_input_formatter.d
 import 'package:khata_app/features/reports/statement/ledger_report/model/report_model.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
+import 'package:khata_app/features/reports/statement/supplier_ledger_report/model/supplier_ledger_report_model.dart';
 import 'package:pager/pager.dart';
 
 import '../../../../../common/colors.dart';
@@ -17,24 +18,24 @@ import '../../../../../common/common_provider.dart';
 import '../../../../../model/filter model/data_filter_model.dart';
 import '../../../../../model/filter model/filter_any_model.dart';
 import '../../../../../model/list model/get_list_model.dart';
+import '../../ledger_report/model/showModel.dart';
+import '../../ledger_report/widget/build_ledger_sub_report.dart';
 
-import '../model/showModel.dart';
-import '../model/table_model.dart';
-import '../widget/build_ledger_sub_report.dart';
 
-class SubReportPage extends ConsumerStatefulWidget {
-  final TableData tblData;
+
+class SupplierSubReportPage extends ConsumerStatefulWidget {
+  final SupplierLedgerModel tblData;
   final List<Map<dynamic, dynamic>> dropDownList;
   final String selectedGroup;
   final String ledgerName;
   final String branchName;
-  const SubReportPage({Key? key,required this.tblData, required this.dropDownList, required this.selectedGroup, required this.ledgerName,required this.branchName}) : super(key: key);
+  const SupplierSubReportPage({Key? key,required this.tblData, required this.dropDownList, required this.selectedGroup, required this.ledgerName,required this.branchName}) : super(key: key);
 
   @override
-  ConsumerState<SubReportPage> createState() => _SubReportPageState();
+  ConsumerState<SupplierSubReportPage> createState() => _SubReportPageState();
 }
 
-class _SubReportPageState extends ConsumerState<SubReportPage> {
+class _SubReportPageState extends ConsumerState<SupplierSubReportPage> {
 
 
 
@@ -52,7 +53,6 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
   late int branchId;
 
   bool? _isChecked;
-  bool? _isDetailed;
   String? selectedGroupItem;
   String? selectedLedgerItem;
   String? selectedBranchItem;
@@ -81,7 +81,6 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
   void initState() {
     super.initState();
     _isChecked = false;
-    _isDetailed = false;
     _currentPage = 1;
     _rowPerPage = 5;
     _totalPages = 0;
@@ -305,10 +304,10 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                         group,
                         selectedGroupItem!,
                             (value){
-                        setState(() {
-                          selectedGroupItem = value;
-                          groupId = int.parse(widget.dropDownList[0][value]);
-                        });
+                          setState(() {
+                            selectedGroupItem = value;
+                            groupId = int.parse(widget.dropDownList[0][value]);
+                          });
                         },
                       ),
                       const Spacer(),
@@ -358,66 +357,38 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
 
                       const Spacer(),
                       buildDropdownSearch(
-                          'Branch',
-                          branchList,
-                          selectedBranchItem!,
+                        'Branch',
+                        branchList,
+                        selectedBranchItem!,
                             (value){
-                            setState(() {
-                              selectedBranchItem = value;
-                              groupId = int.parse(widget.dropDownList[2][value]);
-                            });
-                            },
+                          setState(() {
+                            selectedBranchItem = value;
+                            groupId = int.parse(widget.dropDownList[2][value]);
+                          });
+                        },
                       ),
                       const SizedBox(height: 5,),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: _isChecked,
-                                onChanged: (bool? val) {
-                                  setState(() {
-                                    _isChecked = val!;
-                                  });
-                                },
-                                checkColor: Colors.white,
-                                fillColor:
-                                MaterialStateProperty.resolveWith(
-                                        (states) => getColor(states)),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(2),
-                                ),
-                              ),
-                              const Text(
-                                'Inclusive',
-                                style: TextStyle(fontSize: 18,)
-                              )
-                            ],
+                          Checkbox(
+                            value: _isChecked,
+                            onChanged: (bool? val) {
+                              setState(() {
+                                _isChecked = val!;
+                              });
+                            },
+                            checkColor: Colors.white,
+                            fillColor:
+                            MaterialStateProperty.resolveWith(
+                                    (states) => getColor(states)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2),
+                            ),
                           ),
-                          Row(
-                            children: [
-                              Checkbox(
-                                value: _isDetailed,
-                                onChanged: (bool? val) {
-                                  setState(() {
-                                    _isDetailed = val!;
-                                  });
-                                },
-                                checkColor: Colors.white,
-                                fillColor:
-                                MaterialStateProperty.resolveWith(
-                                        (states) => getColor(states)),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(2),
-                                ),
-                              ),
-                              const Text(
-                                  'Detailed',
-                                  style: TextStyle(fontSize: 18,)
-                              )
-                            ],
-                          ),
+                          const Text(
+                              'Inclusive',
+                              style: TextStyle(fontSize: 18,)
+                          )
                         ],
                       ),
                       const SizedBox(height: 5,),
@@ -447,8 +418,7 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                   ),
                 ),
                 const SizedBox(height: 5,),
-                _isDetailed!
-                    ? Consumer(
+                Consumer(
                   builder: (context, ref, child) {
                     final result = ref.watch(modalDataProvider);
                     return result.when(
@@ -479,17 +449,16 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                                 children: [
                                   DataTable(
                                     columns: [
-                                      buildDataColumn(80, 'S.N', TextAlign.center),
-                                      buildDataColumn(200, 'Date', TextAlign.center),
-                                      buildDataColumn(200, 'Voucher No.', TextAlign.center),
-                                      buildDataColumn(200, 'Ref. No.', TextAlign.center),
-                                      buildDataColumn(160, 'Cheq. No.', TextAlign.center),
+                                      buildDataColumn(80, 'S.N', TextAlign.start),
+                                      buildDataColumn(200, 'Date', TextAlign.start),
+                                      buildDataColumn(200, 'Voucher No.', TextAlign.start),
+                                      buildDataColumn(200, 'Ref. No.', TextAlign.start),
+                                      buildDataColumn(160, 'Cheq. No.', TextAlign.start),
                                       buildDataColumn(160, 'Voucher Type', TextAlign.center),
-                                      buildDataColumn(200, 'Particulars', TextAlign.center),
-                                      buildDataColumn(160, 'Debit (Dr)', TextAlign.center),
-                                      buildDataColumn(160, 'Credit (Cr)', TextAlign.center),
-                                      buildDataColumn(160, 'Balance', TextAlign.center),
-                                      buildDataColumn(160, 'Narration', TextAlign.center),
+                                      buildDataColumn(160, 'Debit (Dr)', TextAlign.end),
+                                      buildDataColumn(160, 'Credit (Cr)', TextAlign.end),
+                                      buildDataColumn(160, 'Balance', TextAlign.end),
+                                      buildDataColumn(160, 'Narration', TextAlign.start),
                                       // buildDataColumn(80, 'View', TextAlign.center),
                                     ],
                                     rows: const [],
@@ -512,228 +481,17 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                               children: [
                                 DataTable(
                                   columns: [
-                                    buildDataColumn(80, 'S.N', TextAlign.center),
-                                    buildDataColumn(200, 'Date', TextAlign.center),
-                                    buildDataColumn(200, 'Voucher No.', TextAlign.center),
-                                    buildDataColumn(200, 'Ref. No.', TextAlign.center),
-                                    buildDataColumn(160, 'Cheq. No.', TextAlign.center),
+                                    buildDataColumn(80, 'S.N', TextAlign.start),
+                                    buildDataColumn(200, 'Date', TextAlign.start),
+                                    buildDataColumn(200, 'Voucher No.', TextAlign.start),
+                                    buildDataColumn(200, 'Ref. No.', TextAlign.start),
+                                    buildDataColumn(160, 'Cheq. No.', TextAlign.start),
                                     buildDataColumn(160, 'Voucher Type', TextAlign.center),
-                                    buildDataColumn(200, 'Particular', TextAlign.center),
-                                    buildDataColumn(160, 'Debit (Dr)', TextAlign.center),
-                                    buildDataColumn(160, 'Credit (Cr)', TextAlign.center),
-                                    buildDataColumn(160, 'Balance', TextAlign.center),
-                                    buildDataColumn(160, 'Narration', TextAlign.center),
-                                    // buildDataColumn(80, 'View', TextAlign.center),
-                                  ],
-                                  rows: List.generate(newList.length, (index) => buildLedgerDetailedSubReport(index, newList[index],),),
-                                  columnSpacing: 0,
-                                  horizontalMargin: 0,
-                                ),
-                                Table(
-                                  columnWidths: const <int,
-                                      TableColumnWidth>{
-                                    0: FixedColumnWidth(50),
-                                    1: FixedColumnWidth(200),
-                                    2: FixedColumnWidth(200),
-                                    3: FixedColumnWidth(200),
-                                    4: FixedColumnWidth(160),
-                                    5: FixedColumnWidth(160),
-                                    6: FixedColumnWidth(200),
-                                    7: FixedColumnWidth(160),
-                                    8: FixedColumnWidth(160),
-                                    9: FixedColumnWidth(160),
-                                    10: FixedColumnWidth(80),
-                                    // 10: FixedColumnWidth(80),
-                                  },
-                                  children: [
-                                    TableRow(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      children: [
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell('', TextAlign.center),
-                                        buildTableCell('', TextAlign.center),
-                                        buildTableCell('Total', TextAlign.center),
-                                        buildTableCell(reportTotal[0], TextAlign.center),
-                                        buildTableCell(reportTotal[1], TextAlign.center),
-                                        buildTableCell('',),
-                                      ],
-                                    ),
-                                    TableRow(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      children: [
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell('', TextAlign.center),
-                                        buildTableCell('', TextAlign.center),
-                                        buildTableCell('Balance', TextAlign.center),
-                                        buildTableCell(reportTotal[2], TextAlign.center),
-                                        buildTableCell(reportTotal[3], TextAlign.center),
-                                        buildTableCell('',),
-                                      ],
-                                    ),
-                                    TableRow(
-                                      decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      children: [
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell(''),
-                                        buildTableCell('', TextAlign.center),
-                                        buildTableCell('', TextAlign.center),
-                                        buildTableCell('Grand Total', TextAlign.center),
-                                        buildTableCell(reportTotal[4], TextAlign.center),
-                                        buildTableCell(reportTotal[5], TextAlign.center),
-                                        buildTableCell('',),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                /// Pager package used for pagination
-                                Row(
-                                  children: [
-                                    _totalPages != 0 ? Pager(
-                                      currentItemsPerPage: _rowPerPage,
-                                      currentPage: _currentPage,
-                                      totalPages: _totalPages,
-                                      onPageChanged: (page) {
-                                        _currentPage = page;
-                                        fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                        ref.read(modalDataProvider.notifier).getModalTableData(fModel);
-                                        /// updates current page number of filterModel, because it does not update on its own
-                                      },
-                                      showItemsPerPage: true,
-                                      onItemsPerPageChanged: (itemsPerPage) async {
-                                        _rowPerPage = itemsPerPage;
-                                        _currentPage = 1;
-                                        fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                        fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                        ref.read(modalDataProvider.notifier).getModalTableData(fModel);
-                                      },
-                                      itemsPerPageList: rowPerPageItems,
-                                    ) : const Text('No records to show', style: TextStyle(fontSize: 16, color: Colors.red),),
-                                    const SizedBox(width: 650,),
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                              text: 'Total Balance: ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black.withOpacity(0.8))
-                                          ),
-                                          TextSpan(
-                                              text: reportTotal[6], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black)
-                                          ),
-                                        ]
-                                      ),
-                                    ),
-                                    const SizedBox(width: 80,),
-                                    RichText(
-                                      text: TextSpan(
-                                          children: [
-                                            TextSpan(
-                                                text: 'Page Balance: ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black.withOpacity(0.8))
-                                            ),
-                                            TextSpan(
-                                                text: reportTotal[7], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.black)
-                                            ),
-                                          ]
-                                      ),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      error: (error, stackTrace) => Center(child: Text('$error')),
-                      loading: () => const CircularProgressIndicator(),
-                    );
-                  },
-                )
-                :Consumer(
-                  builder: (context, ref, child) {
-                    final result = ref.watch(modalDataProvider);
-                    return result.when(
-                      data: (data) {
-                        List<ShowModal> newList = <ShowModal>[];
-                        List<String> reportTotal = <String>[];
-                        if(data.isNotEmpty){
-                          final tableReport = ReportData.fromJson(data[2]);
-                          _totalPages = tableReport.totalPages!;
-                          for(var e in data[0]){
-                            if(ShowModal.fromJson(e).sno != ""){
-                              newList.add(ShowModal.fromJson(e));
-                            }
-                          }
-                          data[1].forEach((key, value) {
-                            reportTotal.add(value);
-                          });
-                        } else {
-                          return Container(
-                            width: double.infinity,
-                            color: Colors.blue.shade50,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              physics: const ClampingScrollPhysics(),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: [
-                                  DataTable(
-                                    columns: [
-                                      buildDataColumn(80, 'S.N', TextAlign.center),
-                                      buildDataColumn(200, 'Date', TextAlign.center),
-                                      buildDataColumn(200, 'Voucher No.', TextAlign.center),
-                                      buildDataColumn(200, 'Ref. No.', TextAlign.center),
-                                      buildDataColumn(160, 'Cheq. No.', TextAlign.center),
-                                      buildDataColumn(160, 'Voucher Type', TextAlign.center),
-                                      buildDataColumn(160, 'Debit (Dr)', TextAlign.center),
-                                      buildDataColumn(160, 'Credit (Cr)', TextAlign.center),
-                                      buildDataColumn(160, 'Balance', TextAlign.center),
-                                      buildDataColumn(160, 'Narration', TextAlign.center),
-                                      // buildDataColumn(80, 'View', TextAlign.center),
-                                    ],
-                                    rows: const [],
-                                    columnSpacing: 0,
-                                    horizontalMargin: 0,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }
-                        return SizedBox(
-                          width: double.infinity,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            physics: const ClampingScrollPhysics(),
-                            child: Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                DataTable(
-                                  columns: [
-                                    buildDataColumn(80, 'S.N', TextAlign.center),
-                                    buildDataColumn(200, 'Date', TextAlign.center),
-                                    buildDataColumn(200, 'Voucher No.', TextAlign.center),
-                                    buildDataColumn(200, 'Ref. No.', TextAlign.center),
-                                    buildDataColumn(160, 'Cheq. No.', TextAlign.center),
-                                    buildDataColumn(160, 'Voucher Type', TextAlign.center),
-                                    // buildDataColumn(200, 'Particular', TextAlign.center),
-                                    buildDataColumn(160, 'Debit (Dr)', TextAlign.center),
-                                    buildDataColumn(160, 'Credit (Cr)', TextAlign.center),
-                                    buildDataColumn(160, 'Balance', TextAlign.center),
-                                    buildDataColumn(160, 'Narration', TextAlign.center),
+                                    // buildDataColumn(200, 'Particular', TextAlign.start),
+                                    buildDataColumn(160, 'Debit (Dr)', TextAlign.end),
+                                    buildDataColumn(160, 'Credit (Cr)', TextAlign.end),
+                                    buildDataColumn(160, 'Balance', TextAlign.end),
+                                    buildDataColumn(160, 'Narration', TextAlign.start),
                                     // buildDataColumn(80, 'View', TextAlign.center),
                                   ],
                                   rows: List.generate(newList.length, (index) => buildLedgerSubReport(index, newList[index],),),
@@ -767,10 +525,10 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                                         buildTableCell(''),
                                         buildTableCell(''),
                                         buildTableCell('', TextAlign.center),
-                                        buildTableCell('', TextAlign.center),
-                                        buildTableCell('Total', TextAlign.center),
-                                        buildTableCell(reportTotal[0], TextAlign.center),
-                                        buildTableCell(reportTotal[1], TextAlign.center),
+                                        buildTableCell('', TextAlign.end),
+                                        buildTableCell('Total', TextAlign.end),
+                                        buildTableCell(reportTotal[0], TextAlign.end),
+                                        buildTableCell(reportTotal[1], TextAlign.end),
                                         buildTableCell('',),
                                       ],
                                     ),
@@ -784,10 +542,10 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                                         buildTableCell(''),
                                         buildTableCell(''),
                                         buildTableCell('', TextAlign.center),
-                                        buildTableCell('', TextAlign.center),
-                                        buildTableCell('Balance', TextAlign.center),
-                                        buildTableCell(reportTotal[2], TextAlign.center),
-                                        buildTableCell(reportTotal[3], TextAlign.center),
+                                        buildTableCell('', TextAlign.end),
+                                        buildTableCell('Balance', TextAlign.end),
+                                        buildTableCell(reportTotal[2], TextAlign.end),
+                                        buildTableCell(reportTotal[3], TextAlign.end),
                                         buildTableCell('',),
                                       ],
                                     ),
@@ -801,10 +559,10 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                                         buildTableCell(''),
                                         buildTableCell(''),
                                         buildTableCell('', TextAlign.center),
-                                        buildTableCell('', TextAlign.center),
-                                        buildTableCell('Grand Total', TextAlign.center),
-                                        buildTableCell(reportTotal[4], TextAlign.center),
-                                        buildTableCell(reportTotal[5], TextAlign.center),
+                                        buildTableCell('', TextAlign.end),
+                                        buildTableCell('Grand Total', TextAlign.end),
+                                        buildTableCell(reportTotal[4], TextAlign.end),
+                                        buildTableCell(reportTotal[5], TextAlign.end),
                                         buildTableCell('',),
                                       ],
                                     ),
@@ -935,19 +693,19 @@ List<String> getLedgerList(BuildContext context, groupItemVal){
   List<String> ledgerList = ['All'];
 
   Consumer(
-      builder: (context, ref, child) {
-        final result = ref.watch(newLedgerProvider);
-        return result.when(
-            data: (data) {
-              data.forEach((key,_) {
-                ledgerList.add(key);
-              });
-              return const Text('');
-            },
-            error: (error, stackTrace) => Center(child: Text('$error')),
-            loading: () => const CircularProgressIndicator(),
-        );
-      },
+    builder: (context, ref, child) {
+      final result = ref.watch(newLedgerProvider);
+      return result.when(
+        data: (data) {
+          data.forEach((key,_) {
+            ledgerList.add(key);
+          });
+          return const Text('');
+        },
+        error: (error, stackTrace) => Center(child: Text('$error')),
+        loading: () => const CircularProgressIndicator(),
+      );
+    },
   );
 
   return ledgerList;
@@ -966,8 +724,8 @@ class TestDynamicFunction{
       });
     }
     return PaginatedDataTable(
-        columns: colName.map((e) => DataColumn(label: Text(e))).toList(),
-        source: MyNewDataSource(newList, total, context, dropDownList),
+      columns: colName.map((e) => DataColumn(label: Text(e))).toList(),
+      source: MyNewDataSource(newList, total, context, dropDownList),
     );
   }
 }

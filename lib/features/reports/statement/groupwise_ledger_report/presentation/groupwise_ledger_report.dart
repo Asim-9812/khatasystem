@@ -37,6 +37,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
   String validation = '';
+  late int _totalRecords;
 
   @override
   void initState() {
@@ -465,6 +466,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                 if (data.isNotEmpty) {
                                   final tableReport = ReportData.fromJson(data[1]);
                                   _totalPages = tableReport.totalPages!;
+                                  _totalRecords = tableReport.totalRecords!;
                                   for (var e in data[0]) {
                                     newList.add(GroupwiseLedgerReportModel.fromJson(e));
                                   }
@@ -508,6 +510,8 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                           currentItemsPerPage: _rowPerPage,
                                           currentPage: _currentPage,
                                           totalPages: _totalPages,
+                                          itemsPerPageText: 'Showing ${_rowPerPage > _totalRecords ? _totalRecords : _rowPerPage} of $_totalRecords :',
+                                          itemsPerPageTextStyle: const TextStyle(fontWeight: FontWeight.bold,letterSpacing: 3),
                                           onPageChanged: (page) {
                                             _currentPage = page;
                                             /// updates current page number of filterModel, because it does not update on its own
@@ -516,8 +520,11 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                                           },
                                           showItemsPerPage: true,
                                           onItemsPerPageChanged: (itemsPerPage) {
-                                            _rowPerPage = itemsPerPage;
-                                            _currentPage = 1;
+                                            setState(() {
+                                              _rowPerPage = itemsPerPage;
+                                              _currentPage = 1;
+                                            });
+
                                             /// updates row per page of filterModel, because it does not update on its own
                                             fModel.dataFilterModel!.pageRowCount = _rowPerPage;
                                             ref.read(tableDataProvider.notifier).getTableValues(fModel);

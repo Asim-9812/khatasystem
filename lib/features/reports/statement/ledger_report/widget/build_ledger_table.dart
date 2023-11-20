@@ -23,7 +23,7 @@ TableCell buildTableCell(String cellText, [TextAlign? cellTxtAlign]) {
   );
 }
 
-DataRow buildReportDataRow(int index, TableData tblData,
+DataRow buildReportDataRow(int index, TableData tblData, String branch,
     final List<Map<dynamic, dynamic>> dropDownList,
     [BuildContext? context]) {
   return DataRow(
@@ -57,6 +57,8 @@ DataRow buildReportDataRow(int index, TableData tblData,
                             ledgerName: tblData.ledgerName!,
                             selectedGroup: tblData.accountGroupName!,
                             dropDownList: dropDownList,
+                            branchName: branch,
+                            tblData: tblData,
                           ),
                         ));
                   },

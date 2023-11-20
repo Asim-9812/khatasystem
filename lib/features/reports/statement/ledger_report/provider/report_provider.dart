@@ -456,6 +456,7 @@ class NewLedgerProvider extends StateNotifier<AsyncValue<Map<dynamic, dynamic>>>
     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
 
     final jsonData = jsonEncode(getListModel.toJson());
+    print(jsonData);
     Map<dynamic, dynamic>ledger = {};
     try{
       final response = await dio.post(Api.getList, data: jsonData);
@@ -530,12 +531,38 @@ class ModalDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
         state = AsyncValue.data(result);
       }else{
         print(response.statusCode);
+      }
+    }on DioError catch(err){
+      throw DioException().getDioError(err);
+    }
+  }
+}
+
+
+final ledgerIndividualProvider = FutureProvider.family((ref, FilterAnyModel filterModel) => LedgerIndividualProvider().getTableData(filterModel));
+
+class LedgerIndividualProvider {
+  Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
+    final dio = Dio();
+    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+
+    try{
+
+      final jsonData = jsonEncode(filterModel.toJson());
+      ;
+      final response = await dio.post(Api.getTable, data: jsonData);
+      if(response.statusCode == 200){
+        final result = response.data as List<dynamic>;
+        return result;
+      }else{
+        return [];
       }
     }on DioError catch(err){
       throw DioException().getDioError(err);

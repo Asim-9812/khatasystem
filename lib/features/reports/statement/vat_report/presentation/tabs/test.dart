@@ -26,14 +26,14 @@ import '../../../../common_widgets/build_report_table.dart';
 import '../../../daybook_report/widget/daybook_dataRow.dart';
 
 
-class AboveLakhTab extends ConsumerStatefulWidget {
-  const AboveLakhTab({Key? key}) : super(key: key);
+class AboveLakhTestTab extends ConsumerStatefulWidget {
+  const AboveLakhTestTab({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<AboveLakhTab> createState() => _DayBookReportState();
+  ConsumerState<AboveLakhTestTab> createState() => _DayBookReportState();
 }
 
-class _DayBookReportState extends ConsumerState<AboveLakhTab> {
+class _DayBookReportState extends ConsumerState<AboveLakhTestTab> {
   TextEditingController dateFrom = TextEditingController();
   TextEditingController dateTo = TextEditingController();
   late int _currentPage;
@@ -66,15 +66,15 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
 
   }
 
-
-  @override
-  void didChangeDependencies(){
-    super.didChangeDependencies();
-    ref.read(itemProvider.notifier).updateSelected(true);
-
-  }
-
-
+  //
+  // @override
+  // void didChangeDependencies(){
+  //   super.didChangeDependencies();
+  //   ref.read(itemProvider.notifier).updateSelected(true);
+  //
+  // }
+  //
+  //
 
   @override
   Widget build(BuildContext context) {
@@ -123,13 +123,13 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                   });
 
 
-                  if(ref.watch(itemProvider).selected){
-
-                      ref.read(itemProvider.notifier).updateSelectedVatList(particulars.map((e) => e['value']).toList());
-                      String formattedList = ref.watch(itemProvider).selectedVatReportList.map((e) => '$e').join(',');
-                      ref.read(itemProvider).updateParticularType(formattedList);
-
-                  }
+                  // if(ref.watch(itemProvider).selected){
+                  //
+                  //   ref.read(itemProvider.notifier).updateSelectedVatList(particulars.map((e) => e['value']).toList());
+                  //   String formattedList = ref.watch(itemProvider).selectedVatReportList.map((e) => '$e').join(',');
+                  //   ref.read(itemProvider).updateParticularType(formattedList);
+                  //
+                  // }
 
 
                   Map<String,dynamic> particularItem = particulars[0];

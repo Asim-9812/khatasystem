@@ -451,12 +451,14 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                           await ref.read(trialBalanceLedgerProvider.notifier).getTableData(fModel);
                                         }else{
                                           ref.read(itemProvider.notifier).updateTypeData(1);
+                                          ref.read(itemProvider.notifier).updateIsLoading(true);
                                           await ref.read(trialBalanceGroupProvider.notifier).getTableData(fModel);
                                           if(_isChecked == true){
                                             ref.read(itemProvider.notifier).updateIsDetailed(true);
                                           }else{
                                             ref.read(itemProvider.notifier).updateIsDetailed(false);
                                           }
+                                          ref.read(itemProvider.notifier).updateIsLoading(false);
                                         }
                                       }
                                     }
@@ -470,7 +472,10 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                       borderRadius: BorderRadius.circular(10),
                                     ),
                                   ),
-                                  child: const FaIcon(
+                                  child: ref.watch(itemProvider).isLoading? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 5,
+                                  ): const FaIcon(
                                     FontAwesomeIcons.arrowsRotate,
                                     color: Colors.white,
                                     size: 25,
@@ -566,9 +571,11 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
 
                                 },
                                 error: (error, stackTrace) => Text('$error'),
-                                loading: () => Center(
-                                    child: Image.asset("assets/gif/loading-img2.gif", height: 80, width: 80,)
-                                ),
+                                loading: (){
+                                  return Center(
+                                      child: Image.asset("assets/gif/loading-img2.gif", height: 80, width: 80,)
+                                  );
+                                }
                               );
                             },
                           ) : Consumer(

@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:khata_app/common/colors.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/model/showModel.dart';
+import 'package:khata_app/features/reports/statement/ledger_report/model/table_model.dart';
+import 'package:khata_app/features/reports/statement/ledger_report/presentation/ledgerIndividualReport.dart';
 
 TableCell buildTableCell(String cellText, [TextAlign? cellTxtAlign]) {
   return TableCell(
@@ -38,6 +40,26 @@ DataRow buildLedgerSubReport(int index, ShowModal tblData, [BuildContext? contex
       buildDataCell(160, '${tblData.strCredit}', TextAlign.center),
       buildDataCell(160, '${tblData.strBalance}', TextAlign.center),
       buildDataCell(160, '${tblData.narration}', TextAlign.center),
+      tblData.sno != '-' ?DataCell(
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context!,
+                  MaterialPageRoute(
+                      builder: (context) => LedgerVoucherIndividualReport(tblData: tblData)));
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: ColorManager.green,
+                minimumSize: const Size(30, 30)),
+            child: const Icon(
+              Icons.remove_red_eye_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      )
+          : DataCell(SizedBox()),
     ],
   );
 }
@@ -56,9 +78,59 @@ DataRow buildLedgerDetailedSubReport(int index, ShowModal tblData, [BuildContext
       buildDataCell(160, '${tblData.strCredit}', TextAlign.center),
       buildDataCell(160, '${tblData.strBalance}', TextAlign.center),
       buildDataCell(160, '${tblData.narration}', TextAlign.center),
+      tblData.sno != '-' ?DataCell(
+        Center(
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                  context!,
+                  MaterialPageRoute(
+                      builder: (context) => LedgerVoucherIndividualReport(tblData: tblData)));
+            },
+            style: ElevatedButton.styleFrom(
+                backgroundColor: ColorManager.green,
+                minimumSize: const Size(30, 30)),
+            child: const Icon(
+              Icons.remove_red_eye_rounded,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      )
+          : DataCell(SizedBox()),
     ],
   );
 }
+
+
+
+
+DataRow buildLedgerVoucherViewRow(int index, LedgerVoucherModel tblData,
+    [BuildContext? context]) {
+  return DataRow(
+    color:
+    MaterialStateProperty.resolveWith((states) => getColor(states, index)),
+    cells: [
+      buildDataCell(
+          60, tblData.sno??'', TextAlign.center),
+      buildDataCell(
+          200, tblData.ledgerName??'-', TextAlign.center),
+      buildDataCell(
+          160, tblData.dr??'-', TextAlign.center),
+      buildDataCell(
+          160, '${tblData.cr}', TextAlign.center),
+      buildDataCell(
+          160, tblData.chequeNo??'', TextAlign.center),
+      buildDataCell(
+          160, '${tblData.chequeDate}', TextAlign.center),
+      buildDataCell(
+          200, tblData.narration??'', TextAlign.center),
+    ],
+  );
+}
+
+
+
 
 
 DataCell buildDataCell(
@@ -66,7 +138,7 @@ DataCell buildDataCell(
     [Color? footerColor]) {
   return DataCell(
     Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       width: cellWidth,
       color: footerColor,
       child: Text(
@@ -83,7 +155,7 @@ DataCell buildDataCell(
 DataColumn buildDataColumn(double width, String colName, TextAlign alignTxt) {
   return DataColumn(
     label: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       width: width,
       height: 50,
       decoration: BoxDecoration(

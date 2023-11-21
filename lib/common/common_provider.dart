@@ -83,6 +83,7 @@ class GroupItem extends ChangeNotifier{
   List filteredList = [];
   bool isDetailed = false;
   bool selected = false;
+  bool isLoading = false;
   List selectedBankCashList = [];
   List selectedDayBookList = [];
   List selectedVatReportList = [];
@@ -114,6 +115,13 @@ class GroupItem extends ChangeNotifier{
     isDetailed = isChecked;
     notifyListeners();
   }
+
+  void updateIsLoading(bool value){
+    isLoading = value;
+    notifyListeners();
+  }
+
+
 
   void updateSelected(bool isChecked){
     selected = isChecked;

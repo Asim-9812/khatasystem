@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:khata_app/features/reports/statement/vat_report/presentation/tabs/above_lakh.dart';
 import 'package:khata_app/features/reports/statement/vat_report/presentation/tabs/monthly.dart';
+import 'package:khata_app/features/reports/statement/vat_report/presentation/tabs/test.dart';
 import 'package:khata_app/features/reports/statement/vat_report/presentation/tabs/vat_report_tab.dart';
 import 'package:khata_app/features/reports/statement/vat_report/provider/vat_provider.dart';
 import '../../../../../common/colors.dart';
@@ -88,7 +89,7 @@ class _VatReportState extends ConsumerState<VatReport> with TickerProviderStateM
                 // Content for the 'Vat Report' tab
                 VatReportTab(),
                 // Content for the 'Transaction above one lakh' tab
-                AboveLakhTab(),
+                AboveLakhTestTab(),
                 // Content for the 'Monthly Vat Report' tab
                 Monthly(),
               ],

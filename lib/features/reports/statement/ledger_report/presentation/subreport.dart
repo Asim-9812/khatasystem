@@ -459,9 +459,9 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                           final tableReport = ReportData.fromJson(data[2]);
                           _totalPages = tableReport.totalPages!;
                           for(var e in data[0]){
-                            if(ShowModal.fromJson(e).sno != ""){
+
                               newList.add(ShowModal.fromJson(e));
-                            }
+
                           }
                           data[1].forEach((key, value) {
                             reportTotal.add(value);
@@ -490,7 +490,7 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                                       buildDataColumn(160, 'Credit (Cr)', TextAlign.center),
                                       buildDataColumn(160, 'Balance', TextAlign.center),
                                       buildDataColumn(160, 'Narration', TextAlign.center),
-                                      // buildDataColumn(80, 'View', TextAlign.center),
+                                      buildDataColumn(80, 'View', TextAlign.center),
                                     ],
                                     rows: const [],
                                     columnSpacing: 0,
@@ -523,9 +523,9 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                                     buildDataColumn(160, 'Credit (Cr)', TextAlign.center),
                                     buildDataColumn(160, 'Balance', TextAlign.center),
                                     buildDataColumn(160, 'Narration', TextAlign.center),
-                                    // buildDataColumn(80, 'View', TextAlign.center),
+                                    buildDataColumn(80, 'View', TextAlign.center),
                                   ],
-                                  rows: List.generate(newList.length, (index) => buildLedgerDetailedSubReport(index, newList[index],),),
+                                  rows: List.generate(newList.length, (index) => buildLedgerDetailedSubReport(index, newList[index],context),),
                                   columnSpacing: 0,
                                   horizontalMargin: 0,
                                 ),
@@ -701,7 +701,7 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                                       buildDataColumn(160, 'Credit (Cr)', TextAlign.center),
                                       buildDataColumn(160, 'Balance', TextAlign.center),
                                       buildDataColumn(160, 'Narration', TextAlign.center),
-                                      // buildDataColumn(80, 'View', TextAlign.center),
+                                      buildDataColumn(80, 'View', TextAlign.center),
                                     ],
                                     rows: const [],
                                     columnSpacing: 0,
@@ -734,9 +734,9 @@ class _SubReportPageState extends ConsumerState<SubReportPage> {
                                     buildDataColumn(160, 'Credit (Cr)', TextAlign.center),
                                     buildDataColumn(160, 'Balance', TextAlign.center),
                                     buildDataColumn(160, 'Narration', TextAlign.center),
-                                    // buildDataColumn(80, 'View', TextAlign.center),
+                                    buildDataColumn(80, 'View', TextAlign.center),
                                   ],
-                                  rows: List.generate(newList.length, (index) => buildLedgerSubReport(index, newList[index],),),
+                                  rows: List.generate(newList.length, (index) => buildLedgerSubReport(index, newList[index],context),),
                                   columnSpacing: 0,
                                   horizontalMargin: 0,
                                 ),

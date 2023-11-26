@@ -22,6 +22,7 @@ class ColorManager {
   static Color menuIcon = HexColor.fromHex('#1B7492');
   static Color textGrey = HexColor.fromHex('##646864');
   static Color black = HexColor.fromHex('#36454F');
+  static Color white = HexColor.fromHex('#FFFFFF');
   static Color red = HexColor.fromHex('#FF0000');
 }
 

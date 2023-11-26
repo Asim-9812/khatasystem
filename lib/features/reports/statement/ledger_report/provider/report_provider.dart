@@ -28,8 +28,8 @@ class LedgerReportListProvider{
     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
 
 
-    print(getListModel.mainInfoModel!.fiscalID);
-    print(getListModel.mainInfoModel!.branchId);
+    // print(getListModel.mainInfoModel!.fiscalID);
+    // print(getListModel.mainInfoModel!.branchId);
     final jsonData = jsonEncode(getListModel.toJson());
     List<Map<dynamic, dynamic>> myList = [];
     try{
@@ -39,23 +39,55 @@ class LedgerReportListProvider{
       });
 
       if(response.statusCode == 200){
-        final responseList = [response.data[0] as List<dynamic>,response.data[2] as List<dynamic>,response.data[3] as List<dynamic>];
+        // Check if response.data[1] is a map
+        if (response.data[1] is Map<String, dynamic>) {
+          final responseList = [
+            response.data[0] as List<dynamic>,
+            response.data[2] as List<dynamic>,
+            response.data[3] as List<dynamic>,
+          ];
 
-        var branch = {};
-        var group = {};
-        var ledger = {};
+          var branch = {};
+          var group = {};
+          var ledger = {};
 
+          for (final e in responseList[0]) {
+            branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+          }
+          // Note: Assuming response.data[1] is a map with String keys and dynamic values
+          for (final e in responseList[1]) {
+            group[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+          }
 
-        for(final e in responseList[0]){
-          branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+          for (final e in responseList[2]) {
+            ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+          }
+
+          myList = [branch, group, ledger];
+        } else {
+          final responseList = [
+            response.data[0] as List<dynamic>,
+            response.data[1] as List<dynamic>,
+            response.data[2] as List<dynamic>,
+          ];
+
+          var branch = {};
+          var group = {};
+          var ledger = {};
+
+          for (final e in responseList[0]) {
+            branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+          }
+          for (final e in responseList[1]) {
+            group[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+          }
+          for (final e in responseList[2]) {
+            ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+          }
+
+          myList = [branch, group, ledger];
         }
-        for(final e in responseList[1]){
-          group[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
-        }
-        for(final e in responseList[2]){
-          ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
-        }
-        myList = [branch,group,ledger];
+
       }else{
       }
       return myList;

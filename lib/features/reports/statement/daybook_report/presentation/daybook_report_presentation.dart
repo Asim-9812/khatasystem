@@ -84,12 +84,12 @@ class _TestState extends ConsumerState<DayBookReport> {
   }
 
 
-  @override
-  void didChangeDependencies(){
-    super.didChangeDependencies();
-    ref.read(itemProvider.notifier).updateSelected(true);
-
-  }
+  // @override
+  // void didChangeDependencies(){
+  //   super.didChangeDependencies();
+  //   ref.read(itemProvider.notifier).updateSelected(true);
+  //
+  // }
 
 
 
@@ -159,13 +159,13 @@ class _TestState extends ConsumerState<DayBookReport> {
                 ledgers.add(key);
               });
 
-              if(ref.watch(itemProvider).selected){
-                ref.read(itemProvider.notifier).updateSelectedDayBookList(vouchers.map((e) => e['value']).toList());
-                String formattedList = ref.watch(itemProvider).selectedDayBookList.map((e) => '\\\"$e\\\"').join(',');
-                ref.read(itemProvider).updateVoucherType('[$formattedList]');
-
-
-              }
+              // if(ref.watch(itemProvider).selected){
+              //   ref.read(itemProvider.notifier).updateSelectedDayBookList(vouchers.map((e) => e['value']).toList());
+              //   String formattedList = ref.watch(itemProvider).selectedDayBookList.map((e) => '\\\"$e\\\"').join(',');
+              //   ref.read(itemProvider).updateVoucherType('[$formattedList]');
+              //
+              //
+              // }
 
               String ledgerItem = ledgers[0];
               String branchItem = branches[0];

@@ -15,7 +15,7 @@ class NotificationServices{
   void initializeNotifications() async {
     InitializationSettings initializationSettings = InitializationSettings(android: _androidInitializationSettings);
 
-    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    await _flutterLocalNotificationsPlugin.initialize(initializationSettings); 
   }
 
   void sendNotification(String body, {required int id, required String title,}) async {

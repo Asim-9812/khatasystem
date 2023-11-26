@@ -211,6 +211,7 @@ class _BranchPageState extends State<BranchPage> {
                        child:isLoad ? const Center(child: CircularProgressIndicator(color: Colors.white,))  : const Text(
                          'Login',
                          style: TextStyle(
+                           color: Colors.white,
                              fontFamily: 'Ubuntu',
                              fontSize: 20,
                              fontWeight: FontWeight.w400),
@@ -357,6 +358,7 @@ class _BranchPageState extends State<BranchPage> {
                                     child:isLoad ? const Center(child: CircularProgressIndicator(color: Colors.white,))  : const Text(
                                       'Login',
                                       style: TextStyle(
+                                        color: Colors.white,
                                           fontFamily: 'Ubuntu',
                                           fontSize: 20,
                                           fontWeight: FontWeight.w400),

@@ -155,11 +155,10 @@ class DisplayBlock extends StatelessWidget {
               height: 140,
               width: 140,
             ));
-          } else if(snapshot.hasError){
-            transactionController.close();
+          } else if(snapshot.data!.isEmpty){
             return const Center(
               child: Text(
-                'Could not Load Data!',
+                'No records',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w500,
@@ -231,6 +230,16 @@ class DisplayBlock extends StatelessWidget {
               height: 140,
               width: 140,
             ));
+          }
+          else if (snapshot.data!.isEmpty) {
+            return  Center(
+                child: Text('No Records',
+                  style: TextStyle(
+                      color: ColorManager.black,
+                      fontFamily: 'Ubuntu',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400),
+                ));
           }
           final reverseList = snapshot.data!.reversed.toList();
           return ListView.separated(

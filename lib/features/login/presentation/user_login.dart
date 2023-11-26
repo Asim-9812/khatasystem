@@ -418,9 +418,10 @@ class _UserLoginViewState extends State<UserLoginView> {
                                             borderRadius: BorderRadius.circular(8),
                                           ),
                                         ),
-                                        child: isLoad ? const Center(child: CircularProgressIndicator(color: Colors.white,))  : const Text(
+                                        child: isLoad ? const Center(child: CircularProgressIndicator(color: Colors.white,))  :  Text(
                                           'Login',
                                           style: TextStyle(
+                                            color: ColorManager.white,
                                               fontFamily: 'Ubuntu',
                                               fontSize: 20,
                                               fontWeight: FontWeight.w400),
@@ -876,9 +877,10 @@ class _UserLoginViewState extends State<UserLoginView> {
                                                         borderRadius: BorderRadius.circular(8),
                                                       ),
                                                     ),
-                                                    child: const Text(
+                                                    child: Text(
                                                       'Login',
                                                       style: TextStyle(
+                                                        color: ColorManager.white,
                                                           fontFamily: 'Ubuntu',
                                                           fontSize: 16,
                                                           fontWeight: FontWeight.w400),

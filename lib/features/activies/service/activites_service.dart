@@ -7,6 +7,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:khata_app/core/api.dart';
 import 'package:khata_app/features/activies/model/logModel.dart';
 
@@ -31,7 +32,7 @@ final logProvider = StreamProvider.autoDispose<List<LogModel>>((ref) async* {
         "contact": "string",
         "email": "string",
         "name": "string",
-        "logInTime": "2023-05-09T10:46:15.304Z",
+        "logInTime": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
         "sessionId": "string",
         "dbName": mainInfo.dbName
       }
@@ -75,7 +76,7 @@ Future<List<LogModel>> fetchLogActivities(StreamController logStreamController, 
           "contact": "string",
           "email": "string",
           "name": "string",
-          "logInTime": "2023-05-09T10:46:15.304Z",
+          "logInTime": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
           "sessionId": "string",
           "dbName": mainInfo.dbName
         },
@@ -108,7 +109,7 @@ Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactio
           "username": "string",
           "voucherTypeName": "string",
           "voucherNo": "string",
-          "entryDate": "2023-05-12T06:31:03.862Z",
+          "entryDate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
           "dbName": mainInfo.dbName
         }
     );
@@ -141,7 +142,7 @@ final entryMasterProvider = StreamProvider<List<EntryMaster>>((ref) async* {
           "username": "string",
           "voucherTypeName": "string",
           "voucherNo": "string",
-          "entryDate": "2023-05-12T06:31:03.862Z",
+          "entryDate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
           "dbName": mainInfo.dbName
         }
     );

@@ -104,14 +104,14 @@ Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactio
 
   try{
     final response = await dio.post(Api.getTransactionActivities,
-        data: {
-          "name": "string",
-          "username": "string",
-          "voucherTypeName": "string",
-          "voucherNo": "string",
-          "entryDate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
-          "dbName": mainInfo.dbName
-        }
+        // data: {
+        //   "name": "string",
+        //   "username": "string",
+        //   "voucherTypeName": "string",
+        //   "voucherNo": "string",
+        //   "entryDate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
+        //   "dbName": mainInfo.dbName
+        // }
     );
 
     if (response.statusCode == 200) {
@@ -137,14 +137,14 @@ final entryMasterProvider = StreamProvider<List<EntryMaster>>((ref) async* {
 
   try{
     final response = await dio.post(Api.getTransactionActivities,
-        data: {
-          "name": "string",
-          "username": "string",
-          "voucherTypeName": "string",
-          "voucherNo": "string",
-          "entryDate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
-          "dbName": mainInfo.dbName
-        }
+        // data: {
+        //   "name": "string",
+        //   "username": "string",
+        //   "voucherTypeName": "string",
+        //   "voucherNo": "string",
+        //   "entryDate": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
+        //   "dbName": mainInfo.dbName
+        // }
     );
 
     if (response.statusCode == 200) {

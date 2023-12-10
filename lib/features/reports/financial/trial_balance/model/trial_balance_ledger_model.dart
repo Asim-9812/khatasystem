@@ -47,8 +47,8 @@ class LedgerWiseModel {
     strOpening = json['strOpening'];
     strDebit = json['strDebit'];
     strCredit = json['strCredit'];
-    debit = json['debit'];
-    credit = json['credit'];
+    debit = json['debit'].toDouble();
+    credit = json['credit'].toDouble();
     strClosing = json['strClosing'];
     branchId = json['branchId'];
     isPageFooter = json['isPageFooter'];

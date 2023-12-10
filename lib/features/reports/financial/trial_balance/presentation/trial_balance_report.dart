@@ -174,7 +174,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                 filterModel.underIntID = 0;
                 filterModel.columnName = null;
                 filterModel.filterColumnsString =
-                "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"typeWise--$typeItemData\",\"isDetail--$_isChecked\",\"${getBranchValue(branchItemData)}\"]";
+                "[\"${getFromDate(dateFrom)}\",\"${getToDate(dateTo)}\",\"typeWise--$typeItemData\",\"isDetail--$_isDetailed\",\"${getBranchValue(branchItemData)}\"]";
                 filterModel.pageRowCount = _rowPerPage;
                 filterModel.currentPageNumber = _currentPage;
                 filterModel.strListNames = "";
@@ -674,31 +674,6 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                                 rows: List.generate(tableData.length, (index) => trialBalanceClosingRow(index, tableData[index])),
                                                 columnSpacing: 0,
                                                 horizontalMargin: 0,
-                                              ),
-                                            ],
-                                          ),
-                                          Table(
-                                            columnWidths: const <int,
-                                                TableColumnWidth>{
-                                              0: FixedColumnWidth(350),
-                                              1: FixedColumnWidth(180),
-                                              2: FixedColumnWidth(200),
-                                              3: FixedColumnWidth(200),
-                                              4: FixedColumnWidth(180),
-                                            },
-                                            children: [
-                                              TableRow(
-                                                decoration: BoxDecoration(
-                                                  color: ColorManager.primary,
-                                                ),
-                                                children: [
-                                                  trialTblCell('Grand Total', TextAlign.end),
-                                                  trialTblCell(
-                                                            '${reportTotal[0]}', TextAlign.start),
-                                                  trialTblCell('${reportTotal[1]}', TextAlign.end),
-                                                  trialTblCell('${reportTotal[2]}', TextAlign.end),
-                                                  trialTblCell('${reportTotal[3]}', TextAlign.end),
-                                                ],
                                               ),
                                             ],
                                           ),

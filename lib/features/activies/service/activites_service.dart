@@ -103,7 +103,7 @@ Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactio
 
 
   try{
-    final response = await dio.post(Api.getTransactionActivities,
+    final response = await dio.get(Api.getTransactionActivities,
         // data: {
         //   "name": "string",
         //   "username": "string",
@@ -136,7 +136,7 @@ final entryMasterProvider = StreamProvider<List<EntryMaster>>((ref) async* {
 
 
   try{
-    final response = await dio.post(Api.getTransactionActivities,
+    final response = await dio.get(Api.getTransactionActivities,
         // data: {
         //   "name": "string",
         //   "username": "string",

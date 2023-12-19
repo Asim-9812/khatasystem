@@ -187,7 +187,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                                },
                                style: ElevatedButton.styleFrom(
                                    minimumSize: const Size(double.infinity, 50),
-                                   textStyle: const TextStyle(
+                                   textStyle:  TextStyle(
                                      fontSize: 18,
                                      fontWeight: FontWeight.w500,
                                    ),
@@ -202,7 +202,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                                  children: [
                                    Icon(Icons.more_time, size: 26, color: Colors.white,),
                                    SizedBox(width: 10,),
-                                   Text('Pick Time'),
+                                   Text('Pick Time',style: TextStyle(color: Colors.white),),
                                  ],
                                )
                              ),
@@ -320,7 +320,8 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                                     description: detailController.text.trim(),
                                     timeOfDay: selectedTime,
                                     repeat: isRepeat,
-                                    dateList: isRepeat == false ? null : selectedDays
+                                    dateList: isRepeat == false ? null : selectedDays,
+                                  dateTime: selectedDate
                                 );
                                 await ref.read(reminderProvider.notifier).addReminder(
                                     reminder
@@ -350,7 +351,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                               disabledBackgroundColor: ColorManager.primary.withOpacity(0.5),
                               disabledForegroundColor: Colors.white.withOpacity(0.5),
                             ),
-                            child: const Text('Save'),
+                            child: const Text('Save',style: TextStyle(color: Colors.white)),
                           );
                         },
                       )

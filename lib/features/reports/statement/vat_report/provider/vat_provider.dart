@@ -9,6 +9,7 @@ import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 
 import '../../../../../model/list model/get_list_model.dart';
 import '../../../../../model/list model/list_model.dart';
+import '../../../../dashboard/presentation/home_screen.dart';
 
 final vatListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => VatListProvider().getVatReportList(model));
 final aboveLakhProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => VatListProvider().getAboveLakhList(model));
@@ -25,7 +26,7 @@ class VatReportDetailProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues2(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -47,7 +48,7 @@ class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -66,7 +67,7 @@ class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues2(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -88,7 +89,7 @@ class VatReportProvider2 extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -110,7 +111,7 @@ class VatReportProvider3 extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -133,7 +134,7 @@ class VatReportProvider3 extends StateNotifier<AsyncValue<List<dynamic>>>{
 class VatListProvider {
   Future<List<Map<String, dynamic>>> getVatReportList(GetListModel getListModel) async {
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
 
@@ -175,7 +176,7 @@ class VatListProvider {
   }
   Future<List<Map<String, dynamic>>> getAboveLakhList(GetListModel getListModel) async {
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
     List<Map<String, dynamic>> myList = [];
@@ -217,7 +218,7 @@ class VatListProvider {
   }
   Future<List<Map<String, dynamic>>> getMonthlyList(GetListModel getListModel) async {
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
     List<Map<String, dynamic>> myList = [];
@@ -258,7 +259,7 @@ final vatReportIndividualProvider = FutureProvider.family((ref, FilterAnyModel2 
 class VatReportIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -282,7 +283,7 @@ final vatMonthlyProvider = FutureProvider.family((ref, FilterAnyModel filterMode
 class VatMonthlyProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-     dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());

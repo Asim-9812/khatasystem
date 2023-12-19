@@ -24,6 +24,11 @@ final userIdProvider = Provider<String>((ref) => userId);
 
 String userId = "";
 
+
+final tokenProvider = Provider<String>((ref) => userToken);
+
+String userToken = "";
+
 late MainInfoModel mainInfo;
 late MainInfoModel2 mainInfo2;
 
@@ -56,6 +61,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 
 
     userId = "${res["userReturn"]["intUserId"]}-${res["ownerCompanyList"]["databaseName"]}";
+    userToken = '${res['ptoken']}';
 
     String companyName = res["ownerCompanyList"]["companyName"];
     String fiscalYear = fy == ''? res["fiscalYearInfo"]["fiscalYear"] : fy;

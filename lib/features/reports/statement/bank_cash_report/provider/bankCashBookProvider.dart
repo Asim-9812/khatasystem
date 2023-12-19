@@ -9,6 +9,7 @@ import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 
 import '../../../../../model/list model/get_list_model.dart';
 import '../../../../../model/list model/list_model.dart';
+import '../../../../dashboard/presentation/home_screen.dart';
 
 
 
@@ -23,7 +24,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> fetchTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -45,7 +46,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<List<Map<dynamic, dynamic>>> getBankCashList(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
     List<Map<dynamic, dynamic>> myList = [];
@@ -83,7 +84,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
   Future<List<dynamic>> getBankCashLedgerList(GetLedgerListModel getListModel) async {
     final dio = Dio();
 
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
 
@@ -131,7 +132,7 @@ final bankCashIndividualProvider = FutureProvider.family((ref, FilterAnyModel2 f
 class BankCashIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
 

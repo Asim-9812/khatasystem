@@ -55,7 +55,7 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
     isRepeat = widget.reminder.repeat;
     selectedTime = widget.reminder.timeOfDay;
     checkedDays = List.generate(7, (index) => widget.reminder.dateList?.contains(days[index])??true);
-
+    dateFrom.text = '${DateFormat('EEE, dd MMM').format(widget.reminder.dateTime)} ${widget.reminder.timeOfDay.hour}:${widget.reminder.timeOfDay.minute} ${widget.reminder.timeOfDay.period.name}';
     titleController.addListener(() {
       setState(() {
 
@@ -66,6 +66,7 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
 
       });
     });
+    selectedDate = widget.reminder.dateTime;
 
   }
 
@@ -353,7 +354,8 @@ class _UpdateReminderPageState extends State<UpdateReminderPage> {
                                       description: detailController.text.trim(),
                                       timeOfDay: selectedTime,
                                       repeat: isRepeat,
-                                      dateList: isRepeat == false ? null : selectedDays
+                                      dateList: isRepeat == false ? null : selectedDays,
+                                    dateTime: selectedDate
                                   );
                                   await ref.read(reminderProvider.notifier).updateReminder(
                                       reminder

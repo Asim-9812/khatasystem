@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:khata_app/core/api.dart';
 
+import '../../dashboard/presentation/home_screen.dart';
 import '../model/notification_model.dart';
 
 
@@ -35,7 +36,7 @@ class NotificationProvider{
       final response = await dio.get(Api.getNotification,
         options: Options(
           headers: {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo'
+            'Authorization': 'Bearer ${userToken}'
           }
         )
       );

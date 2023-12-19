@@ -12,6 +12,8 @@ import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
 import 'package:khata_app/model/list%20model/list_model.dart';
 
+import '../../../../dashboard/presentation/home_screen.dart';
+
 
 final voucherListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => VoucherListProvider().getDropDownList(model));
 
@@ -19,7 +21,7 @@ final voucherListProvider = FutureProvider.family.autoDispose((ref, GetListModel
 class VoucherListProvider{
   Future<List<Map<dynamic, dynamic>>> getDropDownList(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
     List<Map<dynamic, dynamic>> myList = [];

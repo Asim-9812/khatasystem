@@ -27,6 +27,9 @@ class ReminderModel extends HiveObject{
   @HiveField(5)
   List<String>? dateList;
 
+  @HiveField(6)
+  DateTime dateTime;
+
   ReminderModel({
     required this.id,
     required this.title,
@@ -34,6 +37,7 @@ class ReminderModel extends HiveObject{
     required this.timeOfDay,
     required this.repeat,
     this.dateList,
+    required this.dateTime
   });
 
 

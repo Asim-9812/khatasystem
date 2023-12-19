@@ -8,6 +8,7 @@ import '../../../../../core/api.dart';
 import '../../../../../core/api_exception.dart';
 import '../../../../../model/list model/get_list_model.dart';
 import '../../../../../model/list model/list_model.dart';
+import '../../../../dashboard/presentation/home_screen.dart';
 
 
 
@@ -25,7 +26,7 @@ final ledgerItemProvider = FutureProvider.family((ref, GetListModel model) => Le
 class LedgerReportListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     // print(getListModel.mainInfoModel!.fiscalID);
@@ -97,7 +98,7 @@ class LedgerReportListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -135,7 +136,7 @@ class LedgerReportListProvider{
 class CustomerLedgerListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     print(getListModel.mainInfoModel!.fiscalID);
@@ -175,7 +176,7 @@ class CustomerLedgerListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -212,7 +213,7 @@ class CustomerLedgerListProvider{
 class SupplierLedgerListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     print(getListModel.mainInfoModel!.fiscalID);
@@ -252,7 +253,7 @@ class SupplierLedgerListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -288,7 +289,7 @@ class SupplierLedgerListProvider{
 class TBPLBSListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     print(getListModel.mainInfoModel!.fiscalID);
@@ -320,7 +321,7 @@ class TBPLBSListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -358,7 +359,7 @@ class TBPLBSListProvider{
 class ListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
     List<Map<dynamic, dynamic>> myList = [];
@@ -390,7 +391,7 @@ class ListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -423,7 +424,7 @@ class ListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList2(GetListModel2 getListModel) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -456,7 +457,7 @@ class LedgerProvider{
   Future<Map<dynamic, dynamic>> getLedgerItem(GetListModel getListModel) async {
 
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
     var ledger = {};
@@ -485,7 +486,7 @@ class NewLedgerProvider extends StateNotifier<AsyncValue<Map<dynamic, dynamic>>>
   Future<void> getLedgerItem(GetListModel getListModel) async {
 
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
     print(jsonData);
@@ -515,7 +516,7 @@ class TableDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -534,7 +535,7 @@ class TableDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues2(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -559,7 +560,7 @@ class ModalDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getModalTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
@@ -583,7 +584,7 @@ final ledgerIndividualProvider = FutureProvider.family((ref, FilterAnyModel filt
 class LedgerIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
 
@@ -612,7 +613,7 @@ final ledgerVoucherIndividualProvider = FutureProvider.family((ref, FilterAnyMod
 class LedgerVoucherIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
 

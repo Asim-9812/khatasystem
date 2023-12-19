@@ -4,6 +4,7 @@ import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/features/menu/model/menu_model.dart';
 
 import '../../../core/api.dart';
+import '../../dashboard/presentation/home_screen.dart';
 
 
 final menuProvider = FutureProvider.family((ref, String id) => MenuProvider().getMenu(id));
@@ -12,7 +13,7 @@ final menuProvider = FutureProvider.family((ref, String id) => MenuProvider().ge
 class MenuProvider{
   Future<List<MenuModel>> getMenu(String id) async {
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6WyJLaGF0YWNfMDAwMDEiLCJTVEtTIl0sInJvbGUiOiJhZG1pbiIsIm5iZiI6MTY4NjYzNDI3MSwiZXhwIjoxNzAyNDQ1NDcxLCJpYXQiOjE2ODY2MzQyNzF9.dtRLX7YD-SvTKHlPXyOVEOKZTO7L4CACexqqxBsJuqo";
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     List<MenuModel> menuList = <MenuModel>[];
     try{

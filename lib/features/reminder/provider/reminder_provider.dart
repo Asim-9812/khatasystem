@@ -21,14 +21,15 @@ class ReminderProvider extends StateNotifier<List<ReminderModel>>{
         description: reminder.description,
         timeOfDay: reminder.timeOfDay,
         repeat: reminder.repeat,
-        dateList: reminder.dateList
+        dateList: reminder.dateList,
+        dateTime: reminder.dateTime
       );
       Hive.box<ReminderModel>('ReminderBox').add(newReminderItem);
       state = [newReminderItem];
       return 'success';
     }else{
       final reminderItem = state.firstWhere((element) => element.id == reminder.id, orElse: () {
-        return ReminderModel(id: 0, title: 'no data', repeat: false, timeOfDay: TimeOfDay.now());
+        return ReminderModel(id: 0, title: 'no data', repeat: false, timeOfDay: TimeOfDay.now(),dateTime: DateTime.now());
       },);
       if(reminderItem.title ==  'no data'){
         final newReminderItem = ReminderModel(
@@ -37,7 +38,8 @@ class ReminderProvider extends StateNotifier<List<ReminderModel>>{
             description: reminder.description,
             timeOfDay: reminder.timeOfDay,
             repeat: reminder.repeat,
-          dateList: reminder.dateList
+          dateList: reminder.dateList,
+          dateTime: reminder.dateTime
         );
         Hive.box<ReminderModel>('ReminderBox').add(newReminderItem);
         state = [...state, newReminderItem];
@@ -55,7 +57,8 @@ class ReminderProvider extends StateNotifier<List<ReminderModel>>{
         description: reminder.description,
         timeOfDay: reminder.timeOfDay,
         repeat: reminder.repeat,
-      dateList: reminder.dateList
+      dateList: reminder.dateList,
+      dateTime: reminder.dateTime
     );
 
     Hive.box<ReminderModel>('ReminderBox').put(reminder.id, reminderItem);

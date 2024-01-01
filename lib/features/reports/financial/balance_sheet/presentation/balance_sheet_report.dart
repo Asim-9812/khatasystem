@@ -128,7 +128,7 @@ class _BalanceSheetReportState extends ConsumerState<BalanceSheetReportPage> {
                     if (branchVal == "All") {
                       return 'BranchId--';
                     } else {
-                      return 'BranchId--${data[2][branchItemData]}';
+                      return 'BranchId--${data[0][branchItemData]}';
                     }
                   }
 

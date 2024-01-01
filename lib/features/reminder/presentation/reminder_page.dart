@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:khata_app/common/export.dart';
 import 'package:khata_app/features/reminder/presentation/create_reminder.dart';
 import 'package:khata_app/features/reminder/presentation/update_reminder.dart';
@@ -220,8 +221,13 @@ class _PersonalReminderPageState extends State<PersonalReminderPage> {
                                 MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
+                                  reminderItem.repeat == true ?
                                   Text(
                                     reminderItem.timeOfDay.format(context),
+                                    style: const TextStyle(fontSize: 15),
+                                  ) :
+                                  Text(
+                                    '${DateFormat('EEE, yyyy-MM-dd').format(reminderItem.dateTime)} ${reminderItem.timeOfDay.format(context)}',
                                     style: const TextStyle(fontSize: 15),
                                   ),
                                   reminderItem.repeat ? Container(

@@ -130,7 +130,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                       return 'groupID--1';
                     }
                     else {
-                      return 'groupID--${data[0][groupItemData]}';
+                      return 'groupID--${data[1][groupItemData]}';
                     }
                   }
 
@@ -139,7 +139,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                     if (branchVal == "All") {
                       return 'BranchId--0';
                     } else {
-                      return 'BranchId--${data[2][branchItemData]}';
+                      return 'BranchId--${data[0][branchItemData]}';
                     }
                   }
 

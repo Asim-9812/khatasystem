@@ -59,23 +59,23 @@ android {
         versionName flutterVersionName
     }
 
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file('C:\\Users\\Dell\\StudioProjects\\KhataWebAPP\\android\\app\\upload-keystore.jks')
-            storePassword keystoreProperties['storePassword']
-        }
-    }
-
 //    signingConfigs {
 //        release {
 //            keyAlias keystoreProperties['keyAlias']
 //            keyPassword keystoreProperties['keyPassword']
-//            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+//            storeFile file('C:\\Users\\Dell\\StudioProjects\\KhataWebAPP\\android\\app\\upload-keystore.jks')
 //            storePassword keystoreProperties['storePassword']
 //        }
 //    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     buildTypes {
         release {
             signingConfig signingConfigs.release

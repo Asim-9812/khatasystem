@@ -12,7 +12,7 @@ import '../../../common/colors.dart';
 
 const List<String> list = [
   'Login Activity',
-  'Transaction Activity',
+  // 'Transaction Activity',
 ];
 
 

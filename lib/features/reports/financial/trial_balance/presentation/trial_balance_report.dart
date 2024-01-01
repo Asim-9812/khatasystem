@@ -147,7 +147,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                   if (branchVal == "All") {
                     return 'BranchId--';
                   } else {
-                    return 'BranchId--${data[2][branchItemData]}';
+                    return 'BranchId--${data[0][branchItemData]}';
                   }
                 }
 

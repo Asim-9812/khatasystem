@@ -17,12 +17,15 @@ class MenuProvider{
 
     List<MenuModel> menuList = <MenuModel>[];
     try{
+      // final response = await dio.get('http://202.51.74.138:88/api/Menu/GetMenuOfAppbyId?id=1-khatac_00001');
+
       final response = await dio.get(Api.getMenu, queryParameters: {
         "id": id,
       });
 
       if(response.statusCode == 200){
         final responseList = response.data as List<dynamic>;
+
         for (var element in responseList) {
           menuList.add(MenuModel.fromJson(element));
         }

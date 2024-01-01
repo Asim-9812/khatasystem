@@ -123,7 +123,7 @@ class _ProfitLossReportState extends ConsumerState<ProfitLossReport> {
                   if (branchVal == "All") {
                     return 'BranchId--';
                   } else {
-                    return 'BranchId--${data[2][branchItemData]}';
+                    return 'BranchId--${data[0][branchItemData]}';
                   }
                 }
 

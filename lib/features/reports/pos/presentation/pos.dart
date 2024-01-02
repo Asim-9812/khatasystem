@@ -20,7 +20,9 @@ class POS extends StatefulWidget {
 class _POSState extends State<POS> {
 
 
-  GlobalKey<FormState> _productFormKey = GlobalKey();
+  final  _productFormKey = GlobalKey<FormState>();
+  final _customerFormKey = GlobalKey<FormState>();
+
 
   TextEditingController _productCodeController = TextEditingController();
   TextEditingController _quantityController = TextEditingController();
@@ -48,36 +50,7 @@ class _POSState extends State<POS> {
 
   bool disabledFields = true;
 
-
-  List<String> dummyStringList = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Elderberry',
-    'Fig',
-    'Grapes',
-    'Honeydew',
-    'Iguana',
-    'Jackfruit',
-    'Kiwi',
-    'Lemon',
-    'Mango',
-    'Nectarine',
-    'Orange',
-    'Papaya',
-    'Quince',
-    'Raspberry',
-    'Strawberry',
-    'Tomato',
-    'Umbrella',
-    'Vanilla',
-    'Watermelon',
-    'Xylophone',
-    'Yogurt',
-    'Zucchini',
-  ];
-
+  Map<String,dynamic> setCustomerInfo = {};
 
 
 
@@ -838,7 +811,9 @@ class _POSState extends State<POS> {
                                               borderRadius: BorderRadius.circular(20)
                                           )
                                       ),
-                                      onPressed: (){},
+                                      onPressed: (){
+                                        print(setCustomerInfo);
+                                      },
                                       child: Text('Save',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),)
                                   ),
                                 ),
@@ -879,6 +854,47 @@ class _POSState extends State<POS> {
 
   void _showDialog() async {
 
+
+    bool isCustomer = true;
+
+
+    _customerNameController.text = 'Cash';
+
+
+    List<Map<String, dynamic>> customerList = [
+      {
+        'name': 'John Doe',
+        'pan': 'ABCDE1234F',
+        'address': '123 Main Street, Cityville',
+      },
+      {
+        'name': 'Alice Johnson',
+        'pan': 'FGHIJ5678K',
+        'address': '456 Oak Avenue, Townsville',
+      },
+      {
+        'name': 'Bob Smith',
+        'pan': 'LMNOP9012Q',
+        'address': '789 Pine Road, Villagetown',
+      },
+      {
+        'name': 'Eva Williams',
+        'pan': 'RSTUV3456W',
+        'address': '567 Elm Lane, Countryside',
+      },
+      {
+        'name': 'David Brown',
+        'pan': 'XYZAB6789C',
+        'address': '890 Maple Drive, Hamlet City',
+      },
+      {
+        'name': 'Grace Taylor',
+        'pan': 'DEFGH2345I',
+        'address': '234 Birch Street, Suburbia',
+      },
+    ];
+
+
     await showDialog(context: context, builder: (context){
       return StatefulBuilder(
         builder: (context,setState) {
@@ -893,8 +909,8 @@ class _POSState extends State<POS> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('Customer Details',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),),
+                    padding: const EdgeInsets.all(10),
+                    child: Text('Customer Details',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold,fontSize: 20),),
                   ),
                   const SizedBox(
                     height: 10,
@@ -908,57 +924,23 @@ class _POSState extends State<POS> {
                       )
                     ),
                     padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TypeAheadField<String>(
-                          suggestionsCallback: (search) => dummyStringList,
-                          builder: (context, controller, focusNode) {
-                            return TextFormField(
-                                controller: _customerNameController,
-                                focusNode: focusNode,
-                                autofocus: false,
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                          color: ColorManager.primary
-                                      )
-                                  ),
-
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                          color: ColorManager.primary
-                                      )
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide(
-                                          color: ColorManager.primary
-                                      )
-                                  ),
-                                  labelText: 'Name',
-                                  labelStyle: TextStyle(color: ColorManager.primary)
-                              ),
-                            );
-                          },
-                          constraints: const BoxConstraints.tightFor(height: 250),
-                          itemBuilder: (context, city) {
-                            return ListTile(
-                              title: Text(city),
-                            );
-                          },
-                          onSelected: (city) {},
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: _panController,
+                    child: Form(
+                      key: _customerFormKey,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TypeAheadField<String>(
+                            suggestionsCallback: (search) => _customerNameController.text == 'Cash'
+                                ?customerList.map((e) => e['name'].toString()).toList()
+                                : customerList.map((e) => e['name'].toString())
+                                .where((element) =>
+                                element.toLowerCase().contains(search.toLowerCase()))
+                                .toList(),
+                            builder: (context, controller, focusNode) {
+                              return TextFormField(
+                                  controller: _customerNameController,
+                                  focusNode: focusNode,
+                                  autofocus: false,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
@@ -966,7 +948,7 @@ class _POSState extends State<POS> {
                                             color: ColorManager.primary
                                         )
                                     ),
-                              
+
                                     enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10),
                                         borderSide: BorderSide(
@@ -979,121 +961,229 @@ class _POSState extends State<POS> {
                                             color: ColorManager.primary
                                         )
                                     ),
-                                    labelText: 'PAN',
+                                    labelText: 'Name',
                                     labelStyle: TextStyle(color: ColorManager.primary)
                                 ),
-                                onChanged: (value){},
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: TextFormField(
-                                controller: _addressController,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            color: ColorManager.primary
-                                        )
-                                    ),
-                              
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            color: ColorManager.primary
-                                        )
-                                    ),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide: BorderSide(
-                                            color: ColorManager.primary
-                                        )
-                                    ),
-                                    labelText: 'Address',
-                                    labelStyle: TextStyle(color: ColorManager.primary)
+                                validator: (value){
+                                    if(value!.trim().isEmpty){
+                                      return 'Name is required';
+                                    }
+                                    return null;
+                                },
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+
+                              );
+                            },
+                            controller: _customerNameController,
+                            constraints: const BoxConstraints.tightFor(height: 250),
+                            itemBuilder: (context, data) {
+                              return ListTile(
+                                title: Text(data),
+                              );
+                            },
+                            onSelected: (data) {
+                              final customerInfo = customerList.firstWhere((element) => element['name'] == data);
+
+                              _panController.text = customerInfo['pan'];
+                              _addressController.text = customerInfo['address'];
+                              _customerNameController.text = customerInfo['name'];
+
+                            },
+                            retainOnLoading: false,
+                            hideOnEmpty: true,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _panController,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              color: ColorManager.primary
+                                          )
+                                      ),
+
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              color: ColorManager.primary
+                                          )
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              color: ColorManager.primary
+                                          )
+                                      ),
+                                      labelText: 'PAN',
+                                      labelStyle: TextStyle(color: ColorManager.primary)
+                                  ),
+                                  onChanged: (value){},
+
+                                  validator: (value){
+                                    if(value!.trim().isEmpty){
+                                      return 'PAN is required';
+                                    }
+                                    return null;
+                                  },
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
                                 ),
-                                onChanged: (value){},
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _paymentModeController,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: ColorManager.primary
-                                  )
+                              const SizedBox(
+                                width: 10,
                               ),
+                              Expanded(
+                                child: TextFormField(
+                                  controller: _addressController,
+                                  decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              color: ColorManager.primary
+                                          )
+                                      ),
 
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: ColorManager.primary
-                                  )
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              color: ColorManager.primary
+                                          )
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide: BorderSide(
+                                              color: ColorManager.primary
+                                          )
+                                      ),
+                                      labelText: 'Address',
+                                      labelStyle: TextStyle(color: ColorManager.primary)
+                                  ),
+                                  onChanged: (value){},
+                                  validator: (value){
+                                    if(value!.trim().isEmpty){
+                                      return 'Address is required';
+                                    }
+                                    return null;
+                                  },
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                ),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: ColorManager.primary
-                                  )
-                              ),
-                              labelText: 'Mode of payment',
-                              labelStyle: TextStyle(color: ColorManager.primary)
+                            ],
                           ),
-                          onChanged: (value){},
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          controller: _remarksController,
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: ColorManager.primary
-                                  )
-                              ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: _paymentModeController,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: ColorManager.primary
+                                    )
+                                ),
 
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: ColorManager.primary
-                                  )
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: BorderSide(
-                                      color: ColorManager.primary
-                                  )
-                              ),
-                              labelText: 'Remarks',
-                              labelStyle: TextStyle(color: ColorManager.primary)
-                          ),
-                          onChanged: (value){},
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 16),
-                                backgroundColor: ColorManager.primary,
-                                shape: ContinuousRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20)
-                                )
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: ColorManager.primary
+                                    )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: ColorManager.primary
+                                    )
+                                ),
+                                labelText: 'Mode of payment',
+                                labelStyle: TextStyle(color: ColorManager.primary)
                             ),
-                            onPressed: (){},
-                            child: Text('OK',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),)
-                        ),
-                      ],
+                            onChanged: (value){},
+                            validator: (value){
+                              if(value!.trim().isEmpty){
+                                return 'Payment Mode is required';
+                              }
+                              return null;
+                            },
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            controller: _remarksController,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: ColorManager.primary
+                                    )
+                                ),
+
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: ColorManager.primary
+                                    )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: ColorManager.primary
+                                    )
+                                ),
+                                labelText: 'Remarks',
+                                labelStyle: TextStyle(color: ColorManager.primary)
+                            ),
+                            onChanged: (value){},
+                            validator: (value){
+                              if(value!.trim().isEmpty){
+                                return 'Remarks is required';
+                              }
+                              return null;
+                            },
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(vertical: 16),
+                                  backgroundColor: ColorManager.primary,
+                                  shape: ContinuousRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20)
+                                  )
+                              ),
+                              onPressed: (){
+                                if(_customerFormKey.currentState!.validate()){
+                                  String name = _customerNameController.text.trim();
+                                  String pan = _panController.text.trim();
+                                  String address = _addressController.text.trim();
+                                  String paymentMode = _paymentModeController.text.trim();
+                                  String remarks = _remarksController.text.trim();
+
+                                  setCustomerInfo ={
+                                    'name' : name,
+                                    'pan' : pan,
+                                    'address' : address,
+                                    'paymentMode' : paymentMode,
+                                    'remarks' : remarks
+                                  };
+
+                                  Navigator.pop(context);
+
+                                }
+                              },
+                              child: Text('OK',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),)
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 ],

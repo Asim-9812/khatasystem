@@ -99,8 +99,8 @@ class ReportView extends ConsumerWidget {
                               if(mainList[index].intMenuid == 59){
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => POS(),));
                               }else if(mainList[index].intMenuid == 64){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => POS()));
-                                // Navigator.of(context).push(MaterialPageRoute(builder: (context) => SubMenuView(submenu: financialChildList, menuInfo: mainList[index]),));
+                                // Navigator.of(context).push(MaterialPageRoute(builder: (context) => POS()));
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SubMenuView(submenu: financialChildList, menuInfo: mainList[index]),));
                               }else if(mainList[index].intMenuid == 69){
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => SubMenuView(submenu: irdChildList, menuInfo: mainList[index]),));
                               }else if(mainList[index].intMenuid == 73){

@@ -42,7 +42,6 @@ class ReportView extends ConsumerWidget {
                   List<MenuModel> auditChildList = <MenuModel>[];
                   List<MenuModel> reportChildList = <MenuModel>[];
                   List<MenuModel> logChildList = <MenuModel>[];
-                  List<MenuModel> entryChildList = <MenuModel>[];
                   List<MenuModel> financialChildList = <MenuModel>[];
                   List<MenuModel> irdChildList = <MenuModel>[];
                   List<MenuModel> registerChildList = <MenuModel>[];
@@ -63,8 +62,6 @@ class ReportView extends ConsumerWidget {
                       mainList.add(e);
                     } else if (e.parentID == 8) {
                       logChildList.add(e);
-                      mainList.add(e);
-                    } else if (e.parentID == 58) {
                       mainList.add(e);
                     } else if (e.parentID == 64) {
                       financialChildList.add(e);
@@ -96,9 +93,8 @@ class ReportView extends ConsumerWidget {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              if(mainList[index].intMenuid == 59){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => POS(),));
-                              }else if(mainList[index].intMenuid == 64){
+                              if(mainList[index].intMenuid == 64){
+
                                 // Navigator.of(context).push(MaterialPageRoute(builder: (context) => POS()));
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => SubMenuView(submenu: financialChildList, menuInfo: mainList[index]),));
                               }else if(mainList[index].intMenuid == 69){
@@ -193,7 +189,6 @@ class ReportView extends ConsumerWidget {
                   List<MenuModel> auditChildList = <MenuModel>[];
                   List<MenuModel> reportChildList = <MenuModel>[];
                   List<MenuModel> logChildList = <MenuModel>[];
-                  List<MenuModel> entryChildList = <MenuModel>[];
                   List<MenuModel> financialChildList = <MenuModel>[];
                   List<MenuModel> irdChildList = <MenuModel>[];
                   List<MenuModel> registerChildList = <MenuModel>[];
@@ -213,13 +208,8 @@ class ReportView extends ConsumerWidget {
                     } else if (e.parentID == 8) {
                       logChildList.add(e);
                       mainList.add(e);
-                    } else if (e.parentID == 58) {
-                      entryChildList.add(e);
-                      mainList.add(e);
                     } else if (e.parentID == 64) {
                       financialChildList.add(e);
-                    } else if (e.parentID == 58) {
-                      entryChildList.add(e);
                     } else if (e.parentID == 69) {
                       irdChildList.add(e);
                     } else if (e.parentID == 73) {
@@ -249,9 +239,7 @@ class ReportView extends ConsumerWidget {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              if(mainList[index].intMenuid == 59){
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SubMenuView(submenu: financialChildList, menuInfo: mainList[index]),));
-                              }else if(mainList[index].intMenuid == 64){
+                              if(mainList[index].intMenuid == 64){
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => SubMenuView(submenu: financialChildList, menuInfo: mainList[index]),));
                               }else if(mainList[index].intMenuid == 69){
                                 Navigator.of(context).push(MaterialPageRoute(builder: (context) => SubMenuView(submenu: irdChildList, menuInfo: mainList[index]),));
@@ -332,12 +320,6 @@ class ReportView extends ConsumerWidget {
     if (id == 9) {
       return FaIcon(
         FontAwesomeIcons.solidCalendar,
-        size: 34,
-        color: ColorManager.primary,
-      );
-    } else if (id == 59) {
-      return FaIcon(
-        FontAwesomeIcons.clipboardCheck,
         size: 34,
         color: ColorManager.primary,
       );

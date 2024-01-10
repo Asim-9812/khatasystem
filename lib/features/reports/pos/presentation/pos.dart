@@ -584,7 +584,7 @@ class _POSState extends State<POS> {
 
                           IconButton(
                               style: IconButton.styleFrom(
-                                  backgroundColor: ColorManager.logoOrange.withOpacity(0.8),
+                                  backgroundColor: ColorManager.errorRed,
                                   shape: ContinuousRectangleBorder(
                                       borderRadius: BorderRadius.circular(10)
                                   )
@@ -825,7 +825,7 @@ class _POSState extends State<POS> {
                                       style: ElevatedButton.styleFrom(
                                         elevation: 0,
                                           padding: const EdgeInsets.symmetric(vertical: 16),
-                                          backgroundColor: ColorManager.logoOrange.withOpacity(0.8),
+                                          backgroundColor: ColorManager.errorRed,
                                           shape: ContinuousRectangleBorder(
                                               borderRadius: BorderRadius.circular(20)
                                           )

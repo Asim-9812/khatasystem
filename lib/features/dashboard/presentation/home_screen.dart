@@ -20,6 +20,8 @@ import '../../../common/colors.dart';
 import '../../../model/dashboard_model.dart';
 import '../../../model/list model/get_list_model.dart';
 import '../../fiscalYear/presentation/change_fiscal_year.dart';
+import '../../general_reminder/presentation/general_list.dart';
+import '../../reports/pos/presentation/pos.dart';
 final userIdProvider = Provider<String>((ref) => userId);
 
 String userId = "";
@@ -289,7 +291,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         ),
                         ListTile(
                           onTap: (){
-                           Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalReminderPage(),));
+                           Navigator.push(context, MaterialPageRoute(builder: (context) =>  GeneralReminders(),));
                           },
                           title: const Text('Personal Note',
                             style: TextStyle(
@@ -302,14 +304,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         ),
                         ListTile(
                           onTap: (){
-                            Navigator.pop(context, true);
-                            Fluttertoast.showToast(
-                              msg: 'Feature Coming Soon!!!',
-                              gravity: ToastGravity.CENTER,
-                              backgroundColor: ColorManager.primary.withOpacity(0.9),
-                              textColor: Colors.white,
-                              fontSize: 16.0,
-                            );
+                            Get.to(()=>POS());
                           },
                           title: const Text('POS',
                             style: TextStyle(
@@ -469,7 +464,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         const SizedBox(height: 10,),
                         ListTile(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalReminderPage(),));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const FiscalYear(),));
                           },
                           title: const Text('Change Fiscal Year', style: TextStyle(
                             fontFamily: 'Ubuntu',
@@ -481,9 +476,9 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         ),
                         ListTile(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const PersonalReminderPage(),));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => GeneralReminders(),));
                           },
-                          title: const Text('POS', style: TextStyle(
+                          title: const Text('Personal reminder', style: TextStyle(
                             fontFamily: 'Ubuntu',
                             fontSize: 18,
                           ),
@@ -493,14 +488,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         ),
                         ListTile(
                           onTap: (){
-                            Navigator.pop(context, true);
-                            Fluttertoast.showToast(
-                              msg: 'Feature Coming Soon!!!',
-                              gravity: ToastGravity.BOTTOM,
-                              backgroundColor: ColorManager.primary.withOpacity(0.9),
-                              textColor: Colors.white,
-                              fontSize: 16.0,
-                            );
+                           Get.to(()=>POS());
                           },
                           title: const Text('POS', style: TextStyle(
                             fontFamily: 'Ubuntu',

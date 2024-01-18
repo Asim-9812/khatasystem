@@ -89,6 +89,7 @@ class _MainViewState extends ConsumerState<MainView> {
     int currentIndex = ref.watch(itemProvider).mainIndex;
 
 
+
     List<Widget> screenList = [
       const HomePageScreen(),
       const ReportView(),

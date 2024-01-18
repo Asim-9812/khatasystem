@@ -10,6 +10,7 @@ import 'package:khata_app/common/common_provider.dart';
 import 'package:khata_app/common/shimmer_loading.dart';
 import 'package:khata_app/features/dashboard/provider/dashboard_amount_provider.dart';
 import 'package:khata_app/features/login/presentation/status_page.dart';
+import 'package:khata_app/features/pos/domain/services/pos_services.dart';
 import 'package:khata_app/features/reminder/presentation/reminder_page.dart';
 import 'package:khata_app/main.dart';
 
@@ -21,7 +22,10 @@ import '../../../model/dashboard_model.dart';
 import '../../../model/list model/get_list_model.dart';
 import '../../fiscalYear/presentation/change_fiscal_year.dart';
 import '../../general_reminder/presentation/general_list.dart';
-import '../../reports/pos/presentation/pos.dart';
+import '../../pos/presentation/pos.dart';
+
+
+
 final userIdProvider = Provider<String>((ref) => userId);
 
 String userId = "";
@@ -30,6 +34,11 @@ String userId = "";
 final tokenProvider = Provider<String>((ref) => userToken);
 
 String userToken = "";
+
+
+final branchIdProvider = Provider<String>((ref) => userToken);
+
+int branchId = 0;
 
 late MainInfoModel mainInfo;
 late MainInfoModel2 mainInfo2;
@@ -57,7 +66,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
     var res = jsonDecode(result);
 
     String selectedBranch = branchBox.get('selectedBranch');
-    int branchId = branchBox.get('selectedBranchId');
+    branchId = branchBox.get('selectedBranchId');
     final branchDepartmentId = branchBox.get('selectedBranchDepId');
 
 
@@ -144,6 +153,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
           return Consumer(
             builder: (context, ref, child) {
               final dashData = ref.watch(dashBoardDataProvider(infoModel));
+              final posSettings = ref.watch(posSettingsProvider);
 
               return Scaffold(
                 key: scaffoldKey,
@@ -302,18 +312,61 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                           leading: Icon(Icons.note_alt_sharp, size: 28,
                             color: ColorManager.iconGray,),
                         ),
-                        ListTile(
-                          onTap: (){
-                            Get.to(()=>POS());
-                          },
-                          title: const Text('POS',
-                            style: TextStyle(
-                              fontFamily: 'Ubuntu',
-                              fontSize: 18,
+                        posSettings.when(
+                            data: (data){
+                              return ListTile(
+                                onTap: (){
+                                  Get.to(()=>POS(posSettings: data,));
+                                },
+                                title: const Text('POS',
+                                  style: TextStyle(
+                                    fontFamily: 'Ubuntu',
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                leading: Icon(Icons.point_of_sale_rounded, size: 28,
+                                  color: ColorManager.iconGray,),
+                              );
+                            },
+                            error: (error,stack)=>ListTile(
+                              onTap: (){
+                                Fluttertoast.showToast(
+                                  msg: '$error',
+                                  // msg: 'Something went wrong. Please Wait.',
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                              },
+                              title: const Text('POS',
+                                style: TextStyle(
+                                  fontFamily: 'Ubuntu',
+                                  fontSize: 18,
+                                ),
+                              ),
+                              leading: Icon(Icons.point_of_sale_rounded, size: 28,
+                                color: ColorManager.iconGray,),
                             ),
-                          ),
-                          leading: Icon(Icons.point_of_sale_rounded, size: 28,
-                            color: ColorManager.iconGray,),
+                            loading: ()=>ListTile(
+                              onTap: (){
+                                Fluttertoast.showToast(
+                                  msg: 'Please wait...',
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: ColorManager.primary.withOpacity(0.9),
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                              },
+                              title: const Text('POS',
+                                style: TextStyle(
+                                  fontFamily: 'Ubuntu',
+                                  fontSize: 18,
+                                ),
+                              ),
+                              leading: Icon(Icons.point_of_sale_rounded, size: 28,
+                                color: ColorManager.iconGray,),
+                            )
                         ),
                         ListTile(
                           onTap: () {
@@ -352,6 +405,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
           return Consumer(
             builder: (context, ref, child) {
               final dashData = ref.watch(dashBoardDataProvider(infoModel));
+              final posSettings = ref.watch(posSettingsProvider);
               return Scaffold(
                 key: scaffoldKey,
                 body: CustomScrollView(
@@ -486,17 +540,60 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                           leading: Icon(Icons.point_of_sale_rounded, size: 28,
                             color: ColorManager.iconGray,),
                         ),
-                        ListTile(
-                          onTap: (){
-                           Get.to(()=>POS());
-                          },
-                          title: const Text('POS', style: TextStyle(
-                            fontFamily: 'Ubuntu',
-                            fontSize: 18,
-                          ),
-                          ),
-                          leading: Icon(Icons.point_of_sale_rounded, size: 28,
-                            color: ColorManager.iconGray,),
+                        posSettings.when(
+                            data: (data){
+                              return ListTile(
+                                onTap: (){
+                                  Get.to(()=>POS(posSettings: data,));
+                                },
+                                title: const Text('POS',
+                                  style: TextStyle(
+                                    fontFamily: 'Ubuntu',
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                leading: Icon(Icons.point_of_sale_rounded, size: 28,
+                                  color: ColorManager.iconGray,),
+                              );
+                            },
+                            error: (error,stack)=>ListTile(
+                              onTap: (){
+                                Fluttertoast.showToast(
+                                  msg: '$error',
+                                  gravity: ToastGravity.CENTER,
+                                  backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                              },
+                              title: const Text('POS',
+                                style: TextStyle(
+                                  fontFamily: 'Ubuntu',
+                                  fontSize: 18,
+                                ),
+                              ),
+                              leading: Icon(Icons.point_of_sale_rounded, size: 28,
+                                color: ColorManager.iconGray,),
+                            ),
+                            loading: ()=>ListTile(
+                              onTap: (){
+                                Fluttertoast.showToast(
+                                  msg: 'Please wait...',
+                                  gravity: ToastGravity.CENTER,
+                                  backgroundColor: ColorManager.primary.withOpacity(0.9),
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                              },
+                              title: const Text('POS',
+                                style: TextStyle(
+                                  fontFamily: 'Ubuntu',
+                                  fontSize: 18,
+                                ),
+                              ),
+                              leading: Icon(Icons.point_of_sale_rounded, size: 28,
+                                color: ColorManager.iconGray,),
+                            )
                         ),
                         ListTile(
                           onTap: () {

@@ -4,7 +4,11 @@ class Api {
 
 
 
-  static const baseUrl = 'http://202.51.74.138:88';
+
+  // static const baseUrl = 'http://202.51.74.138:88'; // LIVE KHATA SYSTEM
+
+  static const baseUrl = 'http://202.51.74.138:5008'; // DEMO KHATA SYSTEM
+
 
   static const userLogin = '$baseUrl/api/LoginAPI/Login';
   static const getMenu = '$baseUrl/api/Menu/GetMenuOfAppbyId';
@@ -23,4 +27,26 @@ class Api {
   static const getNotification = '$baseUrl/api/GlobalNotification';
   static const getFiscalYear = '$baseUrl/api/FiscalYear/Getall';
   static const getLedgerList = '$baseUrl/api/BankCash/LedgerList_BankCash';
+
+  //POS (khata inventory)....
+  static const baseInventoryUrl = 'http://202.51.74.138:5009/api/Sales'; // DEMO KHATA INVENTORY
+  static const getPOSSettings = '$baseInventoryUrl/GetPOSSettings';
+  static const getProductList = '$baseInventoryUrl/GetProductByCodePOS';
+  static const getBatchOfProduct = '$baseInventoryUrl/GetProductByCode';
+  static const getUnitByBatch = '$baseInventoryUrl/GetUnitByBatch';
+  static const getRateByBatch = '$baseInventoryUrl/GetUnitByBatch';
+  static const getReceivedLedgerList = '$baseInventoryUrl/RecievedLedger';
+  static const getCustomerList = '$baseInventoryUrl/Customer';
+  static const getVoucherNo = '$baseInventoryUrl/GetSuffixPrefix';
+  static const getConversionFactor = '$baseInventoryUrl/GetMissingUnitConversionFact';
+  static const addDraftPOS = '$baseInventoryUrl/AddSalesMasterDetailsPOS';
+  static const loadDraftPOS = '$baseInventoryUrl/LoadSalesMasterDetails';
+  static const insertReceivedAmount = '$baseInventoryUrl/InsertSalesTransactionDraft';
+  static const finalSavePOS = '$baseInventoryUrl/AddAllMasterTable';
+
+
+
 }
+
+
+/// swagger demo inventory = "http://202.51.74.138:5009/swagger/index.html"

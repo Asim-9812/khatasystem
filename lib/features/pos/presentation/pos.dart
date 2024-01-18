@@ -9,9 +9,11 @@ import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import '../../../../common/colors.dart';
 import '../../../../common/snackbar.dart';
+import '../domain/model/pos_model.dart';
 
 class POS extends StatefulWidget {
-  const POS({super.key});
+  final List<PosSettingsModel> posSettings;
+  POS({required this.posSettings});
 
   @override
   State<POS> createState() => _POSState();

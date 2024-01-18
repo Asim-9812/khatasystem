@@ -96,6 +96,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
       try{
         final jsonData = jsonEncode(getListModel.toJson());
+        print(jsonData);
         final response = await dio.post(Api.getLedgerList, data: jsonData);
 
 
@@ -108,7 +109,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
 
       }on DioError catch(err){
-
+        // print(err);
         throw DioException().getDioError(err);
       }
     }

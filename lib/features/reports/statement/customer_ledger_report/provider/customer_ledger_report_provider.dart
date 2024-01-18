@@ -19,7 +19,7 @@ class CustomerLedgerReportProvider extends StateNotifier<AsyncValue<List<dynamic
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-    dio.options.headers["Authorization"] = "Bearer ${userToken}";
+    dio.options.headers["Authorization"] = "Bearer $userToken";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());

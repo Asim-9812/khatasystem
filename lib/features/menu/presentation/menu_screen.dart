@@ -4,7 +4,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:khata_app/common/shimmer_loading.dart';
 import 'package:khata_app/features/menu/presentation/submenu_page.dart';
-import 'package:khata_app/features/reports/pos/presentation/pos.dart';
 
 import '../../../common/colors.dart';
 import '../model/menu_model.dart';

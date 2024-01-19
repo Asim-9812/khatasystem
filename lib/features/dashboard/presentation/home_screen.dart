@@ -30,6 +30,10 @@ final userIdProvider = Provider<String>((ref) => userId);
 
 String userId = "";
 
+final userIdProvider2 = Provider<String>((ref) => userId);
+
+int userId2 = 0;
+
 
 final tokenProvider = Provider<String>((ref) => userToken);
 
@@ -39,6 +43,11 @@ String userToken = "";
 final branchIdProvider = Provider<String>((ref) => userToken);
 
 int branchId = 0;
+
+
+final financialYearIdProvider = Provider<String>((ref) => userToken);
+
+int financialYearId = 0;
 
 late MainInfoModel mainInfo;
 late MainInfoModel2 mainInfo2;
@@ -68,10 +77,11 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
     String selectedBranch = branchBox.get('selectedBranch');
     branchId = branchBox.get('selectedBranchId');
     final branchDepartmentId = branchBox.get('selectedBranchDepId');
-
+    financialYearId = res['fiscalYearInfo']['financialYearId'];
 
 
     userId = "${res["userReturn"]["intUserId"]}-${res["ownerCompanyList"]["databaseName"]}";
+    userId2 = res["userReturn"]["intUserId"];
     userToken = '${res['ptoken']}';
 
     String companyName = res["ownerCompanyList"]["companyName"];

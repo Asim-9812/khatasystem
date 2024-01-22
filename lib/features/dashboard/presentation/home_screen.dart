@@ -23,6 +23,7 @@ import '../../../model/list model/get_list_model.dart';
 import '../../fiscalYear/presentation/change_fiscal_year.dart';
 import '../../general_reminder/presentation/general_list.dart';
 import '../../pos/presentation/pos.dart';
+import '../../pos/presentation/testpage.dart';
 
 
 
@@ -326,7 +327,8 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                             data: (data){
                               return ListTile(
                                 onTap: (){
-                                  Get.to(()=>POS(posSettings: data,));
+                                  Get.to(()=>PrintingTest());
+                                  // Get.to(()=>POS(posSettings: data,));
                                 },
                                 title: const Text('POS',
                                   style: TextStyle(

@@ -68,6 +68,7 @@ class DashboardAmountProvider {
     try{
 
       final jsonData = jsonEncode(infoModel.toJson());
+      // print(jsonData);
 
       final response = await dio.post(Api.getDashBoardAmount, data: jsonData,
         options: Options(
@@ -83,21 +84,12 @@ class DashboardAmountProvider {
         }
 
         for(var e in dashboardAmountList){
-          if(e.accountGroupId == 11 || e.accountGroupId == 14){
-            dashList.add(
-                {
-                  "nature": e.accountGroupName,
-                  "total": (e.debit! - e.credit!)<=0? 0:(e.debit! - e.credit!)
-                }
-            );
-          }else{
-            dashList.add(
-                {
-                  "nature": e.accountGroupName,
-                  "total": e.closingBalances
-                }
-            );
-          }
+          dashList.add(
+              {
+                "nature": e.accountGroupName,
+                "total": e.closingBalances
+              }
+          );
         }
 
       }else{

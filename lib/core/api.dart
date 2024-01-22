@@ -41,8 +41,13 @@ class Api {
   static const getConversionFactor = '$baseInventoryUrl/GetMissingUnitConversionFact';
   static const addDraftPOS = '$baseInventoryUrl/AddSalesMasterDetailsPOS';
   static const loadDraftPOS = '$baseInventoryUrl/LoadSalesMasterDetails';
+  static const deleteDraftItems = '$baseInventoryUrl/DeleteSalesMasterDraftEntry';
   static const insertReceivedAmount = '$baseInventoryUrl/InsertSalesTransactionDraft';
+  static const getReceivedAmount = '$baseInventoryUrl/GetSalesTransactionList';
+  static const delReceivedAmount = '$baseInventoryUrl/DeleteTransactionSalesLedger';
+  static const insertCustomerInfo = '$baseInventoryUrl/InsertSalesInfoDrafts';
   static const finalSavePOS = '$baseInventoryUrl/AddAllMasterTable';
+  static const printPOS = '$baseInventoryUrl/PrintPOSReceipt';
 
 
 

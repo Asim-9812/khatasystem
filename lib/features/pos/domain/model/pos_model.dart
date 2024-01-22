@@ -423,3 +423,453 @@ class DraftModel {
   }
 
 }
+
+
+class ReceivedAmountModel {
+  int transactionDetailsID;
+  int voucherTypeID;
+  int masterID;
+  int ledgerID;
+  String ledgerName;
+  double drAmt;
+  double crAmt;
+  int userID;
+  DateTime entryDate;
+  int updatedBy;
+  DateTime updatedDate;
+  String extra1;
+  String extra2;
+  int flag;
+  String drCr;
+
+  ReceivedAmountModel({
+    required this.transactionDetailsID,
+    required this.voucherTypeID,
+    required this.masterID,
+    required this.ledgerID,
+    required this.ledgerName,
+    required this.drAmt,
+    required this.crAmt,
+    required this.userID,
+    required this.entryDate,
+    required this.updatedBy,
+    required this.updatedDate,
+    required this.extra1,
+    required this.extra2,
+    required this.flag,
+    required this.drCr,
+  });
+
+  factory ReceivedAmountModel.fromJson(Map<String, dynamic> json) {
+    return ReceivedAmountModel(
+      transactionDetailsID: json['transactionDetailsID'],
+      voucherTypeID: json['voucherTypeID'],
+      masterID: json['masterID'],
+      ledgerID: json['ledgerID'],
+      ledgerName: json['ledgerName'],
+      drAmt: json['drAmt'].toDouble(),
+      crAmt: json['crAmt'].toDouble(),
+      userID: json['userID'],
+      entryDate: DateTime.parse(json['entryDate']),
+      updatedBy: json['updatedBy'],
+      updatedDate: DateTime.parse(json['updatedDate']),
+      extra1: json['extra1'],
+      extra2: json['extra2'],
+      flag: json['flag'],
+      drCr: json['drCr'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'transactionDetailsID': transactionDetailsID,
+      'voucherTypeID': voucherTypeID,
+      'masterID': masterID,
+      'ledgerID': ledgerID,
+      'ledgerName': ledgerName,
+      'drAmt': drAmt,
+      'crAmt': crAmt,
+      'userID': userID,
+      'entryDate': entryDate.toIso8601String(),
+      'updatedBy': updatedBy,
+      'updatedDate': updatedDate.toIso8601String(),
+      'extra1': extra1,
+      'extra2': extra2,
+      'flag': flag,
+      'drCr': drCr,
+    };
+  }
+
+
+}
+
+
+class CustomerInfoModel {
+  int salesInfoID;
+  int salesMasterID;
+  int customerID;
+  String customerName;
+  String customerAddress;
+  String mailingName;
+  String pan;
+  String email;
+  int creditPeriod;
+  String receiptMode;
+  DateTime dispatchedDate;
+  String dispatchedThrough;
+  String destination;
+  String carrierAgent;
+  String vehicleNo;
+  String orginalInvoiceNo;
+  DateTime orginalInvoiceDate;
+  String orderChallanNo;
+  String lR_RRNO_BillOfLanding;
+  String remarks;
+  int userID;
+  DateTime entryDate;
+  int updatedBy;
+  DateTime updatedDate;
+  String extra1;
+  String extra2;
+  int flag;
+
+  CustomerInfoModel({
+    required this.salesInfoID,
+    required this.salesMasterID,
+    required this.customerID,
+    required this.customerName,
+    required this.customerAddress,
+    required this.mailingName,
+    required this.pan,
+    required this.email,
+    required this.creditPeriod,
+    required this.receiptMode,
+    required this.dispatchedDate,
+    required this.dispatchedThrough,
+    required this.destination,
+    required this.carrierAgent,
+    required this.vehicleNo,
+    required this.orginalInvoiceNo,
+    required this.orginalInvoiceDate,
+    required this.orderChallanNo,
+    required this.lR_RRNO_BillOfLanding,
+    required this.remarks,
+    required this.userID,
+    required this.entryDate,
+    required this.updatedBy,
+    required this.updatedDate,
+    required this.extra1,
+    required this.extra2,
+    required this.flag,
+  });
+
+  factory CustomerInfoModel.fromJson(Map<String, dynamic> json) {
+    return CustomerInfoModel(
+      salesInfoID: json['salesInfoID'],
+      salesMasterID: json['salesMasterID'],
+      customerID: json['customerID'],
+      customerName: json['customerName'],
+      customerAddress: json['customerAddress'],
+      mailingName: json['mailingName'],
+      pan: json['pan'],
+      email: json['email'],
+      creditPeriod: json['creditPeriod'],
+      receiptMode: json['receiptMode'],
+      dispatchedDate: DateTime.parse(json['dispatchedDate']),
+      dispatchedThrough: json['dispatchedThrough'],
+      destination: json['destination'],
+      carrierAgent: json['carrierAgent'],
+      vehicleNo: json['vehicleNo'],
+      orginalInvoiceNo: json['orginalInvoiceNo'],
+      orginalInvoiceDate: DateTime.parse(json['orginalInvoiceDate']),
+      orderChallanNo: json['orderChallanNo'],
+      lR_RRNO_BillOfLanding: json['lR_RRNO_BillOfLanding'],
+      remarks: json['remarks'],
+      userID: json['userID'],
+      entryDate: DateTime.parse(json['entryDate']),
+      updatedBy: json['updatedBy'],
+      updatedDate: DateTime.parse(json['updatedDate']),
+      extra1: json['extra1'],
+      extra2: json['extra2'],
+      flag: json['flag'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'salesInfoID': salesInfoID,
+      'salesMasterID': salesMasterID,
+      'customerID': customerID,
+      'customerName': customerName,
+      'customerAddress': customerAddress,
+      'mailingName': mailingName,
+      'pan': pan,
+      'email': email,
+      'creditPeriod': creditPeriod,
+      'receiptMode': receiptMode,
+      'dispatchedDate': dispatchedDate.toIso8601String(),
+      'dispatchedThrough': dispatchedThrough,
+      'destination': destination,
+      'carrierAgent': carrierAgent,
+      'vehicleNo': vehicleNo,
+      'orginalInvoiceNo': orginalInvoiceNo,
+      'orginalInvoiceDate': orginalInvoiceDate.toIso8601String(),
+      'orderChallanNo': orderChallanNo,
+      'lR_RRNO_BillOfLanding': lR_RRNO_BillOfLanding,
+      'remarks': remarks,
+      'userID': userID,
+      'entryDate': entryDate.toIso8601String(),
+      'updatedBy': updatedBy,
+      'updatedDate': updatedDate.toIso8601String(),
+      'extra1': extra1,
+      'extra2': extra2,
+      'flag': flag,
+    };
+  }
+}
+
+
+class ReceiptPOSModel {
+  Item1 item1;
+  Item2 item2;
+  List<Item3> item3;
+
+  ReceiptPOSModel({
+    required this.item1,
+    required this.item2,
+    required this.item3,
+  });
+
+  factory ReceiptPOSModel.fromJson(Map<String, dynamic> json) {
+    return ReceiptPOSModel(
+      item1: Item1.fromJson(json['item1']),
+      item2: Item2.fromJson(json['item2']),
+      item3: List<Item3>.from(json['item3'].map((x) => Item3.fromJson(x))),
+    );
+  }
+}
+
+class Item1 {
+  int salesMasterID;
+  String billDate;
+  String printDate;
+  String companyImageUrl;
+  String companyName;
+  String companyAddress;
+  String companyPhone;
+  String buyersPanVat;
+  String vendorName;
+  String vendorsPan;
+  String voucherNo;
+  double totalAmount;
+  double itemDiscount;
+  double billDiscountAmt;
+  double otherTaxAmt;
+  double chargeAmt;
+  int additionalCostAmt;
+  int effectiveAdditionalCostAmt;
+  double billAdjustment;
+  double taxableAmount;
+  double nonTaxableAmount;
+  double vatAmount;
+  double grandTotalAmount;
+  String salesInvoice;
+  String customerSignatureusername;
+  String narration;
+  String vendorAddress;
+  dynamic amountinWord;
+  int transactionMode;
+  dynamic paymentMode;
+  String companyReg;
+  int customerID;
+  int userID;
+
+  Item1({
+    required this.salesMasterID,
+    required this.billDate,
+    required this.printDate,
+    required this.companyImageUrl,
+    required this.companyName,
+    required this.companyAddress,
+    required this.companyPhone,
+    required this.buyersPanVat,
+    required this.vendorName,
+    required this.vendorsPan,
+    required this.voucherNo,
+    required this.totalAmount,
+    required this.itemDiscount,
+    required this.billDiscountAmt,
+    required this.otherTaxAmt,
+    required this.chargeAmt,
+    required this.additionalCostAmt,
+    required this.effectiveAdditionalCostAmt,
+    required this.billAdjustment,
+    required this.taxableAmount,
+    required this.nonTaxableAmount,
+    required this.vatAmount,
+    required this.grandTotalAmount,
+    required this.salesInvoice,
+    required this.customerSignatureusername,
+    required this.narration,
+    required this.vendorAddress,
+    required this.amountinWord,
+    required this.transactionMode,
+    required this.paymentMode,
+    required this.companyReg,
+    required this.customerID,
+    required this.userID,
+  });
+
+  factory Item1.fromJson(Map<String, dynamic> json) {
+    return Item1(
+      salesMasterID: json['salesMasterID'],
+      billDate: json['billDate'],
+      printDate: json['printDate'],
+      companyImageUrl: json['companyImageUrl'],
+      companyName: json['companyName'],
+      companyAddress: json['companyAddress'],
+      companyPhone: json['companyPhone'],
+      buyersPanVat: json['buyersPanVat'],
+      vendorName: json['vendorName'],
+      vendorsPan: json['vendorsPan'],
+      voucherNo: json['voucherNo'],
+      totalAmount: json['totalAmount'],
+      itemDiscount: json['itemDiscount'],
+      billDiscountAmt: json['billDiscountAmt'],
+      otherTaxAmt: json['otherTaxAmt'],
+      chargeAmt: json['chargeAmt'],
+      additionalCostAmt: json['additionalCostAmt'],
+      effectiveAdditionalCostAmt: json['effectiveAdditionalCostAmt'],
+      billAdjustment: json['billAdjustment'],
+      taxableAmount: json['taxableAmount'],
+      nonTaxableAmount: json['nonTaxableAmount'],
+      vatAmount: json['vatAmount'],
+      grandTotalAmount: json['grandTotalAmount'],
+      salesInvoice: json['salesInvoice'],
+      customerSignatureusername: json['customerSignatureusername'],
+      narration: json['narration'],
+      vendorAddress: json['vendorAddress'],
+      amountinWord: json['amountinWord'],
+      transactionMode: json['transactionMode'],
+      paymentMode: json['paymentMode'],
+      companyReg: json['companyReg'],
+      customerID: json['customerID'],
+      userID: json['userID'],
+    );
+  }
+}
+
+class Item2 {
+  int printFormatID;
+  String category;
+  String formatName;
+  String reportHTML;
+  String pageHTML;
+  String detailHTML;
+  bool isDefault;
+  bool isActive;
+  int updatedBy;
+  String updateDate;
+  String extra1;
+  String extra2;
+  int voucherTypeId;
+  int totalDisplayRow;
+  bool hasCompanyHeading;
+  bool hasCompanyHeadingAllPage;
+
+  Item2({
+    required this.printFormatID,
+    required this.category,
+    required this.formatName,
+    required this.reportHTML,
+    required this.pageHTML,
+    required this.detailHTML,
+    required this.isDefault,
+    required this.isActive,
+    required this.updatedBy,
+    required this.updateDate,
+    required this.extra1,
+    required this.extra2,
+    required this.voucherTypeId,
+    required this.totalDisplayRow,
+    required this.hasCompanyHeading,
+    required this.hasCompanyHeadingAllPage,
+  });
+
+  factory Item2.fromJson(Map<String, dynamic> json) {
+    return Item2(
+      printFormatID: json['printFormatID'],
+      category: json['category'],
+      formatName: json['formatName'],
+      reportHTML: json['reportHTML'],
+      pageHTML: json['pageHTML'],
+      detailHTML: json['detailHTML'],
+      isDefault: json['isDefault'],
+      isActive: json['isActive'],
+      updatedBy: json['updatedBy'],
+      updateDate: json['updateDate'],
+      extra1: json['extra1'],
+      extra2: json['extra2'],
+      voucherTypeId: json['voucherTypeId'],
+      totalDisplayRow: json['totalDisplayRow'],
+      hasCompanyHeading: json['hasCompanyHeading'],
+      hasCompanyHeadingAllPage: json['hasCompanyHeadingAllPage'],
+    );
+  }
+}
+
+class Item3 {
+  int sno;
+  int productID;
+  String particulars;
+  double qty;
+  double rate;
+  double discount;
+  double billDiscountAmt;
+  double taxableAmt;
+  double nonTaxableAmt;
+  double vatAmt;
+  double otherTaxAmt;
+  double chargeAmt;
+  int effectiveAdditionalCostAmt;
+  double totalAmount;
+  int salesMasterId;
+
+  Item3({
+    required this.sno,
+    required this.productID,
+    required this.particulars,
+    required this.qty,
+    required this.rate,
+    required this.discount,
+    required this.billDiscountAmt,
+    required this.taxableAmt,
+    required this.nonTaxableAmt,
+    required this.vatAmt,
+    required this.otherTaxAmt,
+    required this.chargeAmt,
+    required this.effectiveAdditionalCostAmt,
+    required this.totalAmount,
+    required this.salesMasterId,
+  });
+
+  factory Item3.fromJson(Map<String, dynamic> json) {
+    return Item3(
+      sno: json['sno'],
+      productID: json['productID'],
+      particulars: json['particulars'],
+      qty: json['qty'],
+      rate: json['rate'],
+      discount: json['discount'],
+      billDiscountAmt: json['billDiscountAmt'],
+      taxableAmt: json['taxableAmt'],
+      nonTaxableAmt: json['nonTaxableAmt'],
+      vatAmt: json['vatAmt'],
+      otherTaxAmt: json['otherTaxAmt'],
+      chargeAmt: json['chargeAmt'],
+      effectiveAdditionalCostAmt: json['effectiveAdditionalCostAmt'],
+      totalAmount: json['totalAmount'],
+      salesMasterId: json['salesMasterId'],
+    );
+  }
+}

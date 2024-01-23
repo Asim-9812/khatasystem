@@ -276,6 +276,31 @@ class POSServices{
 
   }
 
+  Future<Either<String,String>> deleteDraftTable({
+    required int id
+  }) async {
+    var res = jsonDecode(result);
+    final userToken = '${res['ptoken']}';
+    dio.options.headers["Authorization"] = "Bearer $userToken";
+    try{
+      // final data = receivedAmount.toJson();
+      final response = await dio.get(Api.delDraftPOS,
+          queryParameters: {
+            'draftMasterId' : id //salesDraftId
+          }
+      );
+      if(response.statusCode == 200){
+        return const Right('Draft deleted removed');
+      }
+      else{
+        return Left('${response.statusCode}: Something went wrong.');
+      }
+    }on DioException catch(e){
+      return Left('$e');
+    }
+
+  }
+
 
   Future<List<POSLedgerModel>> getReceivedLedgerList() async {
     var res = jsonDecode(result);
@@ -487,7 +512,7 @@ class POSServices{
   }
 
 
-  Future<ReceiptPOSModel> printReceipt({
+  Future<Either<String,ReceiptPOSModel>> printReceipt({
     required int masterId
 }) async {
     var res = jsonDecode(result);
@@ -501,13 +526,14 @@ class POSServices{
       if(response.statusCode == 200){
         final data = response.data as Map<String,dynamic>;
         final receipt = ReceiptPOSModel.fromJson(data);
-        return receipt;
+        // print(data);
+        return Right(receipt);
       }
       else{
-        throw Exception('${response.statusCode} : Something went wrong');
+        return Left('${response.statusCode} : Something went wrong');
       }
     }on DioException catch(e){
-      throw Exception(e);
+      return Left('$e');
     }
 
   }

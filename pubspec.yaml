@@ -59,6 +59,8 @@ dependencies:
 
   nepali_utils: ^3.0.4
 
+  number_to_words: ^1.0.0
+
   # for toast messages
   fluttertoast: ^8.1.2
 

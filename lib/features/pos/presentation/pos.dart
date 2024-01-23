@@ -11,13 +11,17 @@ import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
-import 'package:khata_app/features/pos/presentation/receipt_pdf.dart';
 import 'package:khata_app/features/pos/presentation/received_amount_table.dart';
+import 'package:khata_app/features/pos/presentation/receipt_page.dart';
 import '../../../../common/colors.dart';
 import '../../../../common/snackbar.dart';
 import '../domain/model/pos_model.dart';
 import '../domain/services/pos_services.dart';
-import 'package:nepali_utils/nepali_utils.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+
+
 
 class POS extends ConsumerStatefulWidget {
   final List<PosSettingsModel> posSettings;
@@ -35,20 +39,19 @@ class _POSState extends ConsumerState<POS> {
   final _receivedFormKey = GlobalKey<FormState>();
 
 
-  TextEditingController _productCodeController = TextEditingController();
-  TextEditingController _quantityController = TextEditingController();
-  TextEditingController _netTotalController = TextEditingController();
-  TextEditingController _rateController = TextEditingController();
-  TextEditingController _unitController = TextEditingController();
-  TextEditingController _receivedAmountController = TextEditingController();
+  final TextEditingController _productCodeController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
+  final TextEditingController _netTotalController = TextEditingController();
+  final TextEditingController _rateController = TextEditingController();
+  final TextEditingController _unitController = TextEditingController();
+  final TextEditingController _receivedAmountController = TextEditingController();
 
 
   ///customer details...
-  TextEditingController _customerNameController = TextEditingController();
-  TextEditingController _panController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _remarksController = TextEditingController();
-  TextEditingController _paymentModeController = TextEditingController();
+  final TextEditingController _customerNameController = TextEditingController();
+  final TextEditingController _panController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _remarksController = TextEditingController();
 
   String customerName = 'Cash';
 
@@ -69,6 +72,7 @@ class _POSState extends ConsumerState<POS> {
 
   bool isPostingDraft = false;
   bool isPostingReceivedAmount = false;
+  bool isPostingFinalData = false;
 
 
   List<Map<String, dynamic>> addedProducts = [];
@@ -122,31 +126,6 @@ class _POSState extends ConsumerState<POS> {
   }
 
 
-  void _resetAll() async{
-    setState(() {
-      productName = null;
-      productRate = null;
-      productUnit = null;
-      quantityValue = null;
-      netTotalValue = null;
-      productCode = null;
-      _rateController.clear();
-      _unitController.clear();
-      _rateController.clear();
-      _unitController.clear();
-      _quantityController.clear();
-      _netTotalController.clear();
-      _productCodeController.clear();
-      _receivedAmountController.clear();
-      disabledFields = true;
-      addedProducts = [];
-    });
-
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    _productFormKey.currentState!.reset();
-
-  }
 
 
   void _exitDialog() async {
@@ -161,7 +140,7 @@ class _POSState extends ConsumerState<POS> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Do you want to exit?',style: TextStyle(fontSize: 16),),
+                const Text('Do you want to exit?',style: TextStyle(fontSize: 16),),
                 const SizedBox(
                   height: 18,
                 ),
@@ -211,33 +190,6 @@ class _POSState extends ConsumerState<POS> {
 
 
 
-    // List<Map<String, dynamic>> productList = [
-    //   {
-    //     'productCode': 'P001',
-    //     'productName': 'Widget A',
-    //     'rate': 19.99,
-    //     'unit': 'Each',
-    //   },
-    //   {
-    //     'productCode': 'P002',
-    //     'productName': 'Gadget B',
-    //     'rate': 29.99,
-    //     'unit': 'Set',
-    //   },
-    //   {
-    //     'productCode': 'P003',
-    //     'productName': 'Device C',
-    //     'rate': 39.99,
-    //     'unit': 'Piece',
-    //   },
-    //   {
-    //     'productCode': 'P004',
-    //     'productName': 'Tool D',
-    //     'rate': 49.99,
-    //     'unit': 'Each',
-    //   },
-    //   // Add more products as needed
-    // ];
     return GestureDetector(
       onTap: ()=>FocusScope.of(context).unfocus(),
       child: WillPopScope(
@@ -270,7 +222,6 @@ class _POSState extends ConsumerState<POS> {
           ),
           body: voucherData.when(
               data: (voucherNo){
-                print(voucherNo);
                 final loadDraftData = ref.watch(draftProvider(voucherNo));
                 return productList.when(
                     data: (data){
@@ -412,7 +363,6 @@ class _POSState extends ConsumerState<POS> {
                                         onChanged: (dynamic value) {
                                           if(value != null){
                                             final product = data.firstWhere((e) => '${e.productName} (${(e.qty! < 0? 0 : e.qty) } ${e.mainunit})'==value);
-                                            print(product.batch);
                                             setState(() {
                                               addProduct = product;
                                               productName = value;
@@ -764,6 +714,7 @@ class _POSState extends ConsumerState<POS> {
                                                                       }
                                                                       else{
                                                                         ref.refresh(draftProvider(voucherNo));
+                                                                        ref.refresh(productProvider(locationId));
                                                                         Fluttertoast.showToast(
                                                                           msg: 'Draft added',
                                                                           gravity: ToastGravity.BOTTOM,
@@ -771,6 +722,7 @@ class _POSState extends ConsumerState<POS> {
                                                                           textColor: Colors.white,
                                                                           fontSize: 16.0,
                                                                         );
+
 
                                                                         setState(() {
                                                                           isPostingDraft = false;
@@ -859,7 +811,7 @@ class _POSState extends ConsumerState<POS> {
                                                           ],
                                                         );
                                                       },
-                                                      error: (error,stack)=>SizedBox(),
+                                                      error: (error,stack)=>const SizedBox(),
                                                       loading: ()=>CircularProgressIndicator(color: ColorManager.primary,)
                                                   );
                                                 }
@@ -958,6 +910,7 @@ class _POSState extends ConsumerState<POS> {
                                                                 }
                                                                 else{
                                                                   ref.refresh(draftProvider(voucherNo));
+                                                                  ref.refresh(productProvider(locationId));
                                                                   Fluttertoast.showToast(
                                                                     msg: 'Draft added',
                                                                     gravity: ToastGravity.BOTTOM,
@@ -1055,7 +1008,7 @@ class _POSState extends ConsumerState<POS> {
                                                 }
 
                                               },
-                                              error: (error,stack)=>SizedBox(),
+                                              error: (error,stack)=>const SizedBox(),
                                               loading: ()=>CircularProgressIndicator(color: ColorManager.primary,)
                                           ),
 
@@ -1079,119 +1032,122 @@ class _POSState extends ConsumerState<POS> {
                                       final receivedTotalAmountData = ref.watch(receivedTotalAmountProvider(drafts.first.salesMasterID));
                                       return Column(
                                         children: [
-                                          SingleChildScrollView(
-                                            scrollDirection: Axis.horizontal,
-                                            physics: const ClampingScrollPhysics(),
-                                            child: DataTable(
-                                                headingRowColor: MaterialStateColor.resolveWith((states) => ColorManager.primary),
-                                                headingTextStyle: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),
-                                                columns: const [
-                                                  DataColumn(label: Text('S.N.')),
-                                                  DataColumn(label: Text('Item')),
-                                                  DataColumn(label: Text('Quantity')),
-                                                  DataColumn(label: Text('Rate')),
-                                                  DataColumn(label: Text('Net Total')),
-                                                  DataColumn(label: Text('Actions')),
-                                                ],
-                                                rows: drafts.map((e){
-                                                  int index = drafts.indexOf(e) +1 ;
-                                                  return DataRow(
-                                                      cells: [
-                                                        DataCell(Text('$index')),
-                                                        DataCell(Text('${e.productName}')),
-                                                        DataCell(Text('${e.qty.toPrecision(1)}')),
-                                                        DataCell(Text('${e.rate.toPrecision(2)}')),
-                                                        DataCell(Text('${e.netAmt.toPrecision(2)}')),
-                                                        DataCell(Row(
-                                                          children: [
-                                                            IconButton(
 
-                                                                onPressed: () async {
-                                                                  final product = data.firstWhere((element) => element.productName!.toLowerCase()==e.productName!.toLowerCase());
-                                                                  final response = await POSServices().deleteDraftItems(id: e.salesDetailsDraftID);
-                                                                  if(response.isLeft()){
-                                                                    final leftValue = response.fold((l) => l, (r) => null);
-                                                                    Fluttertoast.showToast(
-                                                                      msg: '$leftValue',
-                                                                      gravity: ToastGravity.BOTTOM,
-                                                                      backgroundColor: ColorManager.errorRed.withOpacity(0.9),
-                                                                      textColor: Colors.white,
-                                                                      fontSize: 16.0,
-                                                                    );
-                                                                  }
-                                                                  else{
-
-                                                                    setState(() {
-                                                                      addProduct = product;
-                                                                      productName = product.productName;
-                                                                      productRate = product.salesRate!.toPrecision(2);
-                                                                      productUnit = product.mainunit;
-                                                                      productCode = product.productCode;
-                                                                      _productCodeController.text = product.productCode!;
-                                                                      _rateController.text = product.salesRate!.toPrecision(2).toString();
-                                                                      _unitController.text = product.mainunit.toString();
-                                                                      disabledFields = false;
-                                                                      _quantityController.text = e.qty.toString();
-                                                                      _netTotalController.text = e.netAmt.toString();
-
-                                                                    });
-                                                                    ref.refresh(draftProvider(voucherNo));
-                                                                  }
-                                                                }, icon: Icon(FontAwesomeIcons.penToSquare,color: ColorManager.primary,),
-                                                            ),
-                                                            IconButton(
-
-                                                              onPressed: () async {
-                                                                final response = await POSServices().deleteDraftItems(id: e.salesDetailsDraftID);
-                                                                if(response.isLeft()){
-                                                                  final leftValue = response.fold((l) => l, (r) => null);
-                                                                  Fluttertoast.showToast(
-                                                                    msg: '$leftValue',
-                                                                    gravity: ToastGravity.BOTTOM,
-                                                                    backgroundColor: ColorManager.errorRed.withOpacity(0.9),
-                                                                    textColor: Colors.white,
-                                                                    fontSize: 16.0,
-                                                                  );
-                                                                }
-                                                                else{
-                                                                  Fluttertoast.showToast(
-                                                                    msg: 'Product removed',
-                                                                    gravity: ToastGravity.BOTTOM,
-                                                                    backgroundColor: ColorManager.errorRed.withOpacity(0.9),
-                                                                    textColor: Colors.white,
-                                                                    fontSize: 16.0,
-                                                                  );
-                                                                  ref.refresh(draftProvider(voucherNo));
-                                                                }
-                                                              }, icon: Icon(Icons.delete,color: ColorManager.errorRed,),
-                                                            )
-                                                          ],
-                                                        )),
-                                                      ]
-                                                  );
-                                                }).toList()
-                                            ),
-                                          ),
-                                          Container(
-                                            height: 50,
-                                            color: ColorManager.primary,
-                                            padding: const EdgeInsets.symmetric(horizontal: 30),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text('Total',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),),
-                                                Text('Rs. ${calculateTotalRate(drafts,receivedTotalAmountData.value ?? 0.0)}',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),),
-                                              ],
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
 
                                           receivedTotalAmountData.when(
                                               data: (amount){
                                                 return Column(
                                                   children: [
+                                                    SingleChildScrollView(
+                                                      scrollDirection: Axis.horizontal,
+                                                      physics: const ClampingScrollPhysics(),
+                                                      child: DataTable(
+                                                          headingRowColor: MaterialStateColor.resolveWith((states) => ColorManager.primary),
+                                                          headingTextStyle: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),
+                                                          columns: const [
+                                                            DataColumn(label: Text('S.N.')),
+                                                            DataColumn(label: Text('Item')),
+                                                            DataColumn(label: Text('Quantity')),
+                                                            DataColumn(label: Text('Rate')),
+                                                            DataColumn(label: Text('Net Total')),
+                                                            DataColumn(label: Text('Actions')),
+                                                          ],
+                                                          rows: drafts.map((e){
+                                                            int index = drafts.indexOf(e) +1 ;
+                                                            return DataRow(
+                                                                cells: [
+                                                                  DataCell(Text('$index')),
+                                                                  DataCell(Text('${e.productName}')),
+                                                                  DataCell(Text('${e.qty.toPrecision(1)}')),
+                                                                  DataCell(Text('${e.rate.toPrecision(2)}')),
+                                                                  DataCell(Text('${e.netAmt.toPrecision(2)}')),
+                                                                  DataCell(Row(
+                                                                    children: [
+                                                                      IconButton(
+
+                                                                        onPressed:amount> 0? null : () async {
+                                                                          final product = data.firstWhere((element) => element.productName!.toLowerCase()==e.productName!.toLowerCase());
+                                                                          final response = await POSServices().deleteDraftItems(id: e.salesDetailsDraftID);
+                                                                          if(response.isLeft()){
+                                                                            final leftValue = response.fold((l) => l, (r) => null);
+                                                                            Fluttertoast.showToast(
+                                                                              msg: '$leftValue',
+                                                                              gravity: ToastGravity.BOTTOM,
+                                                                              backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                                                              textColor: Colors.white,
+                                                                              fontSize: 16.0,
+                                                                            );
+                                                                          }
+                                                                          else{
+
+                                                                            setState(() {
+                                                                              addProduct = product;
+                                                                              productName = product.productName;
+                                                                              productRate = product.salesRate!.toPrecision(2);
+                                                                              productUnit = product.mainunit;
+                                                                              productCode = product.productCode;
+                                                                              _productCodeController.text = product.productCode!;
+                                                                              _rateController.text = product.salesRate!.toPrecision(2).toString();
+                                                                              _unitController.text = product.mainunit.toString();
+                                                                              disabledFields = false;
+                                                                              _quantityController.text = e.qty.toString();
+                                                                              _netTotalController.text = e.netAmt.toString();
+
+                                                                            });
+                                                                            ref.refresh(draftProvider(voucherNo));
+                                                                            ref.refresh(productProvider(locationId));
+                                                                          }
+                                                                        }, icon: Icon(FontAwesomeIcons.penToSquare,color: ColorManager.primary,),
+                                                                      ),
+                                                                      IconButton(
+
+                                                                        onPressed: amount> 0? null : () async {
+                                                                          final response = await POSServices().deleteDraftItems(id: e.salesDetailsDraftID);
+                                                                          if(response.isLeft()){
+                                                                            final leftValue = response.fold((l) => l, (r) => null);
+                                                                            Fluttertoast.showToast(
+                                                                              msg: '$leftValue',
+                                                                              gravity: ToastGravity.BOTTOM,
+                                                                              backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                                                              textColor: Colors.white,
+                                                                              fontSize: 16.0,
+                                                                            );
+                                                                          }
+                                                                          else{
+                                                                            Fluttertoast.showToast(
+                                                                              msg: 'Product removed',
+                                                                              gravity: ToastGravity.BOTTOM,
+                                                                              backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                                                              textColor: Colors.white,
+                                                                              fontSize: 16.0,
+                                                                            );
+                                                                            ref.refresh(productProvider(locationId));
+                                                                            ref.refresh(draftProvider(voucherNo));
+                                                                          }
+                                                                        }, icon: Icon(Icons.delete,color: ColorManager.errorRed,),
+                                                                      )
+                                                                    ],
+                                                                  )),
+                                                                ]
+                                                            );
+                                                          }).toList()
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      height: 50,
+                                                      color: ColorManager.primary,
+                                                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text('Total',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),),
+                                                          Text('Rs. ${calculateTotalRate(drafts,receivedTotalAmountData.value ?? 0.0)}',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
                                                     Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 10),
                                                       child: Row(
@@ -1307,7 +1263,8 @@ class _POSState extends ConsumerState<POS> {
                                                                       filled: amount == totalBill!,
                                                                       fillColor: amount == totalBill ? Colors.grey.withOpacity(0.5) : ColorManager.white,
                                                                       labelText: 'Received amount (Rs. $amount received)',
-                                                                      labelStyle: TextStyle(color: ColorManager.primary)
+                                                                      labelStyle: TextStyle(color: ColorManager.primary),
+
                                                                   ),
                                                                   validator: (value){
                                                                     if(value!.trim().isEmpty){
@@ -1332,6 +1289,7 @@ class _POSState extends ConsumerState<POS> {
                                                               ),
                                                             ),
                                                           ),
+
                                                           const SizedBox(
                                                             width: 10,
                                                           ),
@@ -1445,6 +1403,10 @@ class _POSState extends ConsumerState<POS> {
                                                                         });
                                                                         ref.refresh(receivedAmountProvider(drafts.first.salesMasterID));
                                                                         ref.refresh(receivedTotalAmountProvider(drafts.first.salesMasterID));
+                                                                        ref.refresh(productProvider(locationId));
+                                                                        await Future.delayed(const Duration(milliseconds: 100));
+
+                                                                        _receivedFormKey.currentState!.reset();
                                                                       }
                                                                     }
 
@@ -1454,6 +1416,7 @@ class _POSState extends ConsumerState<POS> {
                                                               },
                                                               icon:isPostingReceivedAmount?CircularProgressIndicator(color: ColorManager.primary,): Icon(Icons.add,color: ColorManager.white,)
                                                           ),
+
                                                           if(amount>0)
                                                             const SizedBox(
                                                               width: 10,
@@ -1473,7 +1436,16 @@ class _POSState extends ConsumerState<POS> {
                                                       ),
                                                     ),
                                                     const SizedBox(
-                                                      height: 20,
+                                                      height: 10,
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                                                      child: Align(
+                                                          alignment: Alignment.centerLeft,
+                                                          child: Text('Amount Left : ${totalBill! - amount}/-',style: const TextStyle(fontWeight: FontWeight.w500,fontStyle: FontStyle.italic),)),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.symmetric(horizontal: 18.0),
@@ -1482,9 +1454,10 @@ class _POSState extends ConsumerState<POS> {
                                                           Expanded(
                                                             child: ElevatedButton(
                                                                 style: ElevatedButton.styleFrom(
-                                                                    backgroundColor:amount != totalBill!? Colors.grey: ColorManager.primary
+                                                                    backgroundColor:amount != totalBill!? Colors.grey: ColorManager.primary,
+                                                                  disabledBackgroundColor: ColorManager.textGray.withOpacity(0.5)
                                                                 ),
-                                                                onPressed:() async {
+                                                                onPressed:isPostingFinalData ? null : () async {
                                                                   if(amount<0){
                                                                     Fluttertoast.showToast(
                                                                       msg: 'No amount received',
@@ -1495,33 +1468,117 @@ class _POSState extends ConsumerState<POS> {
                                                                     );
                                                                   }
                                                                   else{
-                                                                    final response = await POSServices().finalSavePOS(id: drafts.first.salesMasterID);
-                                                                    if(response.isLeft()){
-                                                                      final leftValue = response.fold((l) => l, (r) => null );
-                                                                      Fluttertoast.showToast(
-                                                                        msg: 'Final Save error : $leftValue',
-                                                                        gravity: ToastGravity.BOTTOM,
-                                                                        backgroundColor: ColorManager.errorRed.withOpacity(0.9),
-                                                                        textColor: Colors.white,
-                                                                        fontSize: 16.0,
-                                                                      );
-                                                                    }
-                                                                    else{
-                                                                      final right = response.fold((l) => null, (r) => r);
-                                                                      print(right);
-                                                                      Fluttertoast.showToast(
-                                                                        msg: 'Draft added',
-                                                                        gravity: ToastGravity.BOTTOM,
-                                                                        backgroundColor: ColorManager.green.withOpacity(0.9),
-                                                                        textColor: Colors.white,
-                                                                        fontSize: 16.0,
-                                                                      );
-                                                                      // _printOut(masterId: right['masterId']);
-                                                                      Get.to(()=>ReceiptPdf());
-                                                                    }
+                                                                    setState(() {
+                                                                      isPostingFinalData = true;
+                                                                    });
+                                                                    await showDialog(
+                                                                      barrierDismissible: false,
+                                                                        context: context,
+                                                                        builder: (context){
+
+                                                                          return AlertDialog(
+                                                                            contentPadding: EdgeInsets.zero,
+                                                                            content: Column(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                Container(
+                                                                                  decoration: BoxDecoration(
+                                                                                    borderRadius: const BorderRadius.only(
+                                                                                        topRight: Radius.circular(20),
+                                                                                        topLeft: Radius.circular(20),
+                                                                                    ),
+                                                                                    color: ColorManager.primary,
+                                                                                  ),
+                                                                                  width: double.infinity,
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 12),
+
+                                                                                  child: Text('Posting Confirmation',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.w500),),
+                                                                                ),
+                                                                                const SizedBox(height: 10,),
+                                                                                Container(
+                                                                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                                  child: Column(
+                                                                                    mainAxisSize: MainAxisSize.min,
+                                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                                    children: [
+                                                                                      const Text('Are you sure you want to post?'),
+                                                                                      const SizedBox(height: 10,),
+                                                                                      Row(
+                                                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                        children: [
+                                                                                          ElevatedButton(
+                                                                                            style: ElevatedButton.styleFrom(
+                                                                                              backgroundColor: ColorManager.green
+                                                                                            ),
+                                                                                              onPressed: ()async {
+                                                                                                final response = await POSServices().finalSavePOS(id: drafts.first.salesMasterID);
+                                                                                                if(response.isLeft()){
+                                                                                                  final leftValue = response.fold((l) => l, (r) => null );
+                                                                                                  Fluttertoast.showToast(
+                                                                                                    msg: 'Final Save error : $leftValue',
+                                                                                                    gravity: ToastGravity.BOTTOM,
+                                                                                                    backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                                                                                    textColor: Colors.white,
+                                                                                                    fontSize: 16.0,
+                                                                                                  );
+                                                                                                }
+                                                                                                else{
+                                                                                                  final right = response.fold((l) => null, (r) => r);
+                                                                                                  final salesMasterId = right['masterId'];
+                                                                                                  // print(right);
+                                                                                                  Fluttertoast.showToast(
+                                                                                                    msg: 'Draft added',
+                                                                                                    gravity: ToastGravity.BOTTOM,
+                                                                                                    backgroundColor: ColorManager.green.withOpacity(0.9),
+                                                                                                    textColor: Colors.white,
+                                                                                                    fontSize: 16.0,
+                                                                                                  );
+                                                                                                  final printResponse = await POSServices().printReceipt(masterId: salesMasterId);
+                                                                                                  if(printResponse.isLeft()){
+                                                                                                    Fluttertoast.showToast(
+                                                                                                      msg: 'Printing error',
+                                                                                                      gravity: ToastGravity.BOTTOM,
+                                                                                                      backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                                                                                      textColor: Colors.white,
+                                                                                                      fontSize: 16.0,
+                                                                                                    );
+                                                                                                  }
+                                                                                                  else{
+                                                                                                    Navigator.pop(context);
+                                                                                                    final printReceipt = printResponse.fold((l) => null, (r) => r);
+                                                                                                    _printReceipt(printReceipt!);
+
+                                                                                                  }
+
+                                                                                                }
+                                                                                              },
+                                                                                              child: Text('Yes',style: TextStyle(color: ColorManager.white),)),
+                                                                                          ElevatedButton(
+                                                                                            style: ElevatedButton.styleFrom(
+                                                                                              backgroundColor: ColorManager.errorRed
+                                                                                            ),
+                                                                                              onPressed: (){
+                                                                                                setState(() {
+                                                                                                  isPostingFinalData = false;
+                                                                                                });
+                                                                                              Navigator.pop(context);
+                                                                                              },
+                                                                                              child: Text('No',style: TextStyle(color: ColorManager.white),)),
+                                                                                        ],
+                                                                                      )
+                                                                                    ],
+                                                                                  ),
+                                                                                ),
+                                                                                const SizedBox(height: 10,),
+                                                                              ],
+                                                                            ),
+                                                                          );
+                                                                        }
+                                                                    );
+
                                                                   }
                                                                 },
-                                                                child: Text('Save',style: TextStyle(color: ColorManager.white),)
+                                                                child: isPostingFinalData ? CircularProgressIndicator(color: ColorManager.primary,): Text('Save',style: TextStyle(color: ColorManager.white),)
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -1530,10 +1587,99 @@ class _POSState extends ConsumerState<POS> {
                                                           Expanded(
                                                             child: ElevatedButton(
                                                                 style: ElevatedButton.styleFrom(
-                                                                    backgroundColor: ColorManager.errorRed
+                                                                    backgroundColor: ColorManager.errorRed,
+                                                                  disabledBackgroundColor: ColorManager.textGray
                                                                 ),
-                                                                onPressed: (){
+                                                                onPressed:amount>0? null : () async {
+                                                                  await showDialog(
+                                                                  barrierDismissible: false,
+                                                                  context: context,
+                                                                  builder: (context){
 
+                                                                    return AlertDialog(
+                                                                      contentPadding: EdgeInsets.zero,
+                                                                      content: Column(
+                                                                        mainAxisSize: MainAxisSize.min,
+                                                                        children: [
+                                                                          Container(
+                                                                            decoration: BoxDecoration(
+                                                                              borderRadius: const BorderRadius.only(
+                                                                                topRight: Radius.circular(20),
+                                                                                topLeft: Radius.circular(20),
+                                                                              ),
+                                                                              color: ColorManager.primary,
+                                                                            ),
+                                                                            width: double.infinity,
+                                                                            padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 12),
+
+                                                                            child: Text('Reset Confirmation',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.w500),),
+                                                                          ),
+                                                                          const SizedBox(height: 10,),
+                                                                          Container(
+                                                                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                                                                            child: Column(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              mainAxisAlignment: MainAxisAlignment.center,
+                                                                              children: [
+                                                                                const Text('Are you sure you want to reset the draft?'),
+                                                                                const SizedBox(height: 10,),
+                                                                                Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                                  children: [
+                                                                                    ElevatedButton(
+                                                                                        style: ElevatedButton.styleFrom(
+                                                                                            backgroundColor: ColorManager.errorRed
+                                                                                        ),
+                                                                                        onPressed: () async {
+                                                                                          final deleteResponse = await POSServices().deleteDraftTable(id: drafts.first.salesMasterID);
+                                                                                          if(deleteResponse.isLeft()){
+                                                                                            final leftValue = deleteResponse.fold((l) => l, (r) => null);
+                                                                                            Fluttertoast.showToast(
+                                                                                              msg: '$leftValue',
+                                                                                              gravity: ToastGravity.BOTTOM,
+                                                                                              backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                                                                              textColor: Colors.white,
+                                                                                              fontSize: 16.0,
+                                                                                            );
+                                                                                          }else{
+                                                                                            Fluttertoast.showToast(
+                                                                                              msg: 'Draft deleted',
+                                                                                              gravity: ToastGravity.BOTTOM,
+                                                                                              backgroundColor: ColorManager.green.withOpacity(0.9),
+                                                                                              textColor: Colors.white,
+                                                                                              fontSize: 16.0,
+                                                                                            );
+                                                                                            ref.refresh(draftProvider(voucherNo));
+                                                                                            ref.refresh(productProvider(locationId));
+                                                                                            Navigator.pop(context);
+                                                                                            setState(() {
+                                                                                              selectedReceivedLedger=null;
+                                                                                              _customerNameController.text = customerName;
+                                                                                            });
+                                                                                          }
+
+                                                                                        },
+                                                                                        child: Text('Yes',style: TextStyle(color: ColorManager.white),)),
+                                                                                    ElevatedButton(
+                                                                                        style: ElevatedButton.styleFrom(
+                                                                                            backgroundColor: ColorManager.textGrey
+                                                                                        ),
+                                                                                        onPressed: (){
+
+                                                                                          Navigator.pop(context);
+                                                                                        },
+                                                                                        child: Text('No',style: TextStyle(color: ColorManager.white),)),
+                                                                                  ],
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                          const SizedBox(height: 10,),
+                                                                        ],
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                  );
                                                                 },
                                                                 child: Text('Reset',style: TextStyle(color: ColorManager.white),)
                                                             ),
@@ -2120,46 +2266,33 @@ class _POSState extends ConsumerState<POS> {
   }
 
 
-//   void _printOut({
-//     required int masterId
-// }) async {
-//     final printResponse = ref.watch(receiptProvider(masterId));
-//
-//     printResponse.when(
-//       data: (data){
-//         String companyName = data.item1.companyName;
-//         String companyAddress = data.item1.companyAddress;
-//         String vendorsPan = data.item1.vendorsPan;
-//         String voucherNo = data.item1.voucherNo;
-//         DateTime engDate = DateFormat('MM/dd/yyyy hh:mm:ss').parse(data.item1.printDate);
-//         String printDate = DateFormat('yyyy-MM-dd').format(engDate);
-//         NepaliDateTime nt = DateTime(engDate.year, engDate.month, engDate.day, 00, 00, 00).toNepaliDateTime();
-//         String nepaliDate = DateFormat('yyyy-MM-dd').format(nt);
-//         ///from api response of printReceiptPos
-//         String htmlString = "<html><head><style>.invoice-POS {width: 8.5cm; margin: auto;} .dashed-line{border - top: 1px dashed #000;margin - top: 5px;} #top {text - align: center;}    #top p { margin: 0; }#bot {text - align: center; }.table-margin-zero { margin: 0;}      .table-margin-zero tbody tr {margin: 0;padding: 0;}     </style></head>\" <body><div class=\"container invoice-POS\"><div><div id=\"top\">   <p style=\"text-align: center;\">{companyName}</p><p style=\"text-align: center;\">{companyAddress}</p> <br><p style=\"text-align: center;\">VAT No. :{VendorsPan}   </p><p style=\"text-align: center;\">ABBREVIATED TAX INVOICE</p><br><br></div>          <table>                                                         <tbody style=\"font-size: 15px\">                                          <tr><td>Bill No</td><td>:</td><td>{VoucherNo}</td></tr>                                                             <tr><td>Date</td><td>:</td><td>{printDate}</td></tr>          <tr><td>Miti</td><td>:</td><td>{NepaliDate}</td></tr>         <tr><td>Name</td><td>:</td><td>{CustomerName}</td></tr>                       <tr><td>Address</td><td>:</td><td>{companyAddress}</td></tr>                               <tr><td>PAN No</td><td>:</td><td>{vendorsPan}</td></tr>                      <tr><td>Payment Mode</td><td>: </td><td>{PaymentMode}</td></tr>                                <tr><td>Remarks</td><td>:</td><td>{narration}</td></tr>                                                      </tbody>                                                     </table>                                                     </div>                                                                                             </div>                                                                                                                                                                                         <div id=\"bot\" class=\"invoice-POS\">                                                         <div id=\"table\" id=\"productReceit\">                                                             <table class=\"table\">                                                                 <thead>                                                                     <tr> <td class=\"dashed-line\" colspan=\"12\"></td></tr>                                                                     <tr>                                                                         <th class=\"col-1 text-center\">SN</th>                                                                         <th class=\"col-5 text-center\">Particulars</th>                                                                         <th class=\"col-1 text-center\">Qty</th>                                                                         <th class=\"col-2 text-center\">Rate</th>                                                                         <th class=\"col-2 text-right\">Amount</th>                                                                     </tr                                                                     <tr> <td class=\"dashed-line\" colspan=\"12\"></td></tr>                                                                 </thead><tbody>{tdetails}</tbody></table>                                                              </div></div><div class=\"invoice-POS\"> <div class=\"row\">                                                                     <div class=\"col-4 no-border\"></div>                                                                     <div class=\"col-8 no-border\">                                                                         <table class=\"table table-borderless table-margin-zero\">                                                                             <tbody style=\"font-size: 15px\">                                                                                 <tr> <td class=\"dashed-line\" colspan=\"4\"></td></tr>                                                                                 <tr> <td style=\"width: 30%;\"></td><td style=\"width: 70%;\"><span>------------------------</span></td></tr>                                                                                 <tr> <td style=\"width: 30%;\"></td><td style=\"width: 25%;\">Gross Amount</td><td style=\"width: 5%;\">:</td><td style=\"width: 30%;\">{TotalAmount}</td></tr>                                                                                 <tr><td style=\"width: 30%;\"></td><td style=\"width: 25%;\">Discount</td><td style=\"width: 5%;\">:</td><td style=\"width: 30%;\">{BillDiscountAmt}</td></tr>                                                                                 <tr> <td style=\"width: 30%;\"></td> <td style=\"width: 25%;\">Net Amount</td> <td style=\"width: 5%;\">:</td><td style=\"width: 30%;\"> </td></tr>                                                                                 <tr> <td style=\"width: 30%;\">{GrandTotalAmount}</td><td style=\"width: 70%;\">---------------------------</td></tr>                                                                                  <tr><td style=\"width: 30%;\"></td><td style=\"width: 25%;\">Tender</td><td style=\"width: 5%;\">:</td><td style=\"width: 30%;\">{Tender}</td></tr>                                                                                 <tr><td style=\"width: 30%;\"></td><td style=\"width: 25%;\">Change</td><td style=\"width: 5%;\">:</td> <td style=\"width: 30%;\">{Change}</td> </tr>                                                                             </tbody>                                                                         </table>                                                                     </div>                                                                 </div>                                                                         <div class=\"row\">                                                                             <div class=\"col-md-12 text-left\">                                                                                 ------------------------------------------------------ <br>                                                                                     {AmountinWord}  <br>                                                                                         ------------------------------------------------------<br>                                                                                     CustomerID: {CustomerID} <br>                                                                                     Thank you for visiting us. <br>                                                                                                     ------------------------------------------------------ <br>                                                                                      Counter: <br>                                                                                      Cashier: {CashierNane} <br>                                                                                      {CurrentTime}                                                                              </div>                                                                          </div>                                                               </div>                                                                                                                                                   </body>                                                                                 </html> ";
-//       },
-//       error: (error,stack){
-//         Fluttertoast.showToast(
-//           msg: '$error',
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: ColorManager.errorRed.withOpacity(0.9),
-//           textColor: Colors.white,
-//           fontSize: 16.0,
-//         );
-//       },
-//       loading: (){
-//         Fluttertoast.showToast(
-//           msg: 'Please wait...',
-//           gravity: ToastGravity.BOTTOM,
-//           backgroundColor: ColorManager.primary.withOpacity(0.9),
-//           textColor: Colors.white,
-//           fontSize: 16.0,
-//         );
-//       }
-//     );
-//
-//
-//   }
 
+  void _printReceipt(ReceiptPOSModel receipt) async {
+
+
+    final doc = pw.Document();
+
+    doc.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) {
+          return generatePdf(receipt: receipt); // Center
+        })); // Page
+
+    await Printing.layoutPdf(
+        onLayout: (PdfPageFormat format) async => doc.save());
+
+    setState(() {
+      isPostingFinalData = false;
+      selectedReceivedLedger=null;
+      _customerNameController.text = customerName;
+    });
+    ref.invalidate(voucherProvider);
+    ref.invalidate(draftProvider);
+    ref.invalidate(receivedTotalAmountProvider);
+    ref.invalidate(receivedAmountProvider);
+    ref.refresh(voucherProvider);
+    ref.refresh(productProvider(locationId));
+
+  }
 
 }

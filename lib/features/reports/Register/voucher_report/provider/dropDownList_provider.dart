@@ -12,6 +12,7 @@ import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/model/list%20model/get_list_model.dart';
 import 'package:khata_app/model/list%20model/list_model.dart';
 
+import '../../../../../main.dart';
 import '../../../../dashboard/presentation/home_screen.dart';
 
 
@@ -21,6 +22,9 @@ final voucherListProvider = FutureProvider.family.autoDispose((ref, GetListModel
 class VoucherListProvider{
   Future<List<Map<dynamic, dynamic>>> getDropDownList(GetListModel getListModel) async {
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());

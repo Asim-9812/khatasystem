@@ -36,17 +36,17 @@ final userIdProvider2 = Provider<String>((ref) => userId);
 int userId2 = 0;
 
 
-final tokenProvider = Provider<String>((ref) => userToken);
+// final tokenProvider = Provider<String>((ref) => userToken);
+//
+// String userToken = "";
 
-String userToken = "";
 
-
-final branchIdProvider = Provider<String>((ref) => userToken);
+// final branchIdProvider = Provider<String>((ref) => userToken);
 
 int branchId = 0;
 
 
-final financialYearIdProvider = Provider<String>((ref) => userToken);
+// final financialYearIdProvider = Provider<String>((ref) => userToken);
 
 int financialYearId = 0;
 
@@ -74,6 +74,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 
     var result = sessionBox.get('userReturn');
     var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
 
     String selectedBranch = branchBox.get('selectedBranch');
     branchId = branchBox.get('selectedBranchId');
@@ -83,7 +84,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 
     userId = "${res["userReturn"]["intUserId"]}-${res["ownerCompanyList"]["databaseName"]}";
     userId2 = res["userReturn"]["intUserId"];
-    userToken = '${res['ptoken']}';
+
 
     String companyName = res["ownerCompanyList"]["companyName"];
     String fiscalYear = fy == ''? res["fiscalYearInfo"]["fiscalYear"] : fy;

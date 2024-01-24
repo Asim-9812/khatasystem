@@ -7,6 +7,7 @@ import 'package:khata_app/core/api.dart';
 import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 
+import '../../../../../main.dart';
 import '../../../../dashboard/presentation/home_screen.dart';
 
 
@@ -17,6 +18,9 @@ class GroupWiseLedgerReportProvider extends StateNotifier<AsyncValue<List<dynami
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -45,6 +49,9 @@ class GroupWiseDetailReportProvider extends StateNotifier<AsyncValue<List<dynami
 
   Future<void> getTableValues(FilterAnyModel2 filterModel) async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -71,6 +78,9 @@ class LedgerDetailGroupWiseProvider extends StateNotifier<AsyncValue<List<dynami
 
   Future<void> getTableValues(FilterAnyModel2 filterModel) async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -98,6 +108,9 @@ final ledgerDetailIndividualProvider = FutureProvider.family((ref, FilterAnyMode
 class LedgerDetailIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{

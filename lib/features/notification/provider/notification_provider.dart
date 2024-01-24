@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:khata_app/core/api.dart';
 
+import '../../../main.dart';
 import '../../dashboard/presentation/home_screen.dart';
 import '../model/notification_model.dart';
 
@@ -18,6 +19,9 @@ class NotificationProvider{
 
   Future<List<NotificationModel>> getNotifications({required String token}) async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     // // Step 1: Check token expiration
     // bool isTokenExpired(String token) {
     //   final jwt = token.split(".");

@@ -73,7 +73,7 @@ class _BranchPageState extends State<BranchPage> {
                     height: 30,
                   ),
                   Image.asset(
-                    "assets/images/khata-logo.png",
+                    "assets/images/new-logo.png",
                     height: 180,
                     width: 180,
                   ),
@@ -377,7 +377,7 @@ class _BranchPageState extends State<BranchPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset(
-                            "assets/images/khata-logo.png",
+                            "assets/images/new-logo.png",
                             height: height * 0.7,
                             width: height * 0.7,
                           ),

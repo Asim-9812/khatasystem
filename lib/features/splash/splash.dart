@@ -34,7 +34,7 @@ class _SplashViewState extends State<SplashView> {
                   gradient: LinearGradient(
                     colors: [
                       const Color(0xff076787).withOpacity(0.35),
-                      const Color(0xffE3EEF8).withOpacity(0.7),
+                      const Color(0xffE3EEF8).withOpacity(0.5),
                     ],
                     begin: Alignment.topRight,
                     end: Alignment.bottomRight,
@@ -45,7 +45,7 @@ class _SplashViewState extends State<SplashView> {
                   const SizedBox(
                     height: 240,
                   ),
-                  Image.asset('assets/images/khata-logo.png', height: 180, width: 200,),
+                  Image.asset('assets/images/new-logo.png', height: 180, width: 200,),
                   const SizedBox(
                     height: 18,
                   ),
@@ -72,7 +72,7 @@ class _SplashViewState extends State<SplashView> {
                   gradient: LinearGradient(
                     colors: [
                       const Color(0xff076787).withOpacity(0.35),
-                      const Color(0xffE3EEF8).withOpacity(0.7),
+                      const Color(0xffE3EEF8).withOpacity(0.5),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomLeft,
@@ -83,7 +83,7 @@ class _SplashViewState extends State<SplashView> {
                   SizedBox(
                     height: size.height * 0.16,
                   ),
-                  Image.asset('assets/images/khata-logo.png', height: size.height * 0.4, width: size.height * 0.4,),
+                  Image.asset('assets/images/new-logo.png', height: size.height * 0.4, width: size.height * 0.4,),
                   SizedBox(
                     height: size.height * 0.05,
                   ),

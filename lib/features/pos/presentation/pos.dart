@@ -631,7 +631,7 @@ class _POSState extends ConsumerState<POS> {
                                                                     )
                                                                 ),
                                                                 onPressed:isAmountReceived > 0 ? null : isPostingDraft? null :() async {
-                                                                  final scaffoldMessage = ScaffoldMessenger.of(context);
+                                                                  // final scaffoldMessage = ScaffoldMessenger.of(context);
                                                                   if(_productFormKey.currentState!.validate()) {
 
                                                                     if(addProduct !=null){
@@ -827,7 +827,7 @@ class _POSState extends ConsumerState<POS> {
                                                               )
                                                           ),
                                                           onPressed:isPostingDraft? null :() async {
-                                                            final scaffoldMessage = ScaffoldMessenger.of(context);
+                                                            // final scaffoldMessage = ScaffoldMessenger.of(context);
                                                             if(_productFormKey.currentState!.validate()) {
 
                                                               if(addProduct !=null){
@@ -1737,7 +1737,7 @@ class _POSState extends ConsumerState<POS> {
   void _showDialog(List<POSLedgerModel> customerList) async {
 
 
-    bool isCustomer = true;
+    // bool isCustomer = true;
 
 
 
@@ -2025,7 +2025,7 @@ class _POSState extends ConsumerState<POS> {
   void _readOnlyDialog() async {
 
 
-    bool isCustomer = true;
+    // bool isCustomer = true;
 
 
 

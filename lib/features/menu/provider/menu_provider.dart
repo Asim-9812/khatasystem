@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/features/menu/model/menu_model.dart';
 
 import '../../../core/api.dart';
+import '../../../main.dart';
 import '../../dashboard/presentation/home_screen.dart';
 
 
@@ -13,6 +16,9 @@ final menuProvider = FutureProvider.family((ref, String id) => MenuProvider().ge
 class MenuProvider{
   Future<List<MenuModel>> getMenu(String id) async {
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     List<MenuModel> menuList = <MenuModel>[];

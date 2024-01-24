@@ -4,6 +4,7 @@
 
 
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,11 +12,15 @@ import 'package:intl/intl.dart';
 import 'package:khata_app/core/api.dart';
 import 'package:khata_app/features/activies/model/logModel.dart';
 
+import '../../../main.dart';
 import '../../dashboard/presentation/home_screen.dart';
 import '../model/entry_master_model.dart';
 
 final logProvider = StreamProvider.autoDispose<List<LogModel>>((ref) async* {
   final dio = Dio();
+  var result = sessionBox.get('userReturn');
+  var res = jsonDecode(result);
+  String userToken = '${res['ptoken']}';
   dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -62,6 +67,10 @@ Future<List<LogModel>> fetchLogActivities(StreamController logStreamController, 
           responseType: ResponseType.json,
         ));
 
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final response = await dio.post(Api.getLoginActivities,
@@ -97,6 +106,10 @@ Future<List<LogModel>> fetchLogActivities(StreamController logStreamController, 
 
 Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactionStreamController) async {
   final dio = Dio();
+
+  var result = sessionBox.get('userReturn');
+  var res = jsonDecode(result);
+  String userToken = '${res['ptoken']}';
   dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -132,6 +145,9 @@ Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactio
 
 final entryMasterProvider = StreamProvider<List<EntryMaster>>((ref) async* {
   final dio = Dio();
+  var result = sessionBox.get('userReturn');
+  var res = jsonDecode(result);
+  String userToken = '${res['ptoken']}';
   dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 

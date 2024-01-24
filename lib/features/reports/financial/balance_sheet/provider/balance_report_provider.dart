@@ -9,6 +9,7 @@ import 'package:khata_app/core/api.dart';
 import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 
+import '../../../../../main.dart';
 import '../../../../dashboard/presentation/home_screen.dart';
 
 final balanceSheetReportProvider = StateNotifierProvider<BalanceSheetReportProvider, AsyncValue<List<dynamic>>>((ref) => BalanceSheetReportProvider());
@@ -18,6 +19,9 @@ class BalanceSheetReportProvider extends StateNotifier<AsyncValue<List<dynamic>>
 
   Future<void> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{

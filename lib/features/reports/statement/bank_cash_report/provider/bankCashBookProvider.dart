@@ -7,6 +7,7 @@ import 'package:khata_app/core/api.dart';
 import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 
+import '../../../../../main.dart';
 import '../../../../../model/list model/get_list_model.dart';
 import '../../../../../model/list model/list_model.dart';
 import '../../../../dashboard/presentation/home_screen.dart';
@@ -22,8 +23,12 @@ final bankCashLedgerListProvider = FutureProvider.family.autoDispose((ref, GetLe
 class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
   BankCashReport() : super(const AsyncValue.data([]));
 
+
   Future<void> fetchTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -46,6 +51,9 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<List<Map<dynamic, dynamic>>> getBankCashList(GetListModel getListModel) async {
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -83,7 +91,9 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<List<dynamic>> getBankCashLedgerList(GetLedgerListModel getListModel) async {
     final dio = Dio();
-
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -133,6 +143,9 @@ final bankCashIndividualProvider = FutureProvider.family((ref, FilterAnyModel2 f
 class BankCashIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{

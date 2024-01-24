@@ -50,7 +50,7 @@ pw.Widget generatePdf({
         pw.Text('ABBREVIATED TAX INVOICE'),
         pw.SizedBox(height: 20),
         pw.Padding(
-          padding: pw.EdgeInsets.symmetric(horizontal: 18.0),
+          padding: const pw.EdgeInsets.symmetric(horizontal: 18.0),
           child: pw.Row(
             children: [
               pw.Column(
@@ -88,13 +88,14 @@ pw.Widget generatePdf({
         pw.SizedBox(height: 30),
         // Manual table creation
         pw.Padding(
-          padding: pw.EdgeInsets.symmetric(horizontal: 20),
+          padding: const pw.EdgeInsets.symmetric(horizontal: 20),
           child: pw.Table(
             border: pw.TableBorder.all(
                 color: PdfColors.white
             ),
             children: [
               pw.TableRow(
+
                 children: [
                   pw.Text('S.N.'),
                   pw.Text('Particulars'),
@@ -118,10 +119,10 @@ pw.Widget generatePdf({
         ),
 
         pw.SizedBox(height: 20),
-        pw.Text('-------------------------------------', style: pw.TextStyle(letterSpacing: 5)),
+        pw.Text('-------------------------------------', style: const pw.TextStyle(letterSpacing: 5)),
         pw.SizedBox(height: 10),
         pw.Padding(
-          padding: pw.EdgeInsets.symmetric(horizontal: 18.0),
+          padding: const pw.EdgeInsets.symmetric(horizontal: 18.0),
           child: pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.center,
             children: [
@@ -129,9 +130,9 @@ pw.Widget generatePdf({
                 mainAxisAlignment: pw.MainAxisAlignment.start,
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text('Gross Amount', style: pw.TextStyle()),
-                  pw.Text('Discount', style: pw.TextStyle()),
-                  pw.Text('Net Amount', style: pw.TextStyle()),
+                  pw.Text('Gross Amount', style: const pw.TextStyle()),
+                  pw.Text('Discount', style: const pw.TextStyle()),
+                  pw.Text('Net Amount', style: const pw.TextStyle()),
                 ],
               ),
               pw.SizedBox(width: 20),
@@ -139,18 +140,18 @@ pw.Widget generatePdf({
                 mainAxisAlignment: pw.MainAxisAlignment.start,
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text(': $totalAmt', style: pw.TextStyle()),
-                  pw.Text(': $discount', style: pw.TextStyle()),
-                  pw.Text(': $netAmt', style: pw.TextStyle()),
+                  pw.Text(': $totalAmt', style: const pw.TextStyle()),
+                  pw.Text(': $discount', style: const pw.TextStyle()),
+                  pw.Text(': $netAmt', style: const pw.TextStyle()),
                 ],
               ),
             ],
           ),
         ),
-        pw.Text('-------------------------------------', style: pw.TextStyle(letterSpacing: 5)),
+        pw.Text('-------------------------------------', style: const pw.TextStyle(letterSpacing: 5)),
         pw.SizedBox(height: 10),
         pw.Padding(
-          padding: pw.EdgeInsets.symmetric(horizontal: 18.0),
+          padding: const pw.EdgeInsets.symmetric(horizontal: 18.0),
           child: pw.Column(
             mainAxisAlignment: pw.MainAxisAlignment.start,
             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -158,11 +159,11 @@ pw.Widget generatePdf({
               pw.Divider(),
               pw.Text('${amountInWord.toUpperCase()} Rupees Only', style: pw.TextStyle(fontStyle: pw.FontStyle.italic)),
               pw.Divider(),
-              pw.Text('Customer ID : $customerId', style: pw.TextStyle()),
+              pw.Text('Customer ID : $customerId', style: const pw.TextStyle()),
               pw.SizedBox(height: 10),
-              pw.Text('Thank you for visiting us', style: pw.TextStyle()),
+              pw.Text('Thank you for visiting us', style: const pw.TextStyle()),
               pw.Divider(),
-              pw.Text('Cashier: $userID', style: pw.TextStyle()),
+              pw.Text('Cashier: $userID', style: const pw.TextStyle()),
             ],
           ),
         ),

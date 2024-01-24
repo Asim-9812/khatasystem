@@ -7,6 +7,7 @@ import 'package:khata_app/core/api.dart';
 import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
 
+import '../../../../../main.dart';
 import '../../../../../model/list model/get_list_model.dart';
 import '../../../../../model/list model/list_model.dart';
 import '../../../../dashboard/presentation/home_screen.dart';
@@ -22,6 +23,9 @@ class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> fetchTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -40,6 +44,9 @@ class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<List<Map<dynamic, dynamic>>> getDayBookList(GetListModel getListModel) async {
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());

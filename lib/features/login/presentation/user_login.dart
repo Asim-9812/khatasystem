@@ -153,7 +153,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                     height: 30,
                                   ),
                                   Image.asset(
-                                    "assets/images/khata-logo.png",
+                                    "assets/images/new-logo.png",
                                     height: 140,
                                     width: 140,
                                   ),
@@ -459,7 +459,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                               width: 400.0,
                                               decoration: const BoxDecoration(
                                                 image: DecorationImage(
-                                                  image: AssetImage('assets/images/khata-logo.png'),
+                                                  image: AssetImage('assets/images/new-logo.png'),
                                                   fit: BoxFit.contain,
                                                   opacity: 0.05
                                                 )
@@ -904,7 +904,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                               width: 1.5,
                                             ),
                                             Image.asset(
-                                              "assets/images/khata-logo.png",
+                                              "assets/images/new-logo.png",
                                               height: 230,
                                               width: 230,
                                             ),
@@ -942,7 +942,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                               width: 400.0,
                                               decoration: const BoxDecoration(
                                                   image: DecorationImage(
-                                                      image: AssetImage('assets/images/khata-logo.png'),
+                                                      image: AssetImage('assets/images/new-logo.png'),
                                                       fit: BoxFit.contain,
                                                       opacity: 0.05
                                                   )

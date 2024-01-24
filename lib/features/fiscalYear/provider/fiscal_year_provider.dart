@@ -10,6 +10,8 @@ import 'package:khata_app/core/api.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:khata_app/features/fiscalYear/model/fiscal_year_model.dart';
 
+import '../../../main.dart';
+
 
 
 
@@ -18,6 +20,9 @@ class FiscalYearProvider{
 
   Future<List<FiscalYearModel>> getFiscalYearList() async{
     final dio = Dio();
+    var result = sessionBox.get('userReturn');
+    var res = jsonDecode(result);
+    String userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 

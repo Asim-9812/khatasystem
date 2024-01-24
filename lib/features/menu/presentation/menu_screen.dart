@@ -135,7 +135,7 @@ class ReportView extends ConsumerWidget {
                                   children: [
                                     _setMenu(mainList[index].intMenuid),
                                     Text(mainList[index].strName.trim(),
-                                        style: const TextStyle(fontSize: 15),
+                                        style: const TextStyle(fontSize: 12),
                                         textAlign: TextAlign.center),
                                   ],
                                 )),

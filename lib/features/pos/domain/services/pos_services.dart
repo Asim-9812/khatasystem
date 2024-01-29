@@ -30,12 +30,10 @@ final receiptProvider = FutureProvider.family((ref,int id) => POSServices().prin
 class POSServices{
 
   final dio = Dio();
-  var result = sessionBox.get('userReturn');
+
 
 
   Future<String> getVoucherNo() async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
       final response = await dio.get(Api.getVoucherNo,
@@ -59,8 +57,7 @@ class POSServices{
   }
 
   Future<List<PosSettingsModel>> getPOSSettings() async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
 
 
@@ -86,8 +83,7 @@ class POSServices{
   Future<List<ProductModel>> getProductList({
     required String locationId
 }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     List<ProductModel> newProductList =[];
 
@@ -202,8 +198,7 @@ class POSServices{
   Future<Either<String,String>> addSalesDraftPos({
     DraftModel? newDraft
 }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     if(newDraft != null){
       dio.options.headers["Authorization"] = "Bearer $userToken";
       final data = newDraft.toJson();
@@ -229,8 +224,7 @@ class POSServices{
   Future<List<DraftModel>> loadPosDraft({
     required String voucherNo
 }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
 
@@ -254,8 +248,7 @@ class POSServices{
   Future<Either<String,String>> deleteDraftItems({
     required int id
   }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
       // final data = receivedAmount.toJson();
@@ -279,8 +272,7 @@ class POSServices{
   Future<Either<String,String>> deleteDraftTable({
     required int id
   }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
       // final data = receivedAmount.toJson();
@@ -303,8 +295,7 @@ class POSServices{
 
 
   Future<List<POSLedgerModel>> getReceivedLedgerList() async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
 
     try {
@@ -328,8 +319,7 @@ class POSServices{
   }
 
   Future<List<POSLedgerModel>> getCustomerList() async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
 
     try {
@@ -355,8 +345,7 @@ class POSServices{
   Future<Either<String,String>> addReceivedAmount({
     required ReceivedAmountModel receivedAmount
 }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
       final data = receivedAmount.toJson();
@@ -379,8 +368,7 @@ class POSServices{
   Future<List<ReceivedAmountModel>> getReceivedAmount({
     required int salesMasterId
 }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
 
     try {
@@ -405,8 +393,7 @@ class POSServices{
   Future<double> getReceivedTotalAmount({
     required int salesMasterId
   }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     double total = 0;
 
@@ -439,8 +426,7 @@ class POSServices{
   Future<Either<String,String>> saveCustomerInfo({
     required CustomerInfoModel customerInfo
   }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
       final data = customerInfo.toJson();
@@ -463,8 +449,7 @@ class POSServices{
   Future<Either<String,String>> deleteReceivedAmount({
     required ReceivedAmountModel receivedAmount
   }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
       final data = receivedAmount.toJson();
@@ -487,8 +472,7 @@ class POSServices{
   Future<Either<String,dynamic>> finalSavePOS({
     required int id
   }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
       final response = await dio.post(Api.finalSavePOS,
@@ -515,8 +499,7 @@ class POSServices{
   Future<Either<String,ReceiptPOSModel>> printReceipt({
     required int masterId
 }) async {
-    var res = jsonDecode(result);
-    final userToken = '${res['ptoken']}';
+
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
       final response = await dio.get(Api.printPOS,

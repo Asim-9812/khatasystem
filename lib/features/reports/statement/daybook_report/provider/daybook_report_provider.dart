@@ -23,17 +23,17 @@ class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> fetchTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
-      print(jsonData);
+
+      // print(jsonData);
 
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
+        print(response.data);
         final result = response.data as List<dynamic>;
         state = AsyncValue.data(result);
       }
@@ -44,9 +44,7 @@ class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<List<Map<dynamic, dynamic>>> getDayBookList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());

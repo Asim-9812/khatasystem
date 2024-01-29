@@ -88,6 +88,10 @@ class GroupItem extends ChangeNotifier{
   List selectedDayBookList = [];
   List selectedVatReportList = [];
 
+
+  String token = '';
+
+
   void updateIndex(int text){
     mainIndex = text;
     notifyListeners();
@@ -101,6 +105,12 @@ class GroupItem extends ChangeNotifier{
     ledgerIndex = text;
     notifyListeners();
   }
+
+  void sessionToken(String newToken){
+    token = newToken;
+    notifyListeners();
+  }
+
 
 
   void updateTrialBalanceType(String text){

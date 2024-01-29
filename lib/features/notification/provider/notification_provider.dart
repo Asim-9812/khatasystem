@@ -19,9 +19,7 @@ class NotificationProvider{
 
   Future<List<NotificationModel>> getNotifications({required String token}) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     // // Step 1: Check token expiration
     // bool isTokenExpired(String token) {
     //   final jwt = token.split(".");

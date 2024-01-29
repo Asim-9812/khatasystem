@@ -20,9 +20,7 @@ class FiscalYearProvider{
 
   Future<List<FiscalYearModel>> getFiscalYearList() async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 

@@ -65,7 +65,8 @@ class _SplashViewState extends State<SplashView> {
                 ],
               ),
             );
-          }else{
+          }
+          else{
             return Container(
               width: double.infinity,
               decoration: BoxDecoration(

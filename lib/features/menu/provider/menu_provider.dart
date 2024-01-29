@@ -16,9 +16,7 @@ final menuProvider = FutureProvider.family((ref, String id) => MenuProvider().ge
 class MenuProvider{
   Future<List<MenuModel>> getMenu(String id) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     List<MenuModel> menuList = <MenuModel>[];

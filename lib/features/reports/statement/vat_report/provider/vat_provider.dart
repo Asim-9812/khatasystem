@@ -27,9 +27,7 @@ class VatReportDetailProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues2(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -52,9 +50,7 @@ class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -74,9 +70,7 @@ class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues2(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -99,9 +93,7 @@ class VatReportProvider2 extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -124,9 +116,7 @@ class VatReportProvider3 extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -150,9 +140,7 @@ class VatReportProvider3 extends StateNotifier<AsyncValue<List<dynamic>>>{
 class VatListProvider {
   Future<List<Map<String, dynamic>>> getVatReportList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -195,9 +183,7 @@ class VatListProvider {
   }
   Future<List<Map<String, dynamic>>> getAboveLakhList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -240,9 +226,7 @@ class VatListProvider {
   }
   Future<List<Map<String, dynamic>>> getMonthlyList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -284,9 +268,7 @@ final vatReportIndividualProvider = FutureProvider.family((ref, FilterAnyModel2 
 class VatReportIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -311,9 +293,7 @@ final vatMonthlyProvider = FutureProvider.family((ref, FilterAnyModel filterMode
 class VatMonthlyProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{

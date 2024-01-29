@@ -35,6 +35,7 @@ final userIdProvider2 = Provider<String>((ref) => userId);
 
 int userId2 = 0;
 
+String userToken = '';
 
 // final tokenProvider = Provider<String>((ref) => userToken);
 //
@@ -74,7 +75,8 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 
     var result = sessionBox.get('userReturn');
     var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    ref.read(itemProvider.notifier).sessionToken(res['ptoken']);
+    userToken = ref.watch(itemProvider).token;
 
     String selectedBranch = branchBox.get('selectedBranch');
     branchId = branchBox.get('selectedBranchId');

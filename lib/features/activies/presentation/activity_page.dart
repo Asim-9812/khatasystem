@@ -12,7 +12,7 @@ import '../../../common/colors.dart';
 
 const List<String> list = [
   'Login Activity',
-  // 'Transaction Activity',
+  'Transaction Activity',
 ];
 
 
@@ -45,7 +45,7 @@ class _ActivityViewState extends State<ActivityView> {
       fetchLogActivities(logStreamController, token);
     });
 
-    transactionTimer = Timer(const Duration(seconds: 3), () {
+    transactionTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
       fetchTransactionActivities(transactionStreamController);
     });
   }
@@ -149,6 +149,7 @@ class DisplayBlock extends StatelessWidget {
         stream: transactionController.stream,
         builder: (BuildContext context, AsyncSnapshot<List<EntryMaster>> snapshot) {
           if (!snapshot.hasData) {
+            print('this is executed');
             return Center(
                 child: Image.asset(
               "assets/gif/loading-img2.gif",
@@ -241,6 +242,7 @@ class DisplayBlock extends StatelessWidget {
                       fontWeight: FontWeight.w400),
                 ));
           }
+          snapshot.data!.sort((a,b)=>a.logId!.compareTo(b.logId!));
           final reverseList = snapshot.data!.reversed.toList();
           return ListView.separated(
             itemCount: reverseList.length,

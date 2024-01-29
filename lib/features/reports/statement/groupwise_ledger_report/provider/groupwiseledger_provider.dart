@@ -18,9 +18,7 @@ class GroupWiseLedgerReportProvider extends StateNotifier<AsyncValue<List<dynami
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -49,9 +47,7 @@ class GroupWiseDetailReportProvider extends StateNotifier<AsyncValue<List<dynami
 
   Future<void> getTableValues(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -78,9 +74,7 @@ class LedgerDetailGroupWiseProvider extends StateNotifier<AsyncValue<List<dynami
 
   Future<void> getTableValues(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -108,9 +102,7 @@ final ledgerDetailIndividualProvider = FutureProvider.family((ref, FilterAnyMode
 class LedgerDetailIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{

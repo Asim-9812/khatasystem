@@ -27,9 +27,7 @@ final ledgerItemProvider = FutureProvider.family((ref, GetListModel model) => Le
 class LedgerReportListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -102,9 +100,7 @@ class LedgerReportListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -143,9 +139,7 @@ class LedgerReportListProvider{
 class CustomerLedgerListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -186,9 +180,7 @@ class CustomerLedgerListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -226,9 +218,7 @@ class CustomerLedgerListProvider{
 class SupplierLedgerListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -269,9 +259,7 @@ class SupplierLedgerListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -308,9 +296,7 @@ class SupplierLedgerListProvider{
 class TBPLBSListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -343,9 +329,7 @@ class TBPLBSListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -384,9 +368,7 @@ class TBPLBSListProvider{
 class ListProvider{
   Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -419,9 +401,7 @@ class ListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -455,9 +435,7 @@ class ListProvider{
   }
   Future<List<Map<dynamic, dynamic>>> getSubList2(GetListModel2 getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
 
@@ -491,9 +469,7 @@ class LedgerProvider{
   Future<Map<dynamic, dynamic>> getLedgerItem(GetListModel getListModel) async {
 
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -523,9 +499,7 @@ class NewLedgerProvider extends StateNotifier<AsyncValue<Map<dynamic, dynamic>>>
   Future<void> getLedgerItem(GetListModel getListModel) async {
 
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
@@ -556,9 +530,7 @@ class TableDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -578,9 +550,7 @@ class TableDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getTableValues2(FilterAnyModel2 filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -606,9 +576,7 @@ class ModalDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
   Future<void> getModalTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -633,9 +601,7 @@ final ledgerIndividualProvider = FutureProvider.family((ref, FilterAnyModel filt
 class LedgerIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
@@ -665,9 +631,7 @@ final ledgerVoucherIndividualProvider = FutureProvider.family((ref, FilterAnyMod
 class LedgerVoucherIndividualProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{

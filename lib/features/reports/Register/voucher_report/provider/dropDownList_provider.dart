@@ -22,9 +22,7 @@ final voucherListProvider = FutureProvider.family.autoDispose((ref, GetListModel
 class VoucherListProvider{
   Future<List<Map<dynamic, dynamic>>> getDropDownList(GetListModel getListModel) async {
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());

@@ -16,9 +16,7 @@ final voucherIndividualReportProvider = FutureProvider.family((ref, FilterAnyMod
 class VoucherIndividualDataProvider {
   Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{

@@ -504,7 +504,6 @@ class _POSState extends ConsumerState<POS> {
                                                   if (value == null || value.isEmpty) {
                                                     return 'Please enter a quantity';
                                                   }
-
                                                   // Try parsing as int
                                                   try {
                                                     int.parse(value);

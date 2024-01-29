@@ -19,9 +19,7 @@ class BalanceSheetReportProvider extends StateNotifier<AsyncValue<List<dynamic>>
 
   Future<void> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
-    var result = sessionBox.get('userReturn');
-    var res = jsonDecode(result);
-    String userToken = '${res['ptoken']}';
+    
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{

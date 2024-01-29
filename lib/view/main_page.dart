@@ -8,7 +8,6 @@ import 'package:khata_app/common/colors.dart';
 import 'package:khata_app/common/common_provider.dart';
 import 'package:khata_app/service/update_service/update_service.dart';
 import 'package:khata_app/service/update_service/update_service_impl.dart';
-
 import '../features/activies/presentation/activity_page.dart';
 import '../features/dashboard/presentation/home_screen.dart';
 import '../features/menu/presentation/menu_screen.dart';

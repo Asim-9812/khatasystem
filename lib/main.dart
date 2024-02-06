@@ -4,20 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:khata_app/common/colors.dart';
-import 'package:khata_app/features/reminder/model/time_of_day.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
 
 import 'common/route_manager.dart';
 import 'features/general_reminder/model/general_reminder_model.dart';
 import 'features/notification_controller/notification_controller.dart';
-import 'features/reminder/model/reminder_model.dart';
+
 import 'package:timezone/data/latest.dart' as tz;
 
 late Box sessionBox;
 late Box branchBox;
 final boxA = Provider((ref) => []);
-final boxB = Provider<List<ReminderModel>>((ref) => []);
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -34,12 +32,9 @@ Future<void> main() async {
 
   tz.initializeTimeZones();
   await Hive.initFlutter();
-  Hive.registerAdapter(TimeOfDayAdapter());
-  Hive.registerAdapter(ReminderModelAdapter());
   Hive.registerAdapter<ReminderPattern>(ReminderPatternAdapter());
   Hive.registerAdapter(GeneralReminderModelAdapter());
   Hive.registerAdapter(InitialReminderAdapter());
-  final reminderBox = await Hive.openBox<ReminderModel>('ReminderBox');
   sessionBox = await Hive.openBox('loginSession');
   await Hive.openBox<GeneralReminderModel>('general_reminder_box');
   branchBox = await Hive.openBox('branchInfo');
@@ -48,7 +43,6 @@ Future<void> main() async {
      ProviderScope(
       overrides: [
         boxA.overrideWithValue(userBox.values.toList()),
-        boxB.overrideWithValue(reminderBox.values.toList())
       ],
       child: const KhataApp(),
     ),

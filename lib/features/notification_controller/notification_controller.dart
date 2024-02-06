@@ -29,9 +29,9 @@ class NotificationController {
         null, //'resource://drawable/res_app_icon',//
         [
           NotificationChannel(
-              channelKey: 'alerts',
-              channelName: 'Alerts',
-              channelDescription: 'Notification tests as alerts',
+              channelKey: 'alerts_khata',
+              channelName: 'Alerts_KHATA',
+              channelDescription: 'Notification for khata app',
               playSound: true,
               onlyAlertOnce: true,
               groupAlertBehavior: GroupAlertBehavior.Children,
@@ -208,13 +208,14 @@ Future<void> snoozeAlarm({
   required String msg,
   bool repeatNotif = false,
 }) async {
+  print('snoozed');
   // var nowDate = DateTime.now().add(Duration(hours: hoursFromNow, seconds: 5));
   await AwesomeNotifications().createNotification(
     schedule: NotificationCalendar.fromDate(
        date: DateTime.now().add(const Duration(minutes: 5))),
     content: NotificationContent(
       id: -1,
-      channelKey: 'alerts',
+      channelKey: 'alerts_khata',
       title: '${Emojis.medical_pill} Reminder!!!',
       body: 'Time for your medicine',
       notificationLayout: NotificationLayout.Default,
@@ -234,7 +235,7 @@ Future<void> snoozeAlarm({
       NotificationActionButton(
           key: 'DISMISS',
           label: 'Dismiss',
-          actionType: ActionType.DisabledAction
+          actionType: ActionType.DismissAction
       ),
     ],
   );
@@ -262,7 +263,7 @@ Future<void> myNotificationSchedules({
       NotificationActionButton(
           key: 'DISMISSED',
           label: 'Dismiss',
-          actionType: ActionType.DisabledAction
+          actionType: ActionType.SilentAction
       ),
     ],
   );

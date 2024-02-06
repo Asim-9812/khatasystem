@@ -17,7 +17,7 @@ import '../../../dashboard/presentation/home_screen.dart';
 
 
 final voucherProvider = FutureProvider((ref) => POSServices().getVoucherNo());
-final posSettingsProvider = FutureProvider((ref) => POSServices().getPOSSettings());
+final posSettingsProvider = FutureProvider.family((ref,String pToken) => POSServices().getPOSSettings(posToken: pToken));
 final receivedLedgerProvider = FutureProvider((ref) => POSServices().getReceivedLedgerList());
 final customerListProvider = FutureProvider((ref) => POSServices().getCustomerList());
 final productProvider = FutureProvider.family((ref,String id) => POSServices().getProductList(locationId: id));
@@ -30,6 +30,8 @@ final receiptProvider = FutureProvider.family((ref,int id) => POSServices().prin
 class POSServices{
 
   final dio = Dio();
+
+
 
 
 
@@ -56,9 +58,11 @@ class POSServices{
 
   }
 
-  Future<List<PosSettingsModel>> getPOSSettings() async {
+  Future<List<PosSettingsModel>> getPOSSettings({required String posToken}) async {
 
-    dio.options.headers["Authorization"] = "Bearer $userToken";
+    dio.options.headers["Authorization"] = "Bearer $posToken";
+
+    // print('userToken');
 
 
     try {

@@ -109,8 +109,8 @@ pw.Widget generatePdf({
                   pw.Text('${e.sno}'),
                   pw.Text(e.particulars),
                   pw.Text('${e.qty}'),
-                  pw.Text('${e.rate}'),
-                  pw.Text('${e.totalAmount}'),
+                  pw.Text('${e.rate.toPrecision(2)}'),
+                  pw.Text('${e.totalAmount.toPrecision(2)}'),
                 ],
               ),).toList(),
 
@@ -140,9 +140,9 @@ pw.Widget generatePdf({
                 mainAxisAlignment: pw.MainAxisAlignment.start,
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text(': $totalAmt', style: const pw.TextStyle()),
-                  pw.Text(': $discount', style: const pw.TextStyle()),
-                  pw.Text(': $netAmt', style: const pw.TextStyle()),
+                  pw.Text(': ${totalAmt.toPrecision(2)}', style: const pw.TextStyle()),
+                  pw.Text(': ${discount.toPrecision(2)}', style: const pw.TextStyle()),
+                  pw.Text(': ${netAmt.toPrecision(2)}', style: const pw.TextStyle()),
                 ],
               ),
             ],

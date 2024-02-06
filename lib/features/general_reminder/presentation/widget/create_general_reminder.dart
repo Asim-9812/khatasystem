@@ -668,7 +668,7 @@ class _EditReminderPageState extends ConsumerState<CreateGeneralReminder> {
                                       scheduleList.length; i++) {
                                     final NotificationContent content = NotificationContent(
                                       id: Random().nextInt(9999),
-                                      channelKey: 'alerts',
+                                      channelKey: 'alerts_khata',
                                       title: _titleController.text.trim(),
                                       body: _descriptionController.text,
                                       notificationLayout: NotificationLayout
@@ -744,7 +744,7 @@ class _EditReminderPageState extends ConsumerState<CreateGeneralReminder> {
                                       scheduleList.length; i++) {
                                     final NotificationContent content = NotificationContent(
                                       id: Random().nextInt(9999),
-                                      channelKey: 'alerts',
+                                      channelKey: 'alerts_khata',
                                       title: _titleController.text.trim(),
                                       body: _descriptionController.text,
                                       notificationLayout: NotificationLayout
@@ -844,7 +844,7 @@ class _EditReminderPageState extends ConsumerState<CreateGeneralReminder> {
                                       scheduleList.length; i++) {
                                     final NotificationContent content = NotificationContent(
                                       id: Random().nextInt(9999),
-                                      channelKey: 'alerts',
+                                      channelKey: 'alerts_khata',
                                       title: _titleController.text.trim(),
                                       body: _descriptionController.text,
                                       notificationLayout: NotificationLayout
@@ -934,7 +934,7 @@ class _EditReminderPageState extends ConsumerState<CreateGeneralReminder> {
                                       scheduleList.length; i++) {
                                     final NotificationContent content = NotificationContent(
                                       id: Random().nextInt(9999),
-                                      channelKey: 'alerts',
+                                      channelKey: 'alerts_khata',
                                       title: _titleController.text.trim(),
                                       body: _descriptionController.text,
                                       notificationLayout: NotificationLayout

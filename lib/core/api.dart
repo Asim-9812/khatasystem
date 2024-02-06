@@ -7,7 +7,7 @@ class Api {
 
   // static const baseUrl = 'http://202.51.74.138:88'; // LIVE KHATA SYSTEM
 
-  static const baseUrl = 'http://202.51.74.138:5008'; // DEMO KHATA SYSTEM
+  static const baseUrl = 'http://202.51.74.138:5017'; // DEMO KHATA SYSTEM
 
 
   static const userLogin = '$baseUrl/api/LoginAPI/Login';
@@ -48,6 +48,8 @@ class Api {
   static const delReceivedAmount = '$baseInventoryUrl/DeleteTransactionSalesLedger';
   static const insertCustomerInfo = '$baseInventoryUrl/InsertSalesInfoDrafts';
   static const finalSavePOS = '$baseInventoryUrl/AddAllMasterTable';
+  static const loadSMDFStockPosting = '$baseInventoryUrl/LoadSalesMasterDetailsforStockPosting ';
+  static const updateSalesMasterEntry = '$baseInventoryUrl/UpdateSalesEntryMaster';
   static const printPOS = '$baseInventoryUrl/PrintPOSReceipt';
 
 

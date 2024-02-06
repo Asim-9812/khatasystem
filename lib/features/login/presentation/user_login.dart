@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:khata_app/common/colors.dart';
+import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:khata_app/main.dart';
 import 'package:khata_app/features/login/presentation/branch_page.dart';
 import 'package:khata_app/utils/util_functions.dart';
@@ -398,6 +399,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                               }
                                               navigator.push(MaterialPageRoute(builder: (context) => BranchPage(branchList: branches),));
                                               ref.read(loadingProvider.notifier).toggle();
+                                              userToken = res['ptoken'];
                                             }else{
                                               Fluttertoast.showToast(
                                                 msg: response,
@@ -857,6 +859,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                                           }
                                                           navigator.push(MaterialPageRoute(builder: (context) => BranchPage(branchList: branches),));
                                                           ref.read(loadingProvider.notifier).toggle();
+                                                          ref.read(itemProvider.notifier).sessionToken(res['ptoken']);
                                                         }else{
                                                           Fluttertoast.showToast(
                                                             msg: response,

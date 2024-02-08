@@ -37,6 +37,7 @@ pw.Widget generatePdf({
   String amountInWord = NumberToWord().convert('en-in',receipt.item1.grandTotalAmount.round());
   int customerId = receipt.item1.customerID;
   int userID = receipt.item1.userID;
+  String cashierName = receipt.item1.customerSignatureusername;
 
   return pw.Container(
     child: pw.Column(
@@ -163,7 +164,7 @@ pw.Widget generatePdf({
               pw.SizedBox(height: 10),
               pw.Text('Thank you for visiting us', style: const pw.TextStyle()),
               pw.Divider(),
-              pw.Text('Cashier: $userID', style: const pw.TextStyle()),
+              pw.Text('Cashier: $cashierName', style: const pw.TextStyle()),
             ],
           ),
         ),

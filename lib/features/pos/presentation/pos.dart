@@ -280,7 +280,7 @@ class _POSState extends ConsumerState<POS> {
                                           if(product != null){
                                             setState(() {
                                               addProduct = product;
-                                              productName = product.productName;
+                                              productName = '${product.productName} (${(product.qty! < 0? 0 : product.qty)} ${product.mainunit})';
                                               productRate = product.salesRate;
                                               productUnit = product.mainunit;
                                               productCode = product.productCode;

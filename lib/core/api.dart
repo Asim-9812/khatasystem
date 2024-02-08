@@ -48,8 +48,11 @@ class Api {
   static const delReceivedAmount = '$baseInventoryUrl/DeleteTransactionSalesLedger';
   static const insertCustomerInfo = '$baseInventoryUrl/InsertSalesInfoDrafts';
   static const finalSavePOS = '$baseInventoryUrl/AddAllMasterTable';
-  static const loadSMDFStockPosting = '$baseInventoryUrl/LoadSalesMasterDetailsforStockPosting ';
   static const updateSalesMasterEntry = '$baseInventoryUrl/UpdateSalesEntryMaster';
+  static const loadSMDFStockPosting = '$baseInventoryUrl/LoadSalesMasterDetailsforStockPosting';
+  static const getSalesTransactionCrDrList = '$baseInventoryUrl/GetSalesTransactionCrDrList';
+  static const getSuffixPrefix = '$baseInventoryUrl/GetSuffixPrefix';
+  static const salesLedgerTransactionPosting = '$baseInventoryUrl/SalesLedgerTransactionPosting';
   static const printPOS = '$baseInventoryUrl/PrintPOSReceipt';
 
 

@@ -5,9 +5,11 @@
 
 import 'dart:convert';
 
+import 'package:dartz/dartz_unsafe.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:khata_app/core/api.dart';
 import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/features/pos/domain/model/pos_model.dart';
@@ -74,7 +76,7 @@ class POSServices{
 
         return list;
       } else {
-        throw Exception('Something went wrong');
+        throw Exception('${response.statusCode} : Something went wrong');
       }
     } catch (e) {
       print(e);
@@ -94,7 +96,9 @@ class POSServices{
     try{
       final productResponse = await dio.get('${Api.getProductList}/1/$branchId/null/$locationId');
       if(productResponse.statusCode == 200){
+
         final products = productResponse.data['result'].toList();
+
 
         for(int i =0; i< products.length; i++){
           var productId = products[i]['productId'];
@@ -102,10 +106,11 @@ class POSServices{
           var productName = products[i]['productName'];
           var expiryDate = products[i]['expirydate'];
 
+          // print('${Api.getBatchOfProduct}/3/$branchId/$productCode');
+
           var batchResponse = await dio.get('${Api.getBatchOfProduct}/3/$branchId/$productCode');
 
           if(batchResponse.statusCode == 200){
-
 
             final batchList = batchResponse.data['result'].toList().where((element) => element['batch'] != "0").toList();
             final batch = batchList.isEmpty ? 'N/A' :batchList[0]['batch'];
@@ -239,6 +244,7 @@ class POSServices{
       );
       if(response.statusCode == 200){
         final data = (response.data['result'] as List<dynamic>).map((e) => DraftModel.fromJson(e)).toList();
+
         return data;
       }
       else{
@@ -488,7 +494,99 @@ class POSServices{
           }
       );
       if(response.statusCode == 200){
-        return Right(response.data['result']);
+        final masterId = response.data['result']['masterId'];
+
+        final salesMasterEntryResponse = await dio.post(Api.updateSalesMasterEntry,
+          data: {
+            "branchId": branchId,
+            "yearId": financialYearId, //financialId
+            "salesMasterId": masterId, //allmastertable
+            "salesMasterIdDraft": id, //loaddraft
+            "userId": userId2,
+            "entryMasterId": 0
+          }
+        );
+        if(salesMasterEntryResponse.statusCode == 200){
+          final entryMasterId = salesMasterEntryResponse.data['entryMasterId'];
+          final loadSalesStockPostingResponse = await dio.get(Api.loadSMDFStockPosting,
+            queryParameters: {
+              'omasterId': masterId,
+              'branchId': branchId,
+              'fiscalId': financialYearId,
+              'userId': userId2
+            }
+          );
+          if(loadSalesStockPostingResponse.statusCode == 200){
+            final getSalesTransactionCrDrResponse = await dio.get(Api.getSalesTransactionCrDrList,
+              queryParameters: {
+                'id' : id //loadSalesMasterId
+              }
+            );
+            if(getSalesTransactionCrDrResponse.statusCode == 200){
+              final salesResponse = getSalesTransactionCrDrResponse.data['result'] as List<dynamic>;
+              final getSuffixPrefix = await dio.get(Api.getSuffixPrefix,
+                queryParameters: {
+                  'vId' : 19,
+                  'branchId' : branchId,
+                  'financialYearId' : financialYearId
+                }
+              );
+              if(getSuffixPrefix.statusCode == 200){
+                final extra1 = getSuffixPrefix.data;
+                bool isExecuted = true;
+                for(var transaction in salesResponse){
+
+                  final salesLedgerPosting = await dio.post(Api.salesLedgerTransactionPosting,
+                    data: {
+                      "ledgerPosting_DraftID": 0,
+                      "voucherDate": DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
+                      "voucherTypeID": 19,
+                      "entryMasterID": entryMasterId,
+                      "ledgerId": transaction['ledgerID'],
+                      "drCr": transaction['drCr'],
+                      "debit": transaction['drAmt'],
+                      "credit": transaction['crAmt'],
+                      "yearId": 0,
+                      "branchId": 0,
+                      "userId": 0,
+                      "invoiceNo": 0,
+                      "voucherNo": "0",
+                      "isSubLedger": false,
+                      "hasChild": false,
+                      "isBalance": false,
+                      "extra1": extra1
+                    }
+                  );
+                  if(salesLedgerPosting.statusCode != 200){
+                    isExecuted = false;
+                  }
+                }
+
+                if(isExecuted){
+                  return Right(response.data['result']);
+                }
+                else{
+                  return Left('Something went wrong.');
+                }
+
+              }
+              else{
+                return Left('${getSuffixPrefix.statusCode}: Something went wrong.');
+              }
+            }
+            else{
+              return Left('${getSalesTransactionCrDrResponse.statusCode}: Something went wrong.');
+            }
+          }
+          else{
+            return Left('${loadSalesStockPostingResponse.statusCode}: Something went wrong.');
+          }
+        }
+        else{
+          return Left('${salesMasterEntryResponse.statusCode}: Something went wrong.');
+        }
+
+
       }
       else{
         return Left('${response.statusCode}: Something went wrong.');

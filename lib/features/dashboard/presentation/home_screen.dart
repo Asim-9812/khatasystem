@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:countup/countup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,10 +11,8 @@ import 'package:khata_app/features/dashboard/provider/dashboard_amount_provider.
 import 'package:khata_app/features/login/presentation/status_page.dart';
 import 'package:khata_app/features/pos/domain/services/pos_services.dart';
 import 'package:khata_app/main.dart';
-
 import 'package:khata_app/features/login/presentation/user_login.dart';
 import 'package:khata_app/utils/util_functions.dart';
-
 import '../../../common/colors.dart';
 import '../../../model/dashboard_model.dart';
 import '../../../model/list model/get_list_model.dart';
@@ -204,7 +201,9 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                               textColor: Colors.white,
                               fontSize: 16.0,
                             );
-                            sessionBox.clear();
+                            setState(() {
+                              sessionBox.clear();
+                            });
                             userToken = null;
 
                             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -339,8 +338,6 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 
                               return ListTile(
                                 onTap: (){
-                                  print(res['ptoken']);
-                                  print(tokenForPos);
                                   if(data.isEmpty){
                                     Fluttertoast.showToast(
                                       msg: 'Something went wrong',
@@ -419,8 +416,10 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         ),
                         ListTile(
                           onTap: () {
-                            sessionBox.clear();
-                            branchBox.clear();
+                            setState(() {
+                              sessionBox.clear();
+                              branchBox.clear();
+                            });
                             Navigator.pop(context,true);
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const UserLoginView()));
                           },
@@ -462,7 +461,31 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 
                           return buildDashBoard(true, data);
                         },
-                        error: (error, stackTrace) => Text('$error'),
+                        error: (error, stackTrace) {
+
+                          if(error == 'Authentication failed.'){
+                            Fluttertoast.showToast(
+                              msg: 'Session Expired',
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: ColorManager.primary.withOpacity(0.9),
+                              textColor: Colors.white,
+                              fontSize: 16.0,
+                            );
+                            setState(() {
+                              sessionBox.clear();
+                            });
+                            userToken = null;
+
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(builder: (context) => StatusPage()),
+                                    (Route<dynamic> route) => false,
+                              );
+                            });
+
+                          }
+                          return Text('$error');
+                        },
                         loading: () {
                           return Container(
                             padding: const EdgeInsets.symmetric(horizontal: 40,),
@@ -646,6 +669,11 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         ),
                         ListTile(
                           onTap: () {
+                            setState(() {
+                              sessionBox.clear();
+                              branchBox.clear();
+
+                            });
                             Navigator.pop(context,true);
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const UserLoginView()));
                           },

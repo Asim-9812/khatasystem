@@ -57,6 +57,7 @@ final updateLedgerProvider = ChangeNotifierProvider.autoDispose((ref) => GroupIt
 final updateTypeProvider = ChangeNotifierProvider.autoDispose((ref) => GroupItem());
 
 class GroupItem extends ChangeNotifier{
+  String inquiryForm= '';
   int mainIndex = 0;
   int index = 0;
   int ledgerIndex = 0;
@@ -91,6 +92,11 @@ class GroupItem extends ChangeNotifier{
 
   String token = '';
 
+
+  void updateSelectedDemo(String text){
+    inquiryForm = text;
+    notifyListeners();
+  }
 
   void updateIndex(int text){
     mainIndex = text;

@@ -4,10 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive/hive.dart';
 import 'package:khata_app/common/colors.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
+import 'package:khata_app/features/inquiry/presentation/inquiry_form.dart';
 import 'package:khata_app/main.dart';
 import 'package:khata_app/features/login/presentation/branch_page.dart';
 import 'package:khata_app/utils/util_functions.dart';
@@ -431,7 +433,34 @@ class _UserLoginViewState extends State<UserLoginView> {
                                       );
                                     },
                                   ),
-                                  const SizedBox(height: 50,),
+                                  const SizedBox(height: 10,),
+                                  ElevatedButton(
+                                    onPressed: ()=> Get.to(()=>InquiryForm()),
+                                    style: ElevatedButton.styleFrom(
+                                      elevation: 0,
+                                      backgroundColor: ColorManager.subtitleGrey.withOpacity(0),
+                                      minimumSize: const Size(double.infinity, 60),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.person),
+                                        const SizedBox(width: 10,),
+                                        Text(
+                                          'Request for Demo',
+                                          style: TextStyle(
+                                              color: ColorManager.titleBlue,
+                                              fontFamily: 'Ubuntu',
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 30,),
                                   TextButton(
                                     onPressed: () {
                                       LauncherUtils.launchTermConditionUrl();

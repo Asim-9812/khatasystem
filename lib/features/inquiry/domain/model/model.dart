@@ -4,7 +4,7 @@ class InquiryModel {
   final String address;
   final String contact;
   final String email;
-  final int nature;
+  final String nature;
   String? remarks;
   final String inquiryDateTime;
 

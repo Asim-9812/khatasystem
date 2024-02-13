@@ -13,9 +13,9 @@ class InquiryServices{
 
   final dio = Dio();
 
-  Future<Either<String,String>> submitInquiry({required String token,required InquiryModel inquiry}) async{
+  Future<Either<String,String>> submitInquiry({required InquiryModel inquiry}) async{
 
-    dio.options.headers['Authorization'] = 'Bearer $token';
+    // dio.options.headers['Authorization'] = 'Bearer $token';
 
     try{
       final data = inquiry.toJson();

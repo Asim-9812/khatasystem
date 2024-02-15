@@ -276,31 +276,36 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                       children: [
                         Container(
                             decoration: BoxDecoration(
-                                color: ColorManager.drawerPrimary
+                                color: ColorManager.white
                             ),
                             child: Column(
                               children: [
-                                Image.asset(
-                                  "assets/images/khata-logo-name.png",
-                                ),
-                                const SizedBox(height: 20,),
                                 Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                            color: ColorManager.drawerSecondary,
-                                            borderRadius: BorderRadius.circular(10)
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    "assets/images/khata-logo-name.png",
+                                  ),
+                                ),
+                                Container(
+                                  color: ColorManager.primary,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 70,
+                                          width: 70,
+                                          decoration: BoxDecoration(
+                                              color: ColorManager.drawerSecondary,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          child: const Icon(Icons.person, color: Colors.white, size: 50,),
                                         ),
-                                        child: const Icon(Icons.person, color: Colors.white, size: 50,),
-                                      ),
-                                      const SizedBox(width: 20,),
-                                      Text('${res["userReturn"]["strUsername"]}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white),)
-                                    ],
+                                        const SizedBox(width: 20,),
+                                        Text('${res["userReturn"]["strUsername"]}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.white),)
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],
@@ -551,27 +556,33 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                             ),
                             child: Column(
                               children: [
-                                Image.asset(
-                                  "assets/images/khata-logo-name.png",
-                                ),
-                                const SizedBox(height: 20,),
                                 Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                            color: ColorManager.drawerSecondary,
-                                            borderRadius: BorderRadius.circular(10)
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Image.asset(
+                                    "assets/images/khata-logo-name.png",
+                                  ),
+                                ),
+                                // const SizedBox(height: 20,),
+                                Container(
+                                  color: ColorManager.primary,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 70,
+                                          width: 70,
+                                          decoration: BoxDecoration(
+                                              color: ColorManager.drawerSecondary,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          child: const Icon(Icons.person, color: Colors.white, size: 50,),
                                         ),
-                                        child: const Icon(Icons.person, color: Colors.white, size: 50,),
-                                      ),
-                                      const SizedBox(width: 20,),
-                                      const Text('Username', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),)
-                                    ],
+                                        const SizedBox(width: 20,),
+                                        const Text('Username', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),)
+                                      ],
+                                    ),
                                   ),
                                 )
                               ],

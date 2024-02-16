@@ -47,7 +47,7 @@ pw.Widget generatePdf({
         pw.Text(companyName),
         pw.Text(companyAddress),
         pw.SizedBox(height: 20),
-        pw.Text('VAT No. $buyersPAN'),
+        pw.Text('VAT No.'),
         pw.Text('ABBREVIATED TAX INVOICE'),
         pw.SizedBox(height: 20),
         pw.Padding(
@@ -78,7 +78,7 @@ pw.Widget generatePdf({
                   pw.Text(': $nepDate'),
                   pw.Text(': $vendorName'),
                   pw.Text(': $vendorAddress'),
-                  pw.Text(': $vendorsPan'),
+                  pw.Text(': $buyersPAN'),
                   pw.Text(': $paymentMode'),
                   pw.Text(': $narration'),
                 ],

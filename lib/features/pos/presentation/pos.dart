@@ -650,8 +650,8 @@ class _POSState extends ConsumerState<POS> {
                                                                           chargeAmt: 0,
                                                                           customerID: 2,
                                                                           customerName: '',
-                                                                          entryDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                                                                          expiryDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                                          entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
+                                                                          expiryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                           extra1: '0',
                                                                           extra2: '0',
                                                                           financialYearID: financialYearId,
@@ -687,16 +687,33 @@ class _POSState extends ConsumerState<POS> {
                                                                           transactionUnitCost: double.parse(_netTotalController.text.trim()),
                                                                           transactionUnitID: addProduct!.fromUnitId!,
                                                                           updatedBy: 0,
-                                                                          updatedDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                                          updatedDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                           userID: userId2,
                                                                           vat: 0,
                                                                           vatAmt: 0,
-                                                                          voucherDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                                          voucherDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                           voucherNo: voucherNo,
                                                                           vouchertypeID: 19
                                                                       );
+                                                                      SalesItemAllocationModel item = SalesItemAllocationModel(
+                                                                          locationDetailsID: 0,
+                                                                          voucherTypeID: 19,
+                                                                          masterID: 0,
+                                                                          detailsID: 0,
+                                                                          productID: addProduct!.productId!,
+                                                                          locationID: int.parse(locationId),
+                                                                          qty: double.parse(_quantityController.text.trim()),
+                                                                          unitID: addProduct!.fromUnitId!,
+                                                                          batch: addProduct!.batch!,
+                                                                          expiryDate: addProduct!.expirydate!,
+                                                                          stockQty: (int.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
+                                                                          extra1: voucherNo,
+                                                                          flag: 2,
+                                                                          userID: 0,
+                                                                          entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now())
+                                                                      );
 
-                                                                      final response = await POSServices().addSalesDraftPos(newDraft: addDraft);
+                                                                      final response = await POSServices().addSalesDraftPos(newDraft: addDraft,itemAllocation: item,voucherNo: voucherNo,salesLedgerId: int.parse(salesAccountId));
 
                                                                       if(response.isLeft()){
                                                                         final leftValue = response.fold((l) => l, (r) => null);
@@ -833,6 +850,7 @@ class _POSState extends ConsumerState<POS> {
                                                                 setState(() {
                                                                   isPostingDraft = true;
                                                                 });
+                                                                print('this is ${addProduct!.productId!}');
                                                                 DraftModel addDraft = DraftModel(
                                                                     additionalIncomeAmt: 0,
                                                                     batch: addProduct!.batch!,
@@ -846,8 +864,8 @@ class _POSState extends ConsumerState<POS> {
                                                                     chargeAmt: 0,
                                                                     customerID: 2,
                                                                     customerName: '',
-                                                                    entryDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                                                                    expiryDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                                    entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
+                                                                    expiryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                     extra1: '0',
                                                                     extra2: '0',
                                                                     financialYearID: financialYearId,
@@ -883,16 +901,34 @@ class _POSState extends ConsumerState<POS> {
                                                                     transactionUnitCost: double.parse(_netTotalController.text.trim()),
                                                                     transactionUnitID: addProduct!.fromUnitId!,
                                                                     updatedBy: 0,
-                                                                    updatedDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                                    updatedDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                     userID: userId2,
                                                                     vat: 0,
                                                                     vatAmt: 0,
-                                                                    voucherDate: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                                    voucherDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                     voucherNo: voucherNo,
                                                                     vouchertypeID: 19
                                                                 );
 
-                                                                final response = await POSServices().addSalesDraftPos(newDraft: addDraft);
+                                                                SalesItemAllocationModel item = SalesItemAllocationModel(
+                                                                    locationDetailsID: 0,
+                                                                    voucherTypeID: 19,
+                                                                    masterID: 0,
+                                                                    detailsID: 0,
+                                                                    productID: addProduct!.productId!,
+                                                                    locationID: int.parse(locationId),
+                                                                    qty: double.parse(_quantityController.text.trim()),
+                                                                    unitID: addProduct!.fromUnitId!,
+                                                                    batch: addProduct!.batch!,
+                                                                    expiryDate: addProduct!.expirydate,
+                                                                    stockQty: (int.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
+                                                                    extra1: voucherNo,
+                                                                    flag: 2,
+                                                                    userID: userId2,
+                                                                    entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now())
+                                                                );
+
+                                                                final response = await POSServices().addSalesDraftPos(newDraft: addDraft,itemAllocation: item,voucherNo: voucherNo,salesLedgerId: int.parse(salesAccountId));
 
                                                                 if(response.isLeft()){
                                                                   final leftValue = response.fold((l) => l, (r) => null);
@@ -1329,20 +1365,20 @@ class _POSState extends ConsumerState<POS> {
                                                                         email: '',
                                                                         creditPeriod: 0,
                                                                         receiptMode: 'Cash',
-                                                                        dispatchedDate: DateFormat('yyyy-MM-dd').parse(DateTime.now().toString()),
+                                                                        dispatchedDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                         dispatchedThrough: '',
                                                                         destination: '',
                                                                         carrierAgent: '',
                                                                         vehicleNo: '',
                                                                         orginalInvoiceNo: 'N/A',
-                                                                        orginalInvoiceDate: DateFormat('yyyy-MM-dd').parse(DateTime.now().toString()),
+                                                                        orginalInvoiceDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                         orderChallanNo: '',
                                                                         lR_RRNO_BillOfLanding: '',
                                                                         remarks: '',
                                                                         userID: userId2,
-                                                                        entryDate: DateFormat('yyyy-MM-dd').parse(DateTime.now().toString()),
+                                                                        entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                         updatedBy: 0,
-                                                                        updatedDate: DateFormat('yyyy-MM-dd').parse(DateTime.now().toString()),
+                                                                        updatedDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                         extra1: voucherNo,
                                                                         extra2: 'string',
                                                                         flag: 0
@@ -1369,9 +1405,9 @@ class _POSState extends ConsumerState<POS> {
                                                                           drAmt: receivingAmount,
                                                                           crAmt: 0.0,
                                                                           userID: userId2,
-                                                                          entryDate: DateFormat('yyyy-MM-dd').parse(DateTime.now().toString()),
+                                                                          entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                           updatedBy: 0,
-                                                                          updatedDate: DateFormat('yyyy-MM-dd').parse(DateTime.now().toString()),
+                                                                          updatedDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                           extra1: "1",
                                                                           extra2: "string",
                                                                           flag: 0,
@@ -1510,7 +1546,7 @@ class _POSState extends ConsumerState<POS> {
                                                                                               backgroundColor: ColorManager.green
                                                                                             ),
                                                                                               onPressed: ()async {
-                                                                                                final response = await POSServices().finalSavePOS(id: drafts.first.salesMasterID);
+                                                                                                final response = await POSServices().finalSavePOS(id: drafts.first.salesMasterID,voucherNo: voucherNo);
                                                                                                 if(response.isLeft()){
                                                                                                   final leftValue = response.fold((l) => l, (r) => null );
                                                                                                   Fluttertoast.showToast(
@@ -1522,6 +1558,7 @@ class _POSState extends ConsumerState<POS> {
                                                                                                   );
                                                                                                 }
                                                                                                 else{
+
                                                                                                   final right = response.fold((l) => null, (r) => r);
                                                                                                   final salesMasterId = right['masterId'];
                                                                                                   // print(right);
@@ -1545,6 +1582,7 @@ class _POSState extends ConsumerState<POS> {
                                                                                                   else{
                                                                                                     Navigator.pop(context);
                                                                                                     final printReceipt = printResponse.fold((l) => null, (r) => r);
+                                                                                                    await POSServices().deleteDraftTable(id: drafts.first.salesMasterID);
                                                                                                     _printReceipt(printReceipt!);
 
                                                                                                   }

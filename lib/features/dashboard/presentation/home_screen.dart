@@ -201,12 +201,13 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                               textColor: Colors.white,
                               fontSize: 16.0,
                             );
-                            setState(() {
-                              sessionBox.clear();
-                            });
-                            userToken = null;
+
 
                             WidgetsBinding.instance.addPostFrameCallback((_) {
+                              setState(() {
+                                sessionBox.clear();
+                              });
+                              userToken = null;
                               Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(builder: (context) => StatusPage()),
                                     (Route<dynamic> route) => false,
@@ -476,12 +477,13 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                               textColor: Colors.white,
                               fontSize: 16.0,
                             );
-                            setState(() {
-                              sessionBox.clear();
-                            });
-                            userToken = null;
 
                             WidgetsBinding.instance.addPostFrameCallback((_) {
+                              setState(() {
+                                sessionBox.clear();
+                              });
+                              userToken = null;
+
                               Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(builder: (context) => StatusPage()),
                                     (Route<dynamic> route) => false,

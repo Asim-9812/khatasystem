@@ -41,6 +41,9 @@ class Api {
   static const getVoucherNo = '$baseInventoryUrl/GetSuffixPrefix';
   static const getConversionFactor = '$baseInventoryUrl/GetMissingUnitConversionFact';
   static const addDraftPOS = '$baseInventoryUrl/AddSalesMasterDetailsPOS';
+  static const loadSalesDraft = '$baseInventoryUrl/AddSalesMasterDetailsPOS';
+  static const addTransactionSalesLedgerPOS = '$baseInventoryUrl/AddTransactionSalesLedgerPOS';
+  static const addSalesAllocation = '$baseInventoryUrl/AddSalesItemAllocation';
   static const loadDraftPOS = '$baseInventoryUrl/LoadSalesMasterDetails';
   static const delDraftPOS = '$baseInventoryUrl/DeleteSalesDraftTable';
   static const deleteDraftItems = '$baseInventoryUrl/DeleteSalesMasterDraftEntry';
@@ -48,7 +51,7 @@ class Api {
   static const getReceivedAmount = '$baseInventoryUrl/GetSalesTransactionList';
   static const delReceivedAmount = '$baseInventoryUrl/DeleteTransactionSalesLedger';
   static const insertCustomerInfo = '$baseInventoryUrl/InsertSalesInfoDrafts';
-  static const finalSavePOS = '$baseInventoryUrl/AddAllMasterTable';
+  static const finalSavePOS = '$baseInventoryUrl/AddAllMasterTablePOS';
   static const updateSalesMasterEntry = '$baseInventoryUrl/UpdateSalesEntryMaster';
   static const loadSMDFStockPosting = '$baseInventoryUrl/LoadSalesMasterDetailsforStockPosting';
   static const getSalesTransactionCrDrList = '$baseInventoryUrl/GetSalesTransactionCrDrList';

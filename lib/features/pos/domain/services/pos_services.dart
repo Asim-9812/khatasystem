@@ -112,41 +112,27 @@ class POSServices{
 
           if(batchResponse.statusCode == 200){
 
-            final batchList = batchResponse.data['result'].toList().where((element) => element['batch'] != "0").toList();
-            final batch = batchList.isEmpty ? 'N/A' :batchList[0]['batch'];
-            final skuUnit = batchList.isEmpty ? 'N/A' :batchList[0]['skuunit'];
+            final batchList = (batchResponse.data['result'] as List<dynamic>).where((element) => element['batch'] != "0").toList();
+            for(var b in batchList){
+              final batch = b['batch'];
+              final skuUnit = b['skuunit'];
 
-            final unitResponse = await dio.post(Api.getUnitByBatch,
-                data:{
-                  "branch": branchId,
-                  "flag": 9,
-                  "productCode": productCode,
-                  "batch": batch,
-                  "productId": productId,
-                  "unit": 0
-                }
-            );
-            if(unitResponse.statusCode == 200){
-              var unitId = unitResponse.data['result'].toList().isEmpty? 0 : unitResponse.data['result'][0]['fromUnitId'] ;
-              var baseUnit =unitResponse.data['result'].toList().isEmpty? 'N/A' : unitResponse.data['result'][0]['baseunit'];
-              var mainUnit =unitResponse.data['result'].toList().isEmpty? 'N/A' : unitResponse.data['result'][0]['mainunit'];
-              var qty =unitResponse.data['result'].toList().isEmpty? 0 : unitResponse.data['result'][0]['qty'];
-              final rateResponse = await dio.post(Api.getUnitByBatch,
+              final unitResponse = await dio.post(Api.getUnitByBatch,
                   data:{
                     "branch": branchId,
-                    "flag": 5,
-                    "productCode": 'N/A',
+                    "flag": 9,
+                    "productCode": productCode,
                     "batch": batch,
                     "productId": productId,
-                    "unit": unitId
+                    "unit": 0
                   }
               );
-              if(rateResponse.statusCode==200){
-                final rateList = rateResponse.data['result'].toList();
-                var productUnitID =rateList.isEmpty ? 0: rateResponse.data['result'][0]['productUnitID'];
-                var mrp = rateList.isEmpty ? 0: rateResponse.data['result'][0]['mrp'].toDouble();
-                var salesRate = rateList.isEmpty ? 0 : rateResponse.data['result'][0]['salesRate'];
-                final conversionFactor = await dio.post(Api.getConversionFactor,
+              if(unitResponse.statusCode == 200 && (unitResponse.data['result'] as List<dynamic>).isNotEmpty){
+                var unitId = unitResponse.data['result'].toList().isEmpty? 0 : unitResponse.data['result'][0]['fromUnitId'] ;
+                var baseUnit =unitResponse.data['result'].toList().isEmpty? 'N/A' : unitResponse.data['result'][0]['baseunit'];
+                var mainUnit =unitResponse.data['result'].toList().isEmpty? 'N/A' : unitResponse.data['result'][0]['mainunit'];
+                var qty =unitResponse.data['result'].toList().isEmpty? 0 : unitResponse.data['result'][0]['qty'];
+                final rateResponse = await dio.post(Api.getUnitByBatch,
                     data:{
                       "branch": branchId,
                       "flag": 5,
@@ -156,35 +142,52 @@ class POSServices{
                       "unit": unitId
                     }
                 );
-
-                if(conversionFactor.statusCode == 200){
-                  final conversionList = conversionFactor.data['result'].toList();
-                  var factor =conversionList.isEmpty? 0 : conversionFactor.data['result'][0]['conversionFactor'];
-                  ProductModel newProduct = ProductModel(
-                      qty: qty.toDouble(),
-                      productId: productId,
-                      productCode:productCode,
-                      productName: productName,
-                      productUnitID: productUnitID,
-                      conversionFactor:factor.toDouble(),
-                      fromUnitId:unitId,
-                      branchId: 0,
-                      baseQty: 0.0,
-                      batch: batch,
-                      isvatable: false,
-                      expirydate: expiryDate,
-                      baseunit: baseUnit,
-                      mainunit: mainUnit,
-                      locationId: 0,
-                      mrp: mrp.toDouble(),
-                      salesRate: salesRate.toDouble(),
-                      skuunit: skuUnit
+                if(rateResponse.statusCode==200){
+                  final rateList = rateResponse.data['result'].toList();
+                  var productUnitID =rateList.isEmpty ? 0: rateResponse.data['result'][0]['productUnitID'];
+                  var mrp = rateList.isEmpty ? 0: rateResponse.data['result'][0]['mrp'].toDouble();
+                  var salesRate = rateList.isEmpty ? 0 : rateResponse.data['result'][0]['salesRate'];
+                  final conversionFactor = await dio.post(Api.getConversionFactor,
+                      data:{
+                        "branch": branchId,
+                        "flag": 5,
+                        "productCode": 'N/A',
+                        "batch": batch,
+                        "productId": productId,
+                        "unit": unitId
+                      }
                   );
-                  newProductList.add(newProduct);
-                }
-              }
 
+                  if(conversionFactor.statusCode == 200){
+                    final conversionList = conversionFactor.data['result'].toList();
+                    var factor =conversionList.isEmpty? 0 : conversionFactor.data['result'][0]['conversionFactor'];
+                    ProductModel newProduct = ProductModel(
+                        qty: qty.toDouble(),
+                        productId: productId,
+                        productCode:productCode,
+                        productName: productName,
+                        productUnitID: productUnitID,
+                        conversionFactor:factor.toDouble(),
+                        fromUnitId:unitId,
+                        branchId: 0,
+                        baseQty: 0.0,
+                        batch: batch,
+                        isvatable: false,
+                        expirydate: expiryDate,
+                        baseunit: baseUnit,
+                        mainunit: mainUnit,
+                        locationId: 0,
+                        mrp: mrp.toDouble(),
+                        salesRate: salesRate.toDouble(),
+                        skuunit: skuUnit
+                    );
+                    newProductList.add(newProduct);
+                  }
+                }
+
+              }
             }
+
           }
         }
 
@@ -205,27 +208,65 @@ class POSServices{
 
 
   Future<Either<String,String>> addSalesDraftPos({
-    DraftModel? newDraft
+    required String voucherNo,
+    required int salesLedgerId,
+    required DraftModel newDraft,
+    required SalesItemAllocationModel itemAllocation
 }) async {
 
-    if(newDraft != null){
-      dio.options.headers["Authorization"] = "Bearer $userToken";
-      final data = newDraft.toJson();
-      try{
+    dio.options.headers["Authorization"] = "Bearer $userToken";
+    final data = newDraft.toJson();
+    final item = itemAllocation.toJson();
+    print(item);
+    try{
+      final allocateResponse = await dio.post(Api.addSalesAllocation,
+          data: item
+      );
+      if(allocateResponse.statusCode == 200){
         final response = await dio.post(Api.addDraftPOS,
-          data: data
+            data: data
         );
-        if(response.statusCode == 200){
-          return const Right('Draft added');
-        }
-        else{
+        if(response.statusCode == 200) {
+          final draftResponse = await dio.get(Api.loadDraftPOS,
+              queryParameters: {
+                'voucherNo' : voucherNo
+              }
+          );
+          if(draftResponse.statusCode == 200){
+            final data = (draftResponse.data['result'] as List<dynamic>).map((e) => DraftModel.fromJson(e)).toList();
+            final transactionResponse = await dio.post(Api.addTransactionSalesLedgerPOS,
+              data: {
+                "voucherTypeID": 19,
+                "masterID": data.first.salesMasterID,
+                "ledgerID": salesLedgerId,
+                "drAmt": 0,
+                "crAmt": newDraft.grossAmt,
+                "userID": userId2,
+                "extra1": voucherNo
+              }
+            );
+            if(transactionResponse.statusCode == 200){
+              return const Right('Draft added');
+            }
+            else{
+              return Left('${response.statusCode} : Something went Wrong');
+            }
+
+          }
+          else{
+            return Left('${response.statusCode} : Something went Wrong');
+          }
+
+
+        }else{
           return Left('${response.statusCode} : Something went Wrong');
         }
-      }on DioException catch(e){
-        return Left('$e');
       }
-    } else{
-      return const Left('No Draft to add');
+      else{
+        return Left('${allocateResponse.statusCode} : Something went Wrong');
+      }
+    }on DioException catch(e){
+      return Left('$e');
     }
 }
 
@@ -235,6 +276,7 @@ class POSServices{
 }) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
+    print('voucher no : $voucherNo');
     try{
 
       final response = await dio.get(Api.loadDraftPOS,
@@ -480,11 +522,20 @@ class POSServices{
 
 
   Future<Either<String,dynamic>> finalSavePOS({
-    required int id
+    required int id,
+    required String voucherNo
   }) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
+      final pos = {
+        "masterId": id,
+        "financialId": 0,
+        "branchId": 0,
+        "detailsId": 0
+      };
+
+      print('add : $pos');
       final response = await dio.post(Api.finalSavePOS,
           data: {
             "masterId": id,
@@ -495,6 +546,16 @@ class POSServices{
       );
       if(response.statusCode == 200){
         final masterId = response.data['result']['masterId'];
+
+        final update = {
+          "branchId": branchId,
+          "yearId": financialYearId, //financialId
+          "salesMasterId": masterId, //allmastertable
+          "salesMasterIdDraft": id, //loaddraft
+          "userId": userId2,
+          "entryMasterId": 0
+        };
+        print('update : $update');
 
         final salesMasterEntryResponse = await dio.post(Api.updateSalesMasterEntry,
           data: {
@@ -507,6 +568,13 @@ class POSServices{
           }
         );
         if(salesMasterEntryResponse.statusCode == 200){
+          final load ={
+            'omasterId': masterId,
+            'branchId': branchId,
+            'fiscalId': financialYearId,
+            'userId': userId2
+          };
+          print('load: $load');
           final entryMasterId = salesMasterEntryResponse.data['entryMasterId'];
           final loadSalesStockPostingResponse = await dio.get(Api.loadSMDFStockPosting,
             queryParameters: {
@@ -524,19 +592,13 @@ class POSServices{
             );
             if(getSalesTransactionCrDrResponse.statusCode == 200){
               final salesResponse = getSalesTransactionCrDrResponse.data['result'] as List<dynamic>;
-              final getSuffixPrefix = await dio.get(Api.getSuffixPrefix,
-                queryParameters: {
-                  'vId' : 19,
-                  'branchId' : branchId,
-                  'financialYearId' : financialYearId
-                }
-              );
-              if(getSuffixPrefix.statusCode == 200){
-                final extra1 = getSuffixPrefix.data;
-                bool isExecuted = true;
-                for(var transaction in salesResponse){
+              print(salesResponse);
+              final extra1 = voucherNo;
+              bool isExecuted = true;
+              for(var transaction in salesResponse){
 
-                  final salesLedgerPosting = await dio.post(Api.salesLedgerTransactionPosting,
+
+                final salesLedgerPosting = await dio.post(Api.salesLedgerTransactionPosting,
                     data: {
                       "ledgerPosting_DraftID": 0,
                       "voucherDate": DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
@@ -546,9 +608,9 @@ class POSServices{
                       "drCr": transaction['drCr'],
                       "debit": transaction['drAmt'],
                       "credit": transaction['crAmt'],
-                      "yearId": 0,
-                      "branchId": 0,
-                      "userId": 0,
+                      "yearId": financialYearId,
+                      "branchId": branchId,
+                      "userId": userId2,
                       "invoiceNo": 0,
                       "voucherNo": "0",
                       "isSubLedger": false,
@@ -556,23 +618,19 @@ class POSServices{
                       "isBalance": false,
                       "extra1": extra1
                     }
-                  );
-                  if(salesLedgerPosting.statusCode != 200){
-                    isExecuted = false;
-                  }
+                );
+                if(salesLedgerPosting.statusCode != 200){
+                  isExecuted = false;
                 }
+              }
 
-                if(isExecuted){
-                  return Right(response.data['result']);
-                }
-                else{
-                  return Left('Something went wrong.');
-                }
-
+              if(isExecuted){
+                return Right(response.data['result']);
               }
               else{
-                return Left('${getSuffixPrefix.statusCode}: Something went wrong.');
+                return Left('Something went wrong.');
               }
+
             }
             else{
               return Left('${getSalesTransactionCrDrResponse.statusCode}: Something went wrong.');

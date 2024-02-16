@@ -82,7 +82,7 @@ class PosSettingsModel {
   final int branchID;
   final String? remarks;
   final String? updatedBy;
-  final DateTime updateDate;
+  final String updateDate;
   final bool isDefault;
   final String? extra1;
   final String? extra2;
@@ -114,7 +114,7 @@ class PosSettingsModel {
       branchID: json['branchID'],
       remarks: json['remarks'],
       updatedBy: json['updatedBy'],
-      updateDate: DateTime.parse(json['updateDate']),
+      updateDate: (json['updateDate']),
       isDefault: json['isDefault'],
       extra1: json['extra1'],
       extra2: json['extra2'],
@@ -169,7 +169,7 @@ class DraftModel {
   int customerID;
   String customerName;
   String entryDate;
-  String expiryDate;
+  String? expiryDate;
   String extra1;
   String extra2;
   int? flag;
@@ -234,7 +234,7 @@ class DraftModel {
     required this.customerID,
     required this.customerName,
     required this.entryDate,
-    required this.expiryDate,
+    this.expiryDate,
     required this.extra1,
     required this.extra2,
     this.flag,
@@ -424,6 +424,83 @@ class DraftModel {
 
 }
 
+class SalesItemAllocationModel {
+  final int locationDetailsID;
+  final int voucherTypeID;
+  final int masterID;
+  final int detailsID;
+  final int productID;
+  final int locationID;
+  final double qty;
+  final int unitID;
+  final String batch;
+  String? expiryDate;
+  final double stockQty;
+  final String extra1;
+  final int flag;
+  final int userID;
+  final String entryDate;
+
+  SalesItemAllocationModel({
+    required this.locationDetailsID,
+    required this.voucherTypeID,
+    required this.masterID,
+    required this.detailsID,
+    required this.productID,
+    required this.locationID,
+    required this.qty,
+    required this.unitID,
+    required this.batch,
+    this.expiryDate,
+    required this.stockQty,
+    required this.extra1,
+    required this.flag,
+    required this.userID,
+    required this.entryDate,
+  });
+
+  factory SalesItemAllocationModel.fromJson(Map<String, dynamic> json) {
+    return SalesItemAllocationModel(
+      locationDetailsID: json['locationDetailsID'] ?? 0,
+      voucherTypeID: json['voucherTypeID'] ?? 0,
+      masterID: json['masterID'] ?? 0,
+      detailsID: json['detailsID'] ?? 0,
+      productID: json['productID'] ?? '',
+      locationID: json['locationID'] ?? 0,
+      qty: json['qty'] ?? 0,
+      unitID: json['unitID'] ?? 0,
+      batch: json['batch'] ?? 'N/A',
+      expiryDate: json['expiryDate'] ?? '',
+      stockQty: json['stockQty'] ?? 0,
+      extra1: json['extra1'] ?? '',
+      flag: json['flag'] ?? 0,
+      userID: json['userID'] ?? 0,
+      entryDate: json['entryDate'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'locationDetailsID': locationDetailsID,
+      'voucherTypeID': voucherTypeID,
+      'masterID': masterID,
+      'detailsID': detailsID,
+      'productID': productID,
+      'locationID': locationID,
+      'qty': qty,
+      'unitID': unitID,
+      'batch': batch,
+      'expiryDate': expiryDate,
+      'stockQty': stockQty,
+      'extra1': extra1,
+      'flag': flag,
+      'userID': userID,
+      'entryDate': entryDate,
+    };
+  }
+}
+
+
 
 class ReceivedAmountModel {
   int transactionDetailsID;
@@ -434,9 +511,9 @@ class ReceivedAmountModel {
   double drAmt;
   double crAmt;
   int userID;
-  DateTime entryDate;
+  String entryDate;
   int updatedBy;
-  DateTime updatedDate;
+  String updatedDate;
   String extra1;
   String extra2;
   int flag;
@@ -470,9 +547,9 @@ class ReceivedAmountModel {
       drAmt: json['drAmt'].toDouble(),
       crAmt: json['crAmt'].toDouble(),
       userID: json['userID'],
-      entryDate: DateTime.parse(json['entryDate']),
+      entryDate: (json['entryDate']),
       updatedBy: json['updatedBy'],
-      updatedDate: DateTime.parse(json['updatedDate']),
+      updatedDate: (json['updatedDate']),
       extra1: json['extra1'],
       extra2: json['extra2'],
       flag: json['flag'],
@@ -490,9 +567,9 @@ class ReceivedAmountModel {
       'drAmt': drAmt,
       'crAmt': crAmt,
       'userID': userID,
-      'entryDate': entryDate.toIso8601String(),
+      'entryDate': entryDate,
       'updatedBy': updatedBy,
-      'updatedDate': updatedDate.toIso8601String(),
+      'updatedDate': updatedDate,
       'extra1': extra1,
       'extra2': extra2,
       'flag': flag,
@@ -515,20 +592,20 @@ class CustomerInfoModel {
   String email;
   int creditPeriod;
   String receiptMode;
-  DateTime dispatchedDate;
+  String dispatchedDate;
   String dispatchedThrough;
   String destination;
   String carrierAgent;
   String vehicleNo;
   String orginalInvoiceNo;
-  DateTime orginalInvoiceDate;
+  String orginalInvoiceDate;
   String orderChallanNo;
   String lR_RRNO_BillOfLanding;
   String remarks;
   int userID;
-  DateTime entryDate;
+  String entryDate;
   int updatedBy;
-  DateTime updatedDate;
+  String updatedDate;
   String extra1;
   String extra2;
   int flag;
@@ -575,20 +652,20 @@ class CustomerInfoModel {
       email: json['email'],
       creditPeriod: json['creditPeriod'],
       receiptMode: json['receiptMode'],
-      dispatchedDate: DateTime.parse(json['dispatchedDate']),
+      dispatchedDate: (json['dispatchedDate']),
       dispatchedThrough: json['dispatchedThrough'],
       destination: json['destination'],
       carrierAgent: json['carrierAgent'],
       vehicleNo: json['vehicleNo'],
       orginalInvoiceNo: json['orginalInvoiceNo'],
-      orginalInvoiceDate: DateTime.parse(json['orginalInvoiceDate']),
+      orginalInvoiceDate: (json['orginalInvoiceDate']),
       orderChallanNo: json['orderChallanNo'],
       lR_RRNO_BillOfLanding: json['lR_RRNO_BillOfLanding'],
       remarks: json['remarks'],
       userID: json['userID'],
-      entryDate: DateTime.parse(json['entryDate']),
+      entryDate: (json['entryDate']),
       updatedBy: json['updatedBy'],
-      updatedDate: DateTime.parse(json['updatedDate']),
+      updatedDate: (json['updatedDate']),
       extra1: json['extra1'],
       extra2: json['extra2'],
       flag: json['flag'],
@@ -607,20 +684,20 @@ class CustomerInfoModel {
       'email': email,
       'creditPeriod': creditPeriod,
       'receiptMode': receiptMode,
-      'dispatchedDate': dispatchedDate.toIso8601String(),
+      'dispatchedDate': dispatchedDate,
       'dispatchedThrough': dispatchedThrough,
       'destination': destination,
       'carrierAgent': carrierAgent,
       'vehicleNo': vehicleNo,
       'orginalInvoiceNo': orginalInvoiceNo,
-      'orginalInvoiceDate': orginalInvoiceDate.toIso8601String(),
+      'orginalInvoiceDate': orginalInvoiceDate,
       'orderChallanNo': orderChallanNo,
       'lR_RRNO_BillOfLanding': lR_RRNO_BillOfLanding,
       'remarks': remarks,
       'userID': userID,
-      'entryDate': entryDate.toIso8601String(),
+      'entryDate': entryDate,
       'updatedBy': updatedBy,
-      'updatedDate': updatedDate.toIso8601String(),
+      'updatedDate': updatedDate,
       'extra1': extra1,
       'extra2': extra2,
       'flag': flag,

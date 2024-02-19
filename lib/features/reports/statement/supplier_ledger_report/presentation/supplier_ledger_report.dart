@@ -62,6 +62,7 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
 
     return Consumer(
       builder: (context, ref, child) {
+        final isCustomerSupplierLoading = ref.watch(itemProvider).isCustomerSupplierLoading;
         final outCome = ref.watch(supplierListProvider(modelRef));
         final res = ref.watch(supplierLedgerReportProvider);
         final fromDate = ref.watch(itemProvider).fromDate;
@@ -142,9 +143,9 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
                   /// this function returns 'accountGroudId--' as required by the api and selected item
                   String groupValue(String val) {
                     if (val == "All") {
-                      return 'accountGroudId--';
+                      return 'accountGroudId--${data[1]['All']}';
                     } else {
-                      return 'accountGroudId--${data[0][groupItemData]}';
+                      return 'accountGroudId--${data[1][groupItemData]}';
                     }
                   }
 
@@ -189,7 +190,7 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
 
                   DataFilterModel filterModel = DataFilterModel();
                   filterModel.tblName =
-                      "AccountLedgerReport--SupplierLedgerReport";
+                      "CustomerSupplierLedgerReport--CustomerSupplierLedgerReport";
                   filterModel.strName = "";
                   filterModel.underColumnName = null;
                   filterModel.underIntID = 0;
@@ -380,142 +381,57 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
                                     },
                                   ),
                                   const Spacer(),
-                                  groupItemData == 'All'
-                                      ? DropdownSearch<String>(
-                                          items: ledgers,
-                                          selectedItem: ledgerItem,
-                                          dropdownDecoratorProps:
-                                              DropDownDecoratorProps(
-                                            baseStyle: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w500),
-                                            dropdownSearchDecoration:
-                                                InputDecoration(
-                                              border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                    color: Colors.black
-                                                        .withOpacity(0.45),
-                                                    width: 2,
-                                                  )),
-                                              contentPadding:
-                                                  const EdgeInsets.all(15),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  borderSide: BorderSide(
-                                                      color: ColorManager.primary,
-                                                      width: 1)),
-                                              floatingLabelStyle: TextStyle(
-                                                  color: ColorManager.primary),
-                                              labelText: 'Ledger',
-                                              labelStyle:
-                                                  const TextStyle(fontSize: 18),
-                                            ),
-                                          ),
-                                          popupProps: const PopupProps.menu(
-                                            showSearchBox: true,
-                                            fit: FlexFit.loose,
-                                            constraints:
-                                                BoxConstraints(maxHeight: 250),
-                                            showSelectedItems: true,
-                                            searchFieldProps: TextFieldProps(
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ),
-                                          onChanged: (dynamic value) {
-                                            ref
-                                                .read(itemProvider)
-                                                .updateLedger(value);
-                                          },
-                                        )
-                                      : Consumer(
-                                          builder: (context, ref, child) {
-                                            final newData = ref.watch(
-                                                ledgerItemProvider(
-                                                    ledgerGroupListModel));
-                                            return newData.when(
-                                              data: (data) {
-                                                List<String> uLedgerItem = [
-                                                  'All'
-                                                ];
-                                                data.forEach((key, _) {
-                                                  uLedgerItem.add(key);
-                                                });
-                                                return DropdownSearch<String>(
-                                                  items: uLedgerItem,
-                                                  selectedItem:
-                                                      updatedLedgerItemData,
-                                                  dropdownDecoratorProps:
-                                                      DropDownDecoratorProps(
-                                                    baseStyle: const TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                    dropdownSearchDecoration:
-                                                        InputDecoration(
-                                                      border: OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          borderSide: BorderSide(
-                                                            color: Colors.black
-                                                                .withOpacity(
-                                                                    0.45),
-                                                            width: 2,
-                                                          )),
-                                                      contentPadding:
-                                                          const EdgeInsets.all(
-                                                              15),
-                                                      focusedBorder: OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(10),
-                                                          borderSide: BorderSide(
-                                                              color: ColorManager
-                                                                  .primary,
-                                                              width: 1)),
-                                                      floatingLabelStyle:
-                                                          TextStyle(
-                                                              color: ColorManager
-                                                                  .primary),
-                                                      labelText: 'Ledger',
-                                                      labelStyle: const TextStyle(
-                                                          fontSize: 18),
-                                                    ),
-                                                  ),
-                                                  popupProps:
-                                                      const PopupProps.menu(
-                                                    showSearchBox: true,
-                                                    fit: FlexFit.loose,
-                                                    constraints: BoxConstraints(
-                                                        maxHeight: 250),
-                                                    showSelectedItems: true,
-                                                    searchFieldProps:
-                                                        TextFieldProps(
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  onChanged: (dynamic value) {
-                                                    ref
-                                                        .read(itemProvider)
-                                                        .changeItem(value);
-                                                  },
-                                                );
-                                              },
-                                              error: (error, stackTrace) =>
-                                                  Text('$error'),
-                                              loading: () => const Center(
-                                                  child:
-                                                      CircularProgressIndicator()),
-                                            );
-                                          },
+                                  DropdownSearch<String>(
+                                    items: ledgers,
+                                    selectedItem: ledgerItem,
+                                    dropdownDecoratorProps:
+                                    DropDownDecoratorProps(
+                                      baseStyle: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500),
+                                      dropdownSearchDecoration:
+                                      InputDecoration(
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                              color: Colors.black
+                                                  .withOpacity(0.45),
+                                              width: 2,
+                                            )),
+                                        contentPadding:
+                                        const EdgeInsets.all(15),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                            BorderRadius.circular(10),
+                                            borderSide: BorderSide(
+                                                color: ColorManager.primary,
+                                                width: 1)),
+                                        floatingLabelStyle: TextStyle(
+                                            color: ColorManager.primary),
+                                        labelText: 'Ledger',
+                                        labelStyle:
+                                        const TextStyle(fontSize: 18),
+                                      ),
+                                    ),
+                                    popupProps: const PopupProps.menu(
+                                      showSearchBox: true,
+                                      fit: FlexFit.loose,
+                                      constraints:
+                                      BoxConstraints(maxHeight: 250),
+                                      showSelectedItems: true,
+                                      searchFieldProps: TextFieldProps(
+                                        style: TextStyle(
+                                          fontSize: 18,
                                         ),
+                                      ),
+                                    ),
+                                    onChanged: (dynamic value) {
+                                      ref
+                                          .read(itemProvider)
+                                          .updateLedger(value);
+                                    },
+                                  ),
                                   const Spacer(),
                                   DropdownSearch<String>(
                                     items: branches,
@@ -587,7 +503,10 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
                                             ),
                                           );
                                         }else{
-                                          ref.read(supplierLedgerReportProvider.notifier).fetchTableData(fModel);
+                                          ref.read(itemProvider.notifier).updateCustomerLoading(true);
+                                          ref.read(supplierLedgerReportProvider.notifier).fetchTableData(fModel).then((value) =>
+                                              ref.read(itemProvider.notifier).updateCustomerLoading(false)
+                                          );
                                         }
 
                                       }
@@ -600,7 +519,7 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
-                                    child: const FaIcon(
+                                    child:isCustomerSupplierLoading? CircularProgressIndicator(color: ColorManager.white,) :  const FaIcon(
                                       FontAwesomeIcons.arrowsRotate,
                                       color: Colors.white,
                                       size: 25,

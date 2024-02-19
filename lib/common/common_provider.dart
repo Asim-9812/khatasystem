@@ -85,6 +85,7 @@ class GroupItem extends ChangeNotifier{
   bool isDetailed = false;
   bool selected = false;
   bool isLoading = false;
+  bool isCustomerSupplierLoading = false;
   List selectedBankCashList = [];
   List selectedDayBookList = [];
   List selectedVatReportList = [];
@@ -136,6 +137,13 @@ class GroupItem extends ChangeNotifier{
     isLoading = value;
     notifyListeners();
   }
+
+
+  void updateCustomerLoading(bool value){
+    isCustomerSupplierLoading= value;
+    notifyListeners();
+  }
+
 
 
 

@@ -11,6 +11,7 @@ class Api {
 
 
   static const userLogin = '$baseUrl/api/LoginAPI/Login';
+  static const companyInfo = '$baseUrl/api/CompanyInfo/ListCompany';
   static const inquiryForm = '$baseUrl/api/LoginAPI/Inquiry';
   static const getMenu = '$baseUrl/api/Menu/GetMenuOfAppbyId';
   static const getList = '$baseUrl/api/CommonReport/GetallList_Rep';

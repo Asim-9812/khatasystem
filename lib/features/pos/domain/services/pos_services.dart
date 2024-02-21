@@ -109,13 +109,16 @@ class POSServices{
           // print('${Api.getBatchOfProduct}/3/$branchId/$productCode');
 
           var batchResponse = await dio.get('${Api.getBatchOfProduct}/3/$branchId/$productCode');
+          var companyResponse = await dio.get(Api.companyInfo);
 
-          if(batchResponse.statusCode == 200){
+          if(batchResponse.statusCode == 200 && companyResponse.statusCode == 200){
+            final companyPanVat = companyResponse.data['result']['companyPanVat'] == 1;
 
             final batchList = (batchResponse.data['result'] as List<dynamic>).where((element) => element['batch'] != "0").toList();
             for(var b in batchList){
               final batch = b['batch'];
               final skuUnit = b['skuunit'];
+              final isvatable = b['isvatable'];
 
               final unitResponse = await dio.post(Api.getUnitByBatch,
                   data:{
@@ -172,7 +175,7 @@ class POSServices{
                         branchId: 0,
                         baseQty: 0.0,
                         batch: batch,
-                        isvatable: false,
+                        isvatable: isvatable && companyPanVat,
                         expirydate: expiryDate,
                         baseunit: baseUnit,
                         mainunit: mainUnit,

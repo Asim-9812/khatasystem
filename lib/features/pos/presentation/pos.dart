@@ -118,7 +118,7 @@ class _POSState extends ConsumerState<POS> {
       totalRate += product.netAmt;
     }
 
-    totalBill = totalRate;
+    totalBill = totalRate.toPrecision(2);
 
 
 
@@ -633,6 +633,7 @@ class _POSState extends ConsumerState<POS> {
                                                                   // final scaffoldMessage = ScaffoldMessenger.of(context);
                                                                   if(_productFormKey.currentState!.validate()) {
 
+                                                                    print('something');
                                                                     if(addProduct !=null){
                                                                       setState(() {
                                                                         isPostingDraft = true;
@@ -648,11 +649,13 @@ class _POSState extends ConsumerState<POS> {
                                                                       double netAmt = grossAmt;
 
                                                                       if(isVatable){
-                                                                        taxableAmt = grossAmt;
-                                                                        vat = grossAmt * (13/100);
-                                                                        netAmt = taxableAmt + vat;
+                                                                        taxableAmt = grossAmt / 1.13;
+                                                                        vat = taxableAmt * (13/100);
+                                                                        netAmt = (taxableAmt + vat).toPrecision(2);
                                                                       }
 
+
+                                                                      print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
 
 
 
@@ -674,7 +677,7 @@ class _POSState extends ConsumerState<POS> {
                                                                           extra1: '0',
                                                                           extra2: '0',
                                                                           financialYearID: financialYearId,
-                                                                          grossAmt: double.parse(_netTotalController.text.trim()),
+                                                                          grossAmt: isVatable ? taxableAmt : grossAmt,
                                                                           isDraft: false,
                                                                           isExport: false,
                                                                           itemDiscount: 0,
@@ -870,6 +873,26 @@ class _POSState extends ConsumerState<POS> {
                                                                   isPostingDraft = true;
                                                                 });
                                                                 print('this is ${addProduct!.productId!}');
+
+                                                                bool isVatable = addProduct!.isvatable!;
+
+                                                                print(isVatable);
+
+                                                                double grossAmt = double.parse(_netTotalController.text.trim());
+                                                                double taxableAmt = 0.0;
+                                                                double vat = 0.0;
+                                                                double netAmt = grossAmt;
+
+                                                                if(isVatable){
+                                                                  taxableAmt = grossAmt / 1.13;
+                                                                  vat = taxableAmt * (13/100);
+                                                                  netAmt = (taxableAmt + vat).toPrecision(2);
+                                                                }
+
+
+                                                                print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
+
+
                                                                 DraftModel addDraft = DraftModel(
                                                                     additionalIncomeAmt: 0,
                                                                     batch: addProduct!.batch!,
@@ -884,21 +907,21 @@ class _POSState extends ConsumerState<POS> {
                                                                     customerID: 2,
                                                                     customerName: '',
                                                                     entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
-                                                                    expiryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
+                                                                    expiryDate: addProduct?.expirydate,
                                                                     extra1: '0',
                                                                     extra2: '0',
                                                                     financialYearID: financialYearId,
-                                                                    grossAmt: double.parse(_netTotalController.text.trim()),
+                                                                    grossAmt: isVatable ? taxableAmt : grossAmt,
                                                                     isDraft: false,
                                                                     isExport: false,
                                                                     itemDiscount: 0,
                                                                     itemDiscountAmt: 0,
                                                                     itemDiscountPercent: 0,
                                                                     manualRefNo: '0',
-                                                                    netAmt: double.parse(_netTotalController.text.trim()),
-                                                                    netBillAmt: double.parse(_netTotalController.text.trim()),
+                                                                    netAmt: netAmt,
+                                                                    netBillAmt: netAmt,
                                                                     narration: "0",
-                                                                    nonTaxableAmt: 0,
+                                                                    nonTaxableAmt: isVatable ? 0 : grossAmt,
                                                                     orderDetailsID: 0,
                                                                     otherTaxAmt: 0,
                                                                     pricingLevelID: 0,
@@ -914,16 +937,16 @@ class _POSState extends ConsumerState<POS> {
                                                                     sku: addProduct!.fromUnitId!,
                                                                     skuUnitCost: 0,
                                                                     status: true,
-                                                                    stockqty: (double.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
-                                                                    taxableAmt: double.parse(_netTotalController.text.trim()),
+                                                                    stockqty: (int.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
+                                                                    taxableAmt: isVatable? taxableAmt : 0.0,
                                                                     transactionMode: 1,
                                                                     transactionUnitCost: double.parse(_netTotalController.text.trim()),
                                                                     transactionUnitID: addProduct!.fromUnitId!,
                                                                     updatedBy: 0,
                                                                     updatedDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                     userID: userId2,
-                                                                    vat: 0,
-                                                                    vatAmt: 0,
+                                                                    vat: isVatable? 1 : 0,
+                                                                    vatAmt: isVatable? vat : 0.0,
                                                                     voucherDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                     voucherNo: voucherNo,
                                                                     vouchertypeID: 19
@@ -991,6 +1014,9 @@ class _POSState extends ConsumerState<POS> {
                                                                     _productCodeController.clear();
                                                                     _receivedAmountController.clear();
                                                                     disabledFields = true;
+                                                                    _panController.clear();
+                                                                    _addressController.clear();
+                                                                    _remarksController.clear();
                                                                   });
 
 

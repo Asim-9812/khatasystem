@@ -78,7 +78,7 @@ pw.Widget generatePdf({
                   pw.Text(': $nepDate'),
                   pw.Text(': $vendorName'),
                   pw.Text(': $vendorAddress'),
-                  pw.Text(': $buyersPAN'),
+                  pw.Text(': $vendorsPan'),
                   pw.Text(': $paymentMode'),
                   pw.Text(': $narration'),
                 ],

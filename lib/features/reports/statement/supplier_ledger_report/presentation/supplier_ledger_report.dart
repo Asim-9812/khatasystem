@@ -153,21 +153,21 @@ class _SupplierLedgerReportState extends State<SupplierLedgerReport> {
                   String getLedgerValue(String groupValue, String ledgerVal,
                       String updateLedgerVal) {
                     if (groupValue == "All" && ledgerVal == "All") {
-                      return 'LedgerId--';
+                      return 'LedgerId--0';
                     } else if (groupValue == "All" && ledgerVal != "All") {
-                      return data[1][ledgerItemData] == null ? 'LedgerId--':  'LedgerId--${data[1][ledgerItemData]}';
+                      return data[2][ledgerItemData] == null ? 'LedgerId--0':  'LedgerId--${data[2][ledgerItemData]}';
                     } else if (groupValue != "All" && updateLedgerVal == "All") {
-                      return 'LedgerId--';
+                      return 'LedgerId--0';
                     } else {
-                      return data[1][ledgerItemData] == null ? 'LedgerId--':'LedgerId--${data[1][updatedLedgerItemData]}';
+                      return data[2][ledgerItemData] == null ? 'LedgerId--0':'LedgerId--${data[2][updatedLedgerItemData]}';
                     }
                   }
 
                   String getBranchValue(String branchVal) {
                     if (branchVal == "All") {
-                      return 'BranchId--';
+                      return 'BranchId--${branchId}';
                     } else {
-                      return 'BranchId--${data[2][branchItemData]}';
+                      return 'BranchId--${data[0][branchItemData]}';
                     }
                   }
 

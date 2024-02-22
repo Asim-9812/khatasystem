@@ -112,7 +112,7 @@ class POSServices{
           var companyResponse = await dio.get(Api.companyInfo);
 
           if(batchResponse.statusCode == 200 && companyResponse.statusCode == 200){
-            final companyPanVat = companyResponse.data['result']['companyPanVat'] == 1;
+            final companyPanVat = (companyResponse.data['result'] as List<dynamic>)[0]['companyVatOrPan'] == 1;
 
             final batchList = (batchResponse.data['result'] as List<dynamic>).where((element) => element['batch'] != "0").toList();
             for(var b in batchList){

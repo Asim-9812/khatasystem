@@ -112,6 +112,7 @@ class POSServices{
           var companyResponse = await dio.get(Api.companyInfo);
 
           if(batchResponse.statusCode == 200 && companyResponse.statusCode == 200){
+
             final companyPanVat = (companyResponse.data['result'] as List<dynamic>)[0]['companyVatOrPan'] == 1;
 
             final batchList = (batchResponse.data['result'] as List<dynamic>).where((element) => element['batch'] != "0").toList();
@@ -131,6 +132,7 @@ class POSServices{
                   }
               );
               if(unitResponse.statusCode == 200 && (unitResponse.data['result'] as List<dynamic>).isNotEmpty){
+
                 var unitId = unitResponse.data['result'].toList().isEmpty? 0 : unitResponse.data['result'][0]['fromUnitId'] ;
                 var baseUnit =unitResponse.data['result'].toList().isEmpty? 'N/A' : unitResponse.data['result'][0]['baseunit'];
                 var mainUnit =unitResponse.data['result'].toList().isEmpty? 'N/A' : unitResponse.data['result'][0]['mainunit'];
@@ -146,6 +148,7 @@ class POSServices{
                     }
                 );
                 if(rateResponse.statusCode==200){
+
                   final rateList = rateResponse.data['result'].toList();
                   var productUnitID =rateList.isEmpty ? 0: rateResponse.data['result'][0]['productUnitID'];
                   var mrp = rateList.isEmpty ? 0: rateResponse.data['result'][0]['mrp'].toDouble();
@@ -162,6 +165,7 @@ class POSServices{
                   );
 
                   if(conversionFactor.statusCode == 200){
+
                     final conversionList = conversionFactor.data['result'].toList();
                     var factor =conversionList.isEmpty? 0 : conversionFactor.data['result'][0]['conversionFactor'];
                     ProductModel newProduct = ProductModel(
@@ -544,7 +548,9 @@ class POSServices{
             "masterId": id,
             "financialId": 0,
             "branchId": 0,
-            "detailsId": 0
+            "detailsId": 0,
+            "salesType": 3,
+            "narration" : ""
           }
       );
       if(response.statusCode == 200){
@@ -567,7 +573,8 @@ class POSServices{
             "salesMasterId": masterId, //allmastertable
             "salesMasterIdDraft": id, //loaddraft
             "userId": userId2,
-            "entryMasterId": 0
+            "entryMasterId": 0,
+            "narration" : ""
           }
         );
         if(salesMasterEntryResponse.statusCode == 200){

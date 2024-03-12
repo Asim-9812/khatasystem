@@ -241,19 +241,49 @@ class POSServices{
           );
           if(draftResponse.statusCode == 200){
             final data = (draftResponse.data['result'] as List<dynamic>).map((e) => DraftModel.fromJson(e)).toList();
+            double grossAmt = 0.0;
+            double vatAmt = 0.0;
+           for(var i in data){
+             grossAmt += i.grossAmt;
+             vatAmt = (newDraft.vat == 1 ? i.vatAmt : 0.0) + vatAmt;
+           }
+
             final transactionResponse = await dio.post(Api.addTransactionSalesLedgerPOS,
               data: {
                 "voucherTypeID": 19,
                 "masterID": data.first.salesMasterID,
                 "ledgerID": salesLedgerId,
                 "drAmt": 0,
-                "crAmt": newDraft.grossAmt,
+                "crAmt": grossAmt,
                 "userID": userId2,
                 "extra1": voucherNo
               }
             );
             if(transactionResponse.statusCode == 200){
-              return const Right('Draft added');
+              print(newDraft.vat);
+              if(newDraft.vat == 1){
+                final addTaxAmtResponse = await dio.post(Api.addTransactionSalesLedgerPOS,
+                    data: {
+                      "voucherTypeID": 19,
+                      "masterID": data.first.salesMasterID,
+                      "ledgerID": 7,
+                      "drAmt": 0,
+                      "crAmt": vatAmt,
+                      "userID": userId2,
+                      "extra1": voucherNo
+                    }
+                );
+                if(addTaxAmtResponse.statusCode==200){
+                  return const Right('Draft added');
+                }
+                else{
+                  return Left('${addTaxAmtResponse.statusCode} : Something went Wrong');
+                }
+              }
+              else{
+                return const Right('Draft added');
+              }
+
             }
             else{
               return Left('${response.statusCode} : Something went Wrong');

@@ -651,11 +651,9 @@ class _POSState extends ConsumerState<POS> {
                                                                       if(isVatable){
                                                                         taxableAmt = grossAmt / 1.13;
                                                                         vat = taxableAmt * (13/100);
-                                                                        netAmt = (taxableAmt + vat).toPrecision(2);
+                                                                        // netAmt = (taxableAmt + vat).toPrecision(2);
                                                                       }
 
-
-                                                                      print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
 
 
 
@@ -711,7 +709,7 @@ class _POSState extends ConsumerState<POS> {
                                                                           updatedBy: 0,
                                                                           updatedDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                           userID: userId2,
-                                                                          vat: 0,
+                                                                          vat: isVatable? 1 : 0,
                                                                           vatAmt: isVatable? vat : 0.0,
                                                                           voucherDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                           voucherNo: voucherNo,
@@ -734,6 +732,10 @@ class _POSState extends ConsumerState<POS> {
                                                                           userID: 0,
                                                                           entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now())
                                                                       );
+
+                                                                      print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
+
+
 
                                                                       final response = await POSServices().addSalesDraftPos(newDraft: addDraft,itemAllocation: item,voucherNo: voucherNo,salesLedgerId: int.parse(salesAccountId));
 
@@ -883,14 +885,19 @@ class _POSState extends ConsumerState<POS> {
                                                                 double vat = 0.0;
                                                                 double netAmt = grossAmt;
 
+                                                                print(grossAmt);
+
                                                                 if(isVatable){
                                                                   taxableAmt = grossAmt / 1.13;
                                                                   vat = taxableAmt * (13/100);
-                                                                  netAmt = (taxableAmt + vat).toPrecision(2);
+                                                                  // netAmt = (taxableAmt + vat).toPrecision(2);
+
+                                                                  print('is vatable : $isVatable , gross amt : ${isVatable ? taxableAmt : grossAmt},vat : $vat, netAmt : $netAmt');
+
                                                                 }
 
 
-                                                                print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
+                                                                // print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
 
 
                                                                 DraftModel addDraft = DraftModel(

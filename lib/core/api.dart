@@ -31,7 +31,7 @@ class Api {
   static const getLedgerList = '$baseUrl/api/BankCash/LedgerList_BankCash';
 
   //POS (khata inventory)....
-  static const baseInventoryUrl = 'http://202.51.74.138:5009/api/Sales'; // DEMO KHATA INVENTORY
+  static const baseInventoryUrl = 'http://202.51.74.138:5018/api/Sales'; // DEMO KHATA INVENTORY
   static const getPOSSettings = '$baseInventoryUrl/GetPOSSettings';
   static const getProductList = '$baseInventoryUrl/GetProductByCodePOS';
   static const getBatchOfProduct = '$baseInventoryUrl/GetProductByCode';

@@ -104,7 +104,7 @@ class POSServices{
           var productId = products[i]['productId'];
           var productCode = products[i]['productCode'];
           var productName = products[i]['productName'];
-          var expiryDate = products[i]['expirydate'];
+
 
           // print('${Api.getBatchOfProduct}/3/$branchId/$productCode');
 
@@ -137,6 +137,16 @@ class POSServices{
                 var baseUnit =unitResponse.data['result'].toList().isEmpty? 'N/A' : unitResponse.data['result'][0]['baseunit'];
                 var mainUnit =unitResponse.data['result'].toList().isEmpty? 'N/A' : unitResponse.data['result'][0]['mainunit'];
                 var qty =unitResponse.data['result'].toList().isEmpty? 0 : unitResponse.data['result'][0]['qty'];
+                var expiryDate = unitResponse.data['result'].toList().isEmpty? null : unitResponse.data['result'][0]['expirydate'];
+                DateTime? date;
+                bool isExpired = false;
+                if(expiryDate != null){
+                  date = DateFormat('yyyy-mm-ddThh:mm:ss').parse(expiryDate);
+                  isExpired = date.isBefore(DateTime.now());
+                }
+
+                if((!isExpired || expiryDate == null) && qty > 0){
+
                 final rateResponse = await dio.post(Api.getUnitByBatch,
                     data:{
                       "branch": branchId,
@@ -188,7 +198,12 @@ class POSServices{
                         salesRate: salesRate.toDouble(),
                         skuunit: skuUnit
                     );
-                    newProductList.add(newProduct);
+
+
+
+                      newProductList.add(newProduct);
+                    }
+
                   }
                 }
 
@@ -245,7 +260,7 @@ class POSServices{
             double vatAmt = 0.0;
            for(var i in data){
              grossAmt += i.grossAmt;
-             vatAmt = (newDraft.vat == 1 ? i.vatAmt : 0.0) + vatAmt;
+             vatAmt = (i.vat == 1 ? i.vatAmt : 0.0) + vatAmt;
            }
 
             final transactionResponse = await dio.post(Api.addTransactionSalesLedgerPOS,

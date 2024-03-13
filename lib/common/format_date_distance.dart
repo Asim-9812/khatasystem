@@ -2,6 +2,8 @@
 
 
 
+import 'package:flutter/services.dart';
+
 String formatDistanceToNowStrict(String dateString) {
   DateTime now = DateTime.now();
   DateTime date = DateTime.parse(dateString);
@@ -28,5 +30,42 @@ String formatDistanceToNowStrict(String dateString) {
   } else {
     int years = difference.inDays ~/ 365;
     return '$years years';
+  }
+}
+
+class DoubleInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isEmpty) {
+      return newValue.copyWith(text: '');
+    } else {
+      try {
+        double.parse(newValue.text);
+        return newValue;
+      } catch (e) {
+        // If the entered value cannot be parsed as double, do not change the value
+        return oldValue;
+      }
+    }
+  }
+}
+
+
+class IntInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.text.isEmpty) {
+      return newValue.copyWith(text: '');
+    } else {
+      try {
+        int.parse(newValue.text);
+        return newValue;
+      } catch (e) {
+        // If the entered value cannot be parsed as double, do not change the value
+        return oldValue;
+      }
+    }
   }
 }

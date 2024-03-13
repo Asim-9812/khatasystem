@@ -10,6 +10,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
+import 'package:khata_app/common/export.dart';
+import 'package:khata_app/common/format_date_distance.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:khata_app/features/pos/presentation/received_amount_table.dart';
 import 'package:khata_app/features/pos/presentation/receipt_page.dart';
@@ -78,6 +80,8 @@ class _POSState extends ConsumerState<POS> {
   List<Map<String, dynamic>> addedProducts = [];
 
   bool disabledFields = true;
+  bool isEdit = false;
+  int editId = 0;
 
   Map<String,dynamic> setCustomerInfo = {};
 
@@ -363,6 +367,7 @@ class _POSState extends ConsumerState<POS> {
                                         onChanged: (dynamic value) {
                                           if(value != null){
                                             final product = data.firstWhere((e) => '${e.productName} (${(e.qty! < 0? 0 : e.qty) } ${e.mainunit})'==value);
+                                            print('${product.productName} (${(product.qty! < 0? 0 : product.qty) } ${product.mainunit})');
                                             setState(() {
                                               addProduct = product;
                                               productName = value;
@@ -518,6 +523,7 @@ class _POSState extends ConsumerState<POS> {
                                                     }
                                                   }
                                                 },
+                                                inputFormatters: [IntInputFormatter()],
 
                                                 onChanged:(value){
                                                   if(productRate !=null){
@@ -591,6 +597,9 @@ class _POSState extends ConsumerState<POS> {
                                                       }
                                                     }
                                                   },
+                                                  inputFormatters: [
+                                                    DoubleInputFormatter()
+                                                  ],
 
                                                   onChanged:(value){
                                                     if(productRate !=null){
@@ -623,7 +632,7 @@ class _POSState extends ConsumerState<POS> {
                                                           children: [
                                                             IconButton(
                                                                 style: IconButton.styleFrom(
-                                                                    backgroundColor: ColorManager.primary,
+                                                                    backgroundColor: isEdit? ColorManager.green: ColorManager.primary,
                                                                     disabledBackgroundColor: ColorManager.textGray,
                                                                     shape: ContinuousRectangleBorder(
                                                                         borderRadius: BorderRadius.circular(10)
@@ -753,6 +762,9 @@ class _POSState extends ConsumerState<POS> {
                                                                         });
                                                                       }
                                                                       else{
+                                                                        if(isEdit){
+                                                                          await POSServices().deleteDraftItems(id: editId);
+                                                                        }
                                                                         ref.refresh(draftProvider(voucherNo));
                                                                         ref.refresh(productProvider(locationId));
                                                                         Fluttertoast.showToast(
@@ -765,6 +777,7 @@ class _POSState extends ConsumerState<POS> {
 
 
                                                                         setState(() {
+                                                                          isEdit = false;
                                                                           isPostingDraft = false;
                                                                           addProduct = null;
                                                                           productName = null;
@@ -807,7 +820,7 @@ class _POSState extends ConsumerState<POS> {
 
                                                                   }
                                                                 },
-                                                                icon: isPostingDraft? CircularProgressIndicator(color: ColorManager.primary,):FaIcon(Icons.add,color: ColorManager.white,)
+                                                                icon: isPostingDraft? CircularProgressIndicator(color: ColorManager.primary,): isEdit ? Icon(FontAwesomeIcons.penToSquare,color: ColorManager.white,) : FaIcon(Icons.add,color: ColorManager.white,)
                                                             ),
 
                                                             IconButton(
@@ -819,6 +832,7 @@ class _POSState extends ConsumerState<POS> {
                                                                 ),
                                                                 onPressed:() async {
                                                                   setState(() {
+                                                                    isEdit = false;
                                                                     addProduct = null;
                                                                     productName = null;
                                                                     productRate = null;
@@ -860,7 +874,7 @@ class _POSState extends ConsumerState<POS> {
                                                     children: [
                                                       IconButton(
                                                           style: IconButton.styleFrom(
-                                                              backgroundColor: ColorManager.primary,
+                                                              backgroundColor: isEdit? ColorManager.green: ColorManager.primary,
                                                               disabledBackgroundColor: ColorManager.textGray,
                                                               shape: ContinuousRectangleBorder(
                                                                   borderRadius: BorderRadius.circular(10)
@@ -895,6 +909,8 @@ class _POSState extends ConsumerState<POS> {
                                                                   print('is vatable : $isVatable , gross amt : ${isVatable ? taxableAmt : grossAmt},vat : $vat, netAmt : $netAmt');
 
                                                                 }
+
+
 
 
                                                                 // print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
@@ -979,6 +995,7 @@ class _POSState extends ConsumerState<POS> {
 
                                                                 final response = await POSServices().addSalesDraftPos(newDraft: addDraft,itemAllocation: item,voucherNo: voucherNo,salesLedgerId: int.parse(salesAccountId));
 
+
                                                                 if(response.isLeft()){
                                                                   final leftValue = response.fold((l) => l, (r) => null);
                                                                   Fluttertoast.showToast(
@@ -993,6 +1010,11 @@ class _POSState extends ConsumerState<POS> {
                                                                   });
                                                                 }
                                                                 else{
+
+                                                                  if(isEdit){
+                                                                    await POSServices().deleteDraftItems(id: editId);
+
+                                                                  }
                                                                   ref.refresh(draftProvider(voucherNo));
                                                                   ref.refresh(productProvider(locationId));
                                                                   Fluttertoast.showToast(
@@ -1004,6 +1026,7 @@ class _POSState extends ConsumerState<POS> {
                                                                   );
 
                                                                   setState(() {
+                                                                    isEdit = false;
                                                                     isPostingDraft = false;
                                                                     addProduct = null;
                                                                     productName = null;
@@ -1049,7 +1072,7 @@ class _POSState extends ConsumerState<POS> {
 
                                                             }
                                                           },
-                                                          icon: isPostingDraft? CircularProgressIndicator(color: ColorManager.primary,):FaIcon(Icons.add,color: ColorManager.white,)
+                                                          icon: isPostingDraft? CircularProgressIndicator(color: ColorManager.primary,):isEdit? Icon(FontAwesomeIcons.penToSquare,color: ColorManager.white,): FaIcon(Icons.add,color: ColorManager.white,)
                                                       ),
 
                                                       IconButton(
@@ -1061,6 +1084,7 @@ class _POSState extends ConsumerState<POS> {
                                                           ),
                                                           onPressed:() async {
                                                             setState(() {
+                                                              isEdit = false;
                                                               addProduct = null;
                                                               productName = null;
                                                               productRate = null;
@@ -1153,37 +1177,56 @@ class _POSState extends ConsumerState<POS> {
                                                                       IconButton(
 
                                                                         onPressed:amount> 0? null : () async {
-                                                                          final product = data.firstWhere((element) => element.productName!.toLowerCase()==e.productName!.toLowerCase());
-                                                                          final response = await POSServices().deleteDraftItems(id: e.salesDetailsDraftID);
-                                                                          if(response.isLeft()){
-                                                                            final leftValue = response.fold((l) => l, (r) => null);
-                                                                            Fluttertoast.showToast(
-                                                                              msg: '$leftValue',
-                                                                              gravity: ToastGravity.BOTTOM,
-                                                                              backgroundColor: ColorManager.errorRed.withOpacity(0.9),
-                                                                              textColor: Colors.white,
-                                                                              fontSize: 16.0,
-                                                                            );
-                                                                          }
-                                                                          else{
 
-                                                                            setState(() {
-                                                                              addProduct = product;
-                                                                              productName = product.productName;
-                                                                              productRate = product.salesRate!.toPrecision(2);
-                                                                              productUnit = product.mainunit;
-                                                                              productCode = product.productCode;
-                                                                              _productCodeController.text = product.productCode!;
-                                                                              _rateController.text = product.salesRate!.toPrecision(2).toString();
-                                                                              _unitController.text = product.mainunit.toString();
-                                                                              disabledFields = false;
-                                                                              _quantityController.text = e.qty.toString();
-                                                                              _netTotalController.text = e.netAmt.toString();
+                                                                          final product = data.firstWhere((element) => ('${element.productName} ${element.batch!}')==('${e.productName} ${e.batch}'));
 
-                                                                            });
-                                                                            ref.refresh(draftProvider(voucherNo));
-                                                                            ref.refresh(productProvider(locationId));
-                                                                          }
+                                                                          setState(() {
+                                                                            isEdit = true;
+                                                                            editId = e.salesDetailsDraftID;
+                                                                            addProduct = product;
+                                                                            productName = '${product.productName} (${(product.qty! < 0? 0 : product.qty)} ${product.mainunit})';
+                                                                            productRate = product.salesRate!.toPrecision(2);
+                                                                            productUnit = product.mainunit;
+                                                                            productCode = product.productCode;
+                                                                            _productCodeController.text = product.productCode!;
+                                                                            _rateController.text = product.salesRate!.toPrecision(2).toString();
+                                                                            _unitController.text = product.mainunit.toString();
+                                                                            disabledFields = false;
+                                                                            _quantityController.text = e.qty.round().toString();
+                                                                            _netTotalController.text = e.netAmt.toString();
+
+                                                                          });
+                                                                          ref.refresh(draftProvider(voucherNo));
+                                                                          ref.refresh(productProvider(locationId));
+                                                                          // if(response.isLeft()){
+                                                                          //   final leftValue = response.fold((l) => l, (r) => null);
+                                                                          //   Fluttertoast.showToast(
+                                                                          //     msg: '$leftValue',
+                                                                          //     gravity: ToastGravity.BOTTOM,
+                                                                          //     backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                                                          //     textColor: Colors.white,
+                                                                          //     fontSize: 16.0,
+                                                                          //   );
+                                                                          // }
+                                                                          // else{
+                                                                          //
+                                                                          //   setState(() {
+                                                                          //     addProduct = product;
+                                                                          //     productName = product.productName;
+                                                                          //     productRate = product.salesRate!.toPrecision(2);
+                                                                          //     productUnit = product.mainunit;
+                                                                          //     productCode = product.productCode;
+                                                                          //     _productCodeController.text = product.productCode!;
+                                                                          //     _rateController.text = product.salesRate!.toPrecision(2).toString();
+                                                                          //     _unitController.text = product.mainunit.toString();
+                                                                          //     disabledFields = false;
+                                                                          //     _quantityController.text = e.qty.round().toString();
+                                                                          //     _netTotalController.text = e.netAmt.toString();
+                                                                          //
+                                                                          //   });
+                                                                          //   ref.refresh(draftProvider(voucherNo));
+                                                                          //   ref.refresh(productProvider(locationId));
+                                                                          // }
                                                                         }, icon: Icon(FontAwesomeIcons.penToSquare,color: ColorManager.primary,),
                                                                       ),
                                                                       IconButton(
@@ -1370,6 +1413,9 @@ class _POSState extends ConsumerState<POS> {
 
                                                                     return null;
                                                                   },
+                                                                  inputFormatters: [
+                                                                    DoubleInputFormatter()
+                                                                  ],
                                                                   autovalidateMode: AutovalidateMode.onUserInteraction,
                                                                   onChanged: (value){},
                                                                 ),
@@ -1745,6 +1791,31 @@ class _POSState extends ConsumerState<POS> {
                                                                                               selectedReceivedLedger=null;
                                                                                               _customerNameController.text = customerName;
                                                                                             });
+                                                                                            setState(() {
+                                                                                              isEdit = false;
+                                                                                              addProduct = null;
+                                                                                              productName = null;
+                                                                                              productRate = null;
+                                                                                              productUnit = null;
+                                                                                              quantityValue = null;
+                                                                                              netTotalValue = null;
+                                                                                              productCode = null;
+                                                                                              _rateController.clear();
+                                                                                              _unitController.clear();
+                                                                                              _rateController.clear();
+                                                                                              _unitController.clear();
+                                                                                              _quantityController.clear();
+                                                                                              _netTotalController.clear();
+                                                                                              _productCodeController.clear();
+                                                                                              _receivedAmountController.clear();
+                                                                                              disabledFields = true;
+                                                                                            });
+
+                                                                                            await Future.delayed(const Duration(milliseconds: 100));
+
+                                                                                            _productFormKey.currentState!.reset();
+
+
                                                                                           }
 
                                                                                         },

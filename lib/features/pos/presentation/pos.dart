@@ -11,11 +11,9 @@ import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/common/export.dart';
-import 'package:khata_app/common/format_date_distance.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:khata_app/features/pos/presentation/received_amount_table.dart';
 import 'package:khata_app/features/pos/presentation/receipt_page.dart';
-import '../../../../common/colors.dart';
 import '../../../../common/snackbar.dart';
 import '../domain/model/pos_model.dart';
 import '../domain/services/pos_services.dart';
@@ -744,6 +742,9 @@ class _POSState extends ConsumerState<POS> {
 
                                                                       print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
 
+                                                                      if(isEdit){
+                                                                        await POSServices().deleteDraftItems(id: editId);
+                                                                      }
 
 
                                                                       final response = await POSServices().addSalesDraftPos(newDraft: addDraft,itemAllocation: item,voucherNo: voucherNo,salesLedgerId: int.parse(salesAccountId));
@@ -762,9 +763,7 @@ class _POSState extends ConsumerState<POS> {
                                                                         });
                                                                       }
                                                                       else{
-                                                                        if(isEdit){
-                                                                          await POSServices().deleteDraftItems(id: editId);
-                                                                        }
+
                                                                         ref.refresh(draftProvider(voucherNo));
                                                                         ref.refresh(productProvider(locationId));
                                                                         Fluttertoast.showToast(
@@ -992,6 +991,10 @@ class _POSState extends ConsumerState<POS> {
                                                                     userID: userId2,
                                                                     entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now())
                                                                 );
+                                                                if(isEdit){
+                                                                  await POSServices().deleteDraftItems(id: editId);
+
+                                                                }
 
                                                                 final response = await POSServices().addSalesDraftPos(newDraft: addDraft,itemAllocation: item,voucherNo: voucherNo,salesLedgerId: int.parse(salesAccountId));
 
@@ -1011,10 +1014,7 @@ class _POSState extends ConsumerState<POS> {
                                                                 }
                                                                 else{
 
-                                                                  if(isEdit){
-                                                                    await POSServices().deleteDraftItems(id: editId);
 
-                                                                  }
                                                                   ref.refresh(draftProvider(voucherNo));
                                                                   ref.refresh(productProvider(locationId));
                                                                   Fluttertoast.showToast(
@@ -1472,7 +1472,7 @@ class _POSState extends ConsumerState<POS> {
                                                                         orginalInvoiceDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                         orderChallanNo: '',
                                                                         lR_RRNO_BillOfLanding: '',
-                                                                        remarks: '',
+                                                                        remarks: _remarksController.text,
                                                                         userID: userId2,
                                                                         entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now()),
                                                                         updatedBy: 0,

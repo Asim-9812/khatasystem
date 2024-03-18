@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:khata_app/common/format_date_distance.dart';
 import 'package:khata_app/features/activies/model/entry_master_model.dart';
@@ -8,6 +7,8 @@ import 'package:khata_app/features/activies/model/logModel.dart';
 import 'package:khata_app/features/activies/service/activites_service.dart';
 import 'package:khata_app/main.dart';
 import '../../../common/colors.dart';
+
+
 
 
 const List<String> list = [

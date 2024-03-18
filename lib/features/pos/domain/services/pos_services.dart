@@ -259,9 +259,11 @@ class POSServices{
             double grossAmt = 0.0;
             double vatAmt = 0.0;
            for(var i in data){
+             print(i.vat);
              grossAmt += i.grossAmt;
-             vatAmt = (i.vat == 1 ? i.vatAmt : 0.0) + vatAmt;
+             vatAmt = (i.vatAmt > 0 ? i.vatAmt : 0.0) + vatAmt;
            }
+           print('this is vat amt: $vatAmt, ${data.first.salesMasterID}');
 
             final transactionResponse = await dio.post(Api.addTransactionSalesLedgerPOS,
               data: {
@@ -275,8 +277,7 @@ class POSServices{
               }
             );
             if(transactionResponse.statusCode == 200){
-              print(newDraft.vat);
-              if(newDraft.vat == 1){
+              if(newDraft.vatAmt > 0){
                 final addTaxAmtResponse = await dio.post(Api.addTransactionSalesLedgerPOS,
                     data: {
                       "voucherTypeID": 19,

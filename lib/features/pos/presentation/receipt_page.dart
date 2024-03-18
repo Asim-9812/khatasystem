@@ -26,12 +26,14 @@ pw.Widget generatePdf({
   String engDate = DateFormat('yyyy-MM-dd').format(dateTime);
   NepaliDateTime nepDateTime = dateTime.toNepaliDateTime();
   String nepDate = DateFormat('yyyy-MM-dd').format(nepDateTime);
+  String voucherNo = receipt.item1.voucherNo;
   String vendorName = receipt.item1.vendorName;
   String vendorAddress = receipt.item1.vendorAddress;
   String vendorsPan = receipt.item1.vendorsPan;
   String paymentMode = receipt.item1.paymentMode ?? 'Cash';
   String narration = receipt.item1.narration == '0' ? '' : receipt.item1.narration;
   double totalAmt = receipt.item1.totalAmount;
+  double vatAmt = receipt.item1.vatAmount;
   double discount = receipt.item1.billDiscountAmt;
   double netAmt = receipt.item1.grandTotalAmount;
   String amountInWord = NumberToWord().convert('en-in',receipt.item1.grandTotalAmount.round());
@@ -73,7 +75,7 @@ pw.Widget generatePdf({
                 mainAxisAlignment: pw.MainAxisAlignment.start,
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  pw.Text(': $salesInvoice'),
+                  pw.Text(': $voucherNo'),
                   pw.Text(': $engDate'),
                   pw.Text(': $nepDate'),
                   pw.Text(': $vendorName'),
@@ -133,6 +135,7 @@ pw.Widget generatePdf({
                 children: [
                   pw.Text('Gross Amount', style: const pw.TextStyle()),
                   pw.Text('Discount', style: const pw.TextStyle()),
+                  pw.Text('VAT', style: const pw.TextStyle()),
                   pw.Text('Net Amount', style: const pw.TextStyle()),
                 ],
               ),
@@ -143,6 +146,7 @@ pw.Widget generatePdf({
                 children: [
                   pw.Text(': ${totalAmt.toPrecision(2)}', style: const pw.TextStyle()),
                   pw.Text(': ${discount.toPrecision(2)}', style: const pw.TextStyle()),
+                  pw.Text(': ${vatAmt.toPrecision(2)}', style: const pw.TextStyle()),
                   pw.Text(': ${netAmt.toPrecision(2)}', style: const pw.TextStyle()),
                 ],
               ),

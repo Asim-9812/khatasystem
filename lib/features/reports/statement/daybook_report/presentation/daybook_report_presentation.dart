@@ -174,6 +174,10 @@ class _TestState extends ConsumerState<DayBookReport> {
               final ledgerItemData = ref.watch(itemProvider).ledgerItem2;
               final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem2;
 
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                ref.read(itemProvider).updateBranch2(branchItem);
+              });
+
               final branchItemData = ref.watch(itemProvider).branchItem2;
               final voucherItemData = ref.watch(itemProvider).voucherTypeItem;
               final isDetailed = ref.watch(itemProvider).isDetailed;
@@ -388,7 +392,7 @@ class _TestState extends ConsumerState<DayBookReport> {
                                 ),
                                 onChanged: (dynamic value) {
                                   branchName = value;
-                                  ref.read(itemProvider).updateBranch(value);
+                                  ref.read(itemProvider).updateBranch2(value);
                                 },
                               ),
                               Padding(

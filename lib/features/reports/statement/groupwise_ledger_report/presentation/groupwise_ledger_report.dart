@@ -122,6 +122,11 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                   final ledgerItemData = ref.watch(itemProvider).ledgerItem;
                   final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem;
 
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    ref.read(itemProvider).updateBranch(branchItem);
+                  });
+
+
                   final branchItemData = ref.watch(itemProvider).branchItem;
 
                   /// this function returns 'accountGroudId--' as required by the api and selected item

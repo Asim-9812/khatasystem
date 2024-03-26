@@ -4,9 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/common/common_provider.dart';
 import 'package:khata_app/features/fiscalYear/provider/fiscal_year_provider.dart';
-
 import '../../../common/colors.dart';
-import '../model/fiscal_year_model.dart';
 
 class FiscalYear extends ConsumerStatefulWidget {
   const FiscalYear({super.key});
@@ -125,16 +123,12 @@ class _FiscalYearState extends ConsumerState<FiscalYear> {
         },
         error: (error,stack) {
           print(error);
-          const Center(child: Text('error')
-        ,);},
+          return const Center(child: Text('error'));
+          },
         loading: ()=> Center(
             child: Image.asset("assets/gif/loading-img2.gif", height: 80, width: 80,)
         ),
       ),
     );
-
-
-
-
   }
 }

@@ -127,6 +127,12 @@ class _ReportPageViewState extends State<ReportPageView> {
                   final ledgerItemData = ref.watch(itemProvider).ledgerItem;
                   final updatedLedgerItemData = ref.watch(itemProvider).updateLedgerItem;
 
+
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    ref.read(itemProvider).updateBranch(branchItem);
+                  });
+
+
                   final branchItemData = ref.watch(itemProvider).branchItem;
 
                   GetListModel ledgerGroupListModel = GetListModel();

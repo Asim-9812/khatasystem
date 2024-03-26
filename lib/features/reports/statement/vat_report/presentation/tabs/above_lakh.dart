@@ -135,6 +135,10 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                   Map<String,dynamic> particularItem = particulars[0];
                   String branchItem = branches[ref.watch(itemProvider).index];
 
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    ref.read(itemProvider).updateBranch2(branchItem);
+                  });
+
 
 
                   final branchItemData = ref.watch(itemProvider).branchItem2;

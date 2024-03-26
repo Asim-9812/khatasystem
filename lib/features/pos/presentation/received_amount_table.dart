@@ -16,7 +16,6 @@ class ReceivedAmountTable extends ConsumerWidget {
   ReceivedAmountTable({required this.id});
 
 
-
   void _delDialog(BuildContext context,ref,ReceivedAmountModel receivedAmount) async {
     await showDialog(
         context: context,

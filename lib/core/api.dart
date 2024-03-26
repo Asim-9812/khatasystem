@@ -30,6 +30,12 @@ class Api {
   static const getFiscalYear = '$baseUrl/api/FiscalYear/Getall';
   static const getLedgerList = '$baseUrl/api/BankCash/LedgerList_BankCash';
 
+
+
+
+
+
+
   //POS (khata inventory)....
   static const baseInventoryUrl = 'http://202.51.74.138:5018/api/Sales'; // DEMO KHATA INVENTORY
   static const getPOSSettings = '$baseInventoryUrl/GetPOSSettings';
@@ -59,6 +65,16 @@ class Api {
   static const getSuffixPrefix = '$baseInventoryUrl/GetSuffixPrefix';
   static const salesLedgerTransactionPosting = '$baseInventoryUrl/SalesLedgerTransactionPosting';
   static const printPOS = '$baseInventoryUrl/PrintPOSReceipt';
+
+
+
+
+  //track product....
+  static const baseTrackUrl = 'http://202.51.74.138:5018/api'; // DEMO KHATA INVENTORY
+  static const getBranchList = '$baseTrackUrl/TrackProduct/GetBranchList';
+  static const getTokenList = '$baseTrackUrl/TrackProduct/GetTokenList';
+  static const getTrackList = '$baseTrackUrl/TrackProduct/GetTrackProductList';
+
 
 
 

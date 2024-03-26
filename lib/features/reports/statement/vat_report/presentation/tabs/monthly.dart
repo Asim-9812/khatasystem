@@ -85,6 +85,10 @@ class _MonthlyState extends State<Monthly> {
 
                   String branchItem = branches[0];
 
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    ref.read(itemProvider).updateBranch2(branchItem);
+                  });
+
 
                   final branchItemData = ref.watch(itemProvider).branchItem2;
 

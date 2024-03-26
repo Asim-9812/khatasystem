@@ -49,7 +49,7 @@ pw.Widget generatePdf({
         pw.Text(companyName),
         pw.Text(companyAddress),
         pw.SizedBox(height: 20),
-        pw.Text('VAT No.'),
+        pw.Text('VAT No. ${buyersPAN}'),
         pw.Text('ABBREVIATED TAX INVOICE'),
         pw.SizedBox(height: 20),
         pw.Padding(

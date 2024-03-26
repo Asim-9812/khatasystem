@@ -10,6 +10,7 @@ import 'package:khata_app/common/shimmer_loading.dart';
 import 'package:khata_app/features/dashboard/provider/dashboard_amount_provider.dart';
 import 'package:khata_app/features/login/presentation/status_page.dart';
 import 'package:khata_app/features/pos/domain/services/pos_services.dart';
+import 'package:khata_app/features/track_product/presentation/track_product.dart';
 import 'package:khata_app/main.dart';
 import 'package:khata_app/features/login/presentation/user_login.dart';
 import 'package:khata_app/utils/util_functions.dart';
@@ -339,6 +340,18 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                           leading: Icon(Icons.note_alt_sharp, size: 28,
                             color: ColorManager.iconGray,),
                         ),
+                        ListTile(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => TrackProduct(),));
+                          },
+                          title: const Text('Track Products', style: TextStyle(
+                            fontFamily: 'Ubuntu',
+                            fontSize: 18,
+                          ),
+                          ),
+                          leading: Icon(Icons.track_changes, size: 28,
+                            color: ColorManager.iconGray,),
+                        ),
                         posSettings.when(
                             data: (data){
 
@@ -613,6 +626,18 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                           ),
                           ),
                           leading: Icon(Icons.point_of_sale_rounded, size: 28,
+                            color: ColorManager.iconGray,),
+                        ),
+                        ListTile(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => TrackProduct(),));
+                          },
+                          title: const Text('Track Products', style: TextStyle(
+                            fontFamily: 'Ubuntu',
+                            fontSize: 18,
+                          ),
+                          ),
+                          leading: Icon(Icons.track_changes, size: 28,
                             color: ColorManager.iconGray,),
                         ),
                         posSettings.when(

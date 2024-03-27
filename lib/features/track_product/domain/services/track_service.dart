@@ -1,13 +1,11 @@
 
 
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:khata_app/core/api.dart';
 import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/features/track_product/domain/model/track_model.dart';
-
 import '../../../dashboard/presentation/home_screen.dart';
 
 
@@ -66,7 +64,6 @@ class TrackServices{
         return [];
       }
 
-
     } on DioException catch(e){
       return [];
     }
@@ -121,14 +118,12 @@ class TrackServices{
       final branchResponse = await dio.get('${Api.getBranchList}/$branchId');
 
       if(branchResponse.statusCode == 200){
-        print(1);
         final branches = (branchResponse.data['result'] as List<dynamic>).map((e) => TrackBranchModel.fromJson(e)).toList();
         for(var i in branches){
           final newBranchId = i.branchId;
           final response = await dio.get('${Api.getTokenList}/$newBranchId');
 
           if(response.statusCode == 200){
-            print(2);
             final data = (response.data['result'] as List<dynamic>).map((e) => TokenModel.fromJson(e)).toList();
             tokenList = [...tokenList,...data];
 

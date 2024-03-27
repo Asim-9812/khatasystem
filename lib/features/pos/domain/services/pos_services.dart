@@ -1,20 +1,12 @@
 
 
-
-
-
-import 'dart:convert';
-
-import 'package:dartz/dartz_unsafe.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/core/api.dart';
 import 'package:khata_app/core/api_exception.dart';
 import 'package:khata_app/features/pos/domain/model/pos_model.dart';
 import 'package:dartz/dartz.dart';
-import '../../../../main.dart';
 import '../../../dashboard/presentation/home_screen.dart';
 
 

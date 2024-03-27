@@ -5,7 +5,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -23,13 +22,16 @@ class TrackProduct extends ConsumerStatefulWidget {
 
 class _TrackProductState extends ConsumerState<TrackProduct> {
 
-  bool _isSearching = false;
 
   bool _isLoading = false;
+  bool _showDetails = false;
 
 
   String? selectedBranch;
   String? selectedTokenName;
+
+
+  Division? selectedDivision;
 
   List<TrackModel> trackModel=[];
 
@@ -136,11 +138,15 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                     ),
                     labelText: 'Search',
                     hintText: 'Search for product',
-                    suffixIcon: IconButton(onPressed: null, icon: Icon(Icons.search,color: ColorManager.primary,))
+                    prefixIcon: IconButton(onPressed: null, icon: Icon(Icons.search,color: ColorManager.primary,))
                 ),
                 onChanged: (v){
                   setState(() {
-          
+                    trackModel = [];
+                    selectedDivision = null;
+                    selectedTokenName = null;
+                    selectedBranch = null;
+                    selectedToken = null;
                   });
                 },
               ),
@@ -220,7 +226,10 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                                   setState(() {
                                     branchId = newId;
                                     selectedBranch = changedData.branchName;
+                                    trackModel = [];
+                                    selectedDivision = null;
                                   });
+                                  _searchController.clear();
                                 }
           
                               },
@@ -345,8 +354,12 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                                    
                                   setState(() {
                                     selectedTokenName = changedData.tokenNumber;
-                                    selectedToken = changedData;
+                                    selectedDivision = null;
+                                    selectedToken=changedData;
+                                    trackModel = [];
+
                                   });
+                                  _searchController.clear();
                                 }
           
                               },
@@ -384,6 +397,7 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                                     setState(() {
                                       selectedTokenName = changedData.tokenNumber;
                                       selectedToken = changedData;
+                                      selectedDivision = null;
                                     });
                                     final response = await TrackServices.getTrackingList(tokenData: selectedToken!);
                                     if(response.isLeft()){
@@ -414,11 +428,17 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                                       fontSize: 16.0,
                                     );
                                   }
+
+                                  _searchController.clear();
                           
                           
                                 }
                                 else{
                                   if(selectedToken != null){
+                                    setState(() {
+                                      selectedTokenName = selectedToken!.tokenNumber;
+                                      selectedDivision = null;
+                                    });
                                     final response = await TrackServices.getTrackingList(tokenData: selectedToken!);
                                     if(response.isLeft()){
                                       final leftV = response.fold((l) => l, (r) => null);
@@ -482,26 +502,77 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                       child: Row(
                         children: trackModel.first.division.map((e) {
                           final isLast = e.divisionName == trackModel.first.division.last.divisionName;
+                          final color = e.status == 0 ? Colors.brown
+                              : e.status == 1 ? Colors.orange
+                          : e.status == 2 ? Colors.green
+                          : e.status == 3 ? Colors.red : Colors.black;
                          return Row(
                            children: [
-                             Container(
-                               padding: EdgeInsets.symmetric(horizontal: 16,vertical: 12),
-                               decoration: BoxDecoration(
-                                 color: Colors.brown.withOpacity(0.7),
-                                 borderRadius: BorderRadius.circular(10)
+                             GestureDetector(
+                               onTap: (){
+
+                                 if(e.status == 2){
+
+                                   if(selectedDivision?.divisionName.toLowerCase() == e.divisionName.toLowerCase()){
+                                     setState(() {
+                                       selectedDivision = null;
+                                     });
+                                   }
+                                   else{
+                                     setState(() {
+                                       selectedDivision = e;
+                                     });
+                                   }
+
+                                 }
+                                 else{
+                                   setState(() {
+                                     selectedDivision = null;
+                                   });
+                                 }
+                                 
+                               },
+                               child: Container(
+                                 padding: EdgeInsets.symmetric(horizontal: 16,vertical: 12),
+                                 decoration: BoxDecoration(
+                                   color: color,
+                                   borderRadius: BorderRadius.circular(10)
+                                 ),
+                                 child: Text(e.divisionName,style: TextStyle(color: ColorManager.white,fontSize: 20),),
                                ),
-                               child: Text(e.divisionName,style: TextStyle(color: ColorManager.white,fontSize: 20),),
                              ),
-                             const SizedBox(width: 5,),
+                             const SizedBox(width: 10,),
                              if(!isLast)
-                               Icon(Icons.double_arrow_sharp,size: 30,color: ColorManager.black,),
-                             const SizedBox(width: 5,),
+                               Icon(Icons.double_arrow_sharp,size: 25,color: ColorManager.black,),
+                             const SizedBox(width: 10,),
 
                            ],
                          );
                         }).toList(),
                       ),
                     ),
+                    const SizedBox(height: 10,),
+                    Divider(),
+                    const SizedBox(height: 10,),
+                    if(selectedDivision != null)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: ColorManager.subtitleGrey.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      width: double.infinity,
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(selectedDivision!.divisionName,style: TextStyle(fontSize: 25,fontWeight: FontWeight.w600),),
+                          const SizedBox(height: 10,),
+                          Text('Started Date : ${selectedDivision!.entryDate}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600)),
+                          Text('Completed Date : ${selectedDivision!.verifiedDate}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600)),
+
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),

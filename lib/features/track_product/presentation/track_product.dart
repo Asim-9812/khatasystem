@@ -1,16 +1,11 @@
-
-
-
-
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:khata_app/features/track_product/domain/model/track_model.dart';
 import 'package:khata_app/features/track_product/domain/services/track_service.dart';
-
+import 'package:khata_app/features/dashboard/presentation/home_screen.dart' as defaultBranch;
 import '../../../common/colors.dart';
 
 class TrackProduct extends ConsumerStatefulWidget {
@@ -40,6 +35,15 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
   int branchId = 0;
 
   final _searchController = TextEditingController();
+
+
+  @override
+  void initState(){
+    super.initState();
+    branchId = defaultBranch.branchId;
+    selectedBranch = defaultBranch.branchName;
+
+  }
 
 
 
@@ -228,6 +232,9 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                                     selectedBranch = changedData.branchName;
                                     trackModel = [];
                                     selectedDivision = null;
+                                    selectedTokenName = null;
+                                    selectedToken = null;
+                                    selectedToken = null;
                                   });
                                   _searchController.clear();
                                 }

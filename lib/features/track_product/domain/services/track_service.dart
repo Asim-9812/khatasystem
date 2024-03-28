@@ -64,7 +64,7 @@ class TrackServices{
         return [];
       }
 
-    } on DioException catch(e){
+    } on DioError catch(e){
       return [];
     }
 
@@ -107,45 +107,51 @@ class TrackServices{
   }
 
 
-  static Future<List<TokenModel>> getAllTokenList()async{
-    try{
-
+  static Future<List<TokenModel>> getAllTokenList() async {
+    try {
       List<TokenModel> tokenList = [];
 
       dio.options.headers["Authorization"] = "Bearer $userToken";
 
-
       final branchResponse = await dio.get('${Api.getBranchList}/$branchId');
 
-      if(branchResponse.statusCode == 200){
-        final branches = (branchResponse.data['result'] as List<dynamic>).map((e) => TrackBranchModel.fromJson(e)).toList();
-        for(var i in branches){
+      if (branchResponse.statusCode == 200) {
+        final branches =
+        (branchResponse.data['result'] as List<dynamic>).map((e) => TrackBranchModel.fromJson(e)).toList();
+        for (var i in branches) {
           final newBranchId = i.branchId;
-          final response = await dio.get('${Api.getTokenList}/$newBranchId');
+          try {
+            final response = await dio.get('${Api.getTokenList}/$newBranchId');
 
-          if(response.statusCode == 200){
-            final data = (response.data['result'] as List<dynamic>).map((e) => TokenModel.fromJson(e)).toList();
-            tokenList = [...tokenList,...data];
+            if (response.statusCode == 200) {
+              final data =
+              (response.data['result'] as List<dynamic>).map((e) => TokenModel.fromJson(e)).toList();
+              tokenList = [...tokenList, ...data];
+            } else {
+              throw Exception('${response.statusCode} : Something went wrong');
+            }
+          } on DioError catch (e) {
 
-          }
-          else{
-            throw Exception('${response.statusCode} : Something went wrong');
+            if(e.response?.statusCode == 400){
+              continue;
+            }
+            else{
+              break;
+            }
+
           }
         }
         return tokenList;
-      }
-
-
-      else{
+      } else {
         throw Exception('${branchResponse.statusCode} : Something went wrong');
       }
-
-
-    } on DioException catch(e){
-      throw Exception('${e}');
+    } on DioError catch (e) {
+      throw Exception('$e');
     }
-
   }
+
+
+
 
 
 }

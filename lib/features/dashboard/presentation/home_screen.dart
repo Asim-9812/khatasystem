@@ -42,6 +42,7 @@ String? userToken;
 // final branchIdProvider = Provider<String>((ref) => userToken);
 
 int branchId = 0;
+String branchName= '';
 
 
 // final financialYearIdProvider = Provider<String>((ref) => userToken);
@@ -80,6 +81,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 
     String selectedBranch = branchBox.get('selectedBranch');
     branchId = branchBox.get('selectedBranchId');
+    branchName = branchBox.get('selectedBranch');
     final branchDepartmentId = branchBox.get('selectedBranchDepId');
     financialYearId = res['fiscalYearInfo']['financialYearId'];
 

@@ -71,7 +71,7 @@ class Api {
 
   //track product....
   static const baseTrackUrl = 'http://202.51.74.138:5018/api'; // DEMO KHATA INVENTORY
-  static const getBranchList = '$baseTrackUrl/TrackProduct/GetBranchList';
+  static const getBranchList = '$baseTrackUrl/TrackProduct/GetAllBranchList';
   static const getTokenList = '$baseTrackUrl/TrackProduct/GetTokenList';
   static const getTrackList = '$baseTrackUrl/TrackProduct/GetTrackProductList';
 

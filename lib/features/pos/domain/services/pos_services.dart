@@ -252,7 +252,7 @@ class POSServices{
             double vatAmt = 0.0;
            for(var i in data){
              print(i.vat);
-             grossAmt += i.grossAmt;
+             grossAmt = i.grossAmt;
              vatAmt = (i.vatAmt > 0 ? i.vatAmt : 0.0) + vatAmt;
            }
            print('this is vat amt: $vatAmt, ${data.first.salesMasterID}');

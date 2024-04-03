@@ -502,6 +502,7 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                           const SizedBox(height: 10,),
                           Text('Started Date : ${selectedDivision!.entryDate}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600)),
                           Text('Completed Date : ${selectedDivision!.verifiedDate}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600)),
+                          Text('Verified By : ${selectedDivision!.verifiedBy}',style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600)),
 
                         ],
                       ),

@@ -660,10 +660,7 @@ class _POSState extends ConsumerState<POS> {
                                                                         vat = taxableAmt * (13/100);
                                                                         // netAmt = (taxableAmt + vat).toPrecision(2);
                                                                       }
-
-
-
-
+                                                                      
                                                                       DraftModel addDraft = DraftModel(
                                                                           additionalIncomeAmt: 0,
                                                                           batch: addProduct!.batch!,
@@ -722,6 +719,7 @@ class _POSState extends ConsumerState<POS> {
                                                                           voucherNo: voucherNo,
                                                                           vouchertypeID: 19
                                                                       );
+
                                                                       SalesItemAllocationModel item = SalesItemAllocationModel(
                                                                           locationDetailsID: 0,
                                                                           voucherTypeID: 19,

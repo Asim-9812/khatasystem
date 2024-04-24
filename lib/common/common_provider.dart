@@ -118,16 +118,16 @@ class GroupItem extends ChangeNotifier{
     notifyListeners();
   }
 
-
-
   void updateTrialBalanceType(String text){
     trialBalanceType = text;
     notifyListeners();
   }
+
   void updateSearch(String text){
     searchQuery = text;
     notifyListeners();
   }
+
   void updateIsDetailed(bool isChecked){
     isDetailed = isChecked;
     notifyListeners();
@@ -138,14 +138,10 @@ class GroupItem extends ChangeNotifier{
     notifyListeners();
   }
 
-
   void updateCustomerLoading(bool value){
     isCustomerSupplierLoading= value;
     notifyListeners();
   }
-
-
-
 
   void updateSelected(bool isChecked){
     selected = isChecked;
@@ -166,8 +162,6 @@ class GroupItem extends ChangeNotifier{
     selectedVatReportList = list;
     notifyListeners();
   }
-
-
 
   void updateTypeData(int text){
     typeData = text;

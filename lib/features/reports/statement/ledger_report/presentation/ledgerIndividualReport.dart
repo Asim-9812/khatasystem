@@ -61,13 +61,8 @@ class LedgerVoucherIndividualReport extends ConsumerWidget {
     fModel.dataFilterModel = filterModel;
     fModel.mainInfoModel = mainInfo;
 
-
-
-
     return Consumer(
         builder: (context, ref, child){
-
-
           final ledgerVoucher = ref.watch(ledgerVoucherIndividualProvider(fModel));
           return WillPopScope(
             onWillPop: () async {

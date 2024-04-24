@@ -28,8 +28,6 @@ Future<void> main() async {
   await NotificationController.initializeLocalNotifications();
   await NotificationController.initializeIsolateReceivePort();
 
-
-
   tz.initializeTimeZones();
   await Hive.initFlutter();
   Hive.registerAdapter<ReminderPattern>(ReminderPatternAdapter());
@@ -63,7 +61,7 @@ class _KhataAppState extends State<KhataApp> {
     super.initState();
   }
 
- //default constructor
+  //default constructor
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -87,4 +85,5 @@ class _KhataAppState extends State<KhataApp> {
       initialRoute: Routes.splashRoute,
     );
   }
+
 }

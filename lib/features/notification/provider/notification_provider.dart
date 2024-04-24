@@ -1,14 +1,7 @@
 
-
-
-
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:khata_app/core/api.dart';
-
-import '../../../main.dart';
 import '../../dashboard/presentation/home_screen.dart';
 import '../model/notification_model.dart';
 

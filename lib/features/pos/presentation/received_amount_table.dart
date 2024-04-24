@@ -15,7 +15,6 @@ class ReceivedAmountTable extends ConsumerWidget {
   final int id;
   ReceivedAmountTable({required this.id});
 
-
   void _delDialog(BuildContext context,ref,ReceivedAmountModel receivedAmount) async {
     await showDialog(
         context: context,
@@ -86,11 +85,8 @@ class ReceivedAmountTable extends ConsumerWidget {
     );
   }
 
- 
-  
   @override
   Widget build(BuildContext context,ref) {
-    print(id);
     final receivedAmountData = ref.watch(receivedAmountProvider(id));
     return Scaffold(
       backgroundColor: ColorManager.white,
@@ -139,4 +135,5 @@ class ReceivedAmountTable extends ConsumerWidget {
       )
     );
   }
+
 }

@@ -17,14 +17,11 @@ class TrackProduct extends ConsumerStatefulWidget {
 
 class _TrackProductState extends ConsumerState<TrackProduct> {
 
-
   bool _isLoading = false;
   bool _showDetails = false;
 
-
   String? selectedBranch;
   String? selectedTokenName;
-
 
   Division? selectedDivision;
 
@@ -34,18 +31,12 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
 
   int branchId = 0;
 
-
-
   @override
   void initState(){
     super.initState();
     branchId = defaultBranch.branchId;
     selectedBranch = defaultBranch.branchName;
-
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -517,4 +508,5 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
       ),
     );
   }
+  
 }

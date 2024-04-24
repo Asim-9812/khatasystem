@@ -33,11 +33,9 @@ class POS extends ConsumerStatefulWidget {
 
 class _POSState extends ConsumerState<POS> {
 
-
   final  _productFormKey = GlobalKey<FormState>();
   final _customerFormKey = GlobalKey<FormState>();
   final _receivedFormKey = GlobalKey<FormState>();
-
 
   final TextEditingController _productCodeController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
@@ -109,10 +107,6 @@ class _POSState extends ConsumerState<POS> {
 
   }
 
-
-
-
-
   double calculateTotalRate(List<DraftModel> addedProduct,double amount) {
     double totalRate = 0.0;
 
@@ -122,13 +116,8 @@ class _POSState extends ConsumerState<POS> {
 
     totalBill = totalRate.toPrecision(2);
 
-
-
     return totalRate.toPrecision(2);
   }
-
-
-
 
   void _exitDialog() async {
     await showDialog(
@@ -178,9 +167,6 @@ class _POSState extends ConsumerState<POS> {
         }
     );
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -1228,7 +1214,6 @@ class _POSState extends ConsumerState<POS> {
                                                                         }, icon: Icon(FontAwesomeIcons.penToSquare,color: ColorManager.primary,),
                                                                       ),
                                                                       IconButton(
-
                                                                         onPressed: amount> 0? null : () async {
                                                                           final response = await POSServices().deleteDraftItems(id: e.salesDetailsDraftID);
                                                                           if(response.isLeft()){
@@ -1891,13 +1876,9 @@ class _POSState extends ConsumerState<POS> {
     );
   }
 
-
   void _showDialog(List<POSLedgerModel> customerList) async {
 
-
     // bool isCustomer = true;
-
-
 
     await showDialog(context: context, builder: (context){
       return StatefulBuilder(
@@ -2179,7 +2160,6 @@ class _POSState extends ConsumerState<POS> {
 
   }
 
-
   void _readOnlyDialog() async {
 
 
@@ -2422,8 +2402,6 @@ class _POSState extends ConsumerState<POS> {
 
 
   }
-
-
 
   void _printReceipt(ReceiptPOSModel receipt) async {
 

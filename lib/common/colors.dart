@@ -41,7 +41,6 @@ extension HexColor on Color {
   }
 }
 
-
 ///returns the color for each row according to its index
 Color getColor(Set<MaterialState> states, int index) {
   const Set<MaterialState> interactiveStates = <MaterialState>{

@@ -90,6 +90,8 @@ final dayBookViewProvider = FutureProvider.family((ref, FilterAnyModel filterMod
 class DayBookViewPro {
   Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
     final dio = Dio();
+
+    dio.options.headers["Authorization"] = "Bearer ${userToken}";
     try{
       final jsonData = jsonEncode(filterModel.toJson());
 

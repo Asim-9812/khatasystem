@@ -1,28 +1,15 @@
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
-import 'package:khata_app/common/shimmer_loading.dart';
-import 'package:khata_app/features/reports/common_widgets/date_input_formatter.dart';
 import 'package:khata_app/features/reports/statement/daybook_report/provider/daybook_report_provider.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
 import 'package:khata_app/model/filter%20model/filter_any_model.dart';
-import 'package:khata_app/model/list%20model/get_list_model.dart';
-import 'package:khata_app/features/reports/statement/ledger_report/model/report_model.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:pager/pager.dart';
-
 import '../../../../../common/colors.dart';
-import '../../../../../common/common_provider.dart';
-
-import '../../../../../common/snackbar.dart';
 import '../../customer_ledger_report/widget/table_widget.dart';
-import '../../ledger_report/provider/report_provider.dart';
 import '../model/daybook_model.dart';
 import '../widget/daybook_dataRow.dart';
+
+
 
 class DayBookReportView extends StatelessWidget {
   final String voucherTypeId;

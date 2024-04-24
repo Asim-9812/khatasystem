@@ -52,16 +52,13 @@ class ReportView extends ConsumerWidget {
                   for (final e in data) {
                     if (e.parentID == 1) {
                       homeChildList.add(e);
-                      mainList.add(e);
                     } else if (e.parentID == 4) {
                       auditChildList.add(e);
-                      mainList.add(e);
                     } else if (e.parentID == 5) {
                       reportChildList.add(e);
                       mainList.add(e);
                     } else if (e.parentID == 8) {
                       logChildList.add(e);
-                      mainList.add(e);
                     } else if (e.parentID == 64) {
                       financialChildList.add(e);
                     } else if (e.parentID == 69) {
@@ -197,16 +194,13 @@ class ReportView extends ConsumerWidget {
                   for (final e in data) {
                     if (e.parentID == 1) {
                       homeChildList.add(e);
-                      mainList.add(e);
                     } else if (e.parentID == 4) {
                       auditChildList.add(e);
-                      mainList.add(e);
                     } else if (e.parentID == 5) {
                       reportChildList.add(e);
                       mainList.add(e);
                     } else if (e.parentID == 8) {
                       logChildList.add(e);
-                      mainList.add(e);
                     } else if (e.parentID == 64) {
                       financialChildList.add(e);
                     } else if (e.parentID == 69) {

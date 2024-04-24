@@ -524,14 +524,10 @@ class _TestState extends ConsumerState<DayBookReport> {
                                         duration: const Duration(milliseconds: 1400),
                                       ),
                                     );
-
-
                                   }
                                   else{
                                     ref.read(dayBookProvider.notifier).fetchTableData(fModel);
                                   }
-
-
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: ColorManager.green,

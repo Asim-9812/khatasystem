@@ -49,12 +49,12 @@ class _ReportPageViewState extends State<ReportPageView> {
 
   @override
   Widget build(BuildContext context) {
-    GetListModel modelRef = GetListModel();
+    GetListModel2 modelRef = GetListModel2();
     modelRef.refName = 'AccountLedgerReport';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
     modelRef.listNameId = "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
-    modelRef.mainInfoModel = mainInfo;
+    modelRef.mainInfoModel = mainInfo2;
     modelRef.conditionalValues = '';
 
     return Consumer(
@@ -118,7 +118,7 @@ class _ReportPageViewState extends State<ReportPageView> {
 
                   String groupItem = groups[0];
                   String ledgerItem = ledgers[0];
-                  String branchItem = branches[0];
+                  String branchItem = branches[1];
 
                   final groupItemData = ref.watch(itemProvider).item;
 
@@ -144,7 +144,7 @@ class _ReportPageViewState extends State<ReportPageView> {
                   /// this function returns 'accountGroudId--' as required by the api and selected item
                   String groupValue(String val) {
                     if (val == "All") {
-                      return 'accountGroudId--';
+                      return 'accountGroudId--0';
                     } else {
                       return 'accountGroudId--${data[1][groupItemData]}';
                     }
@@ -154,19 +154,19 @@ class _ReportPageViewState extends State<ReportPageView> {
                   String getLedgerValue(String groupValue, String ledgerVal,
                       String updateLedgerVal) {
                     if (groupValue == "All" && ledgerVal == "All") {
-                      return 'LedgerId--';
+                      return 'LedgerId--0';
                     } else if (groupValue == "All" && ledgerVal != "All") {
-                      return data[2][ledgerItemData] == null ? 'LedgerId--':  'LedgerId--${data[2][ledgerItemData]}';
+                      return data[2][ledgerItemData] == null ? 'LedgerId--0':  'LedgerId--${data[2][ledgerItemData]}';
                     } else if (groupValue != "All" && updateLedgerVal == "All") {
-                      return 'LedgerId--';
+                      return 'LedgerId--0';
                     } else {
-                      return data[2][ledgerItemData] == null ? 'LedgerId--':'LedgerId--${data[2][updatedLedgerItemData]}';
+                      return data[2][ledgerItemData] == null ? 'LedgerId--0':'LedgerId--${data[2][updatedLedgerItemData]}';
                     }
                   }
 
                   String getBranchValue(String branchVal) {
                     if (branchVal == "All") {
-                      return 'BranchId--';
+                      return 'BranchId--0';
                     } else {
                       return 'BranchId--${data[0][branchItemData]}';
                     }
@@ -200,9 +200,9 @@ class _ReportPageViewState extends State<ReportPageView> {
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
 
-                  FilterAnyModel fModel = FilterAnyModel();
+                  FilterAnyModel2 fModel = FilterAnyModel2();
                   fModel.dataFilterModel = filterModel;
-                  fModel.mainInfoModel = mainInfo;
+                  fModel.mainInfoModel = mainInfo2;
 
 
                   return SafeArea(
@@ -505,7 +505,7 @@ class _ReportPageViewState extends State<ReportPageView> {
                                           );
                                         }
                                         else{
-                                          ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                          ref.read(tableDataProvider.notifier).getTableValues2(fModel);
                                         }
                                        }
 
@@ -630,7 +630,7 @@ class _ReportPageViewState extends State<ReportPageView> {
                                             _currentPage = page;
                                             /// updates current page number of filterModel, because it does not update on its own
                                             fModel.dataFilterModel!.currentPageNumber = _currentPage;
-                                            ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                            ref.read(tableDataProvider.notifier).getTableValues2(fModel);
                                           },
                                           showItemsPerPage: true,
                                           itemsPerPageText: 'Showing ${_rowPerPage > _totalRecords ? _totalRecords : _rowPerPage} of $_totalRecords :',
@@ -643,7 +643,7 @@ class _ReportPageViewState extends State<ReportPageView> {
 
                                             /// updates row per page of filterModel, because it does not update on its own
                                             fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                            ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                            ref.read(tableDataProvider.notifier).getTableValues2(fModel);
                                           },
                                           itemsPerPageList: rowPerPageItems,
                                         ),

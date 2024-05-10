@@ -48,27 +48,77 @@ class ReportView extends ConsumerWidget {
                   List<MenuModel> inventoryChildList = <MenuModel>[];
 
 
+                  // for (final e in data) {
+                  //   if (e.parentID == 1) {
+                  //     homeChildList.add(e);
+                  //   } else if (e.parentID == 4) {
+                  //     auditChildList.add(e);
+                  //   } else if (e.parentID == 5) {
+                  //     reportChildList.add(e);
+                  //     mainList.add(e);
+                  //   } else if (e.parentID == 8) {
+                  //     logChildList.add(e);
+                  //   } else if (e.parentID == 64) {
+                  //     financialChildList.add(e);
+                  //   } else if (e.parentID == 69) {
+                  //     irdChildList.add(e);
+                  //   } else if (e.parentID == 73) {
+                  //     registerChildList.add(e);
+                  //   } else if (e.parentID == 82) {
+                  //     statementChildList.add(e);
+                  //   } else if (e.parentID == 95) {
+                  //     inventoryChildList.add(e);
+                  //   }
+                  // }
 
                   for (final e in data) {
                     if (e.parentID == 1) {
-                      homeChildList.add(e);
+
+                      if(!homeChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        homeChildList.add(e);
+                        mainList.add(e);
+                      }
+
                     } else if (e.parentID == 4) {
-                      auditChildList.add(e);
+
+                      if(!auditChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        auditChildList.add(e);
+                        mainList.add(e);
+                      }
                     } else if (e.parentID == 5) {
-                      reportChildList.add(e);
-                      mainList.add(e);
+
+                      if(!reportChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        reportChildList.add(e);
+                        mainList.add(e);
+                      }
+
                     } else if (e.parentID == 8) {
-                      logChildList.add(e);
+                      if(!logChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        logChildList.add(e);
+                        mainList.add(e);
+                      }
+                      // mainList.add(e);
                     } else if (e.parentID == 64) {
-                      financialChildList.add(e);
+                      if(!financialChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        financialChildList.add(e);
+                      }
+                      // mainList.add(e);
                     } else if (e.parentID == 69) {
-                      irdChildList.add(e);
+                      if(!irdChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        irdChildList.add(e);
+                      }
                     } else if (e.parentID == 73) {
-                      registerChildList.add(e);
+                      if(!registerChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        registerChildList.add(e);
+                      }
                     } else if (e.parentID == 82) {
-                      statementChildList.add(e);
+                      if(!statementChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        statementChildList.add(e);
+                      }
                     } else if (e.parentID == 95) {
-                      inventoryChildList.add(e);
+                      if(!inventoryChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        inventoryChildList.add(e);
+                      }
                     }
                   }
 
@@ -191,26 +241,77 @@ class ReportView extends ConsumerWidget {
                   List<MenuModel> statementChildList = <MenuModel>[];
                   List<MenuModel> inventoryChildList = <MenuModel>[];
 
+                  // for (final e in data) {
+                  //   if (e.parentID == 1) {
+                  //     homeChildList.add(e);
+                  //   } else if (e.parentID == 4) {
+                  //     auditChildList.add(e);
+                  //   } else if (e.parentID == 5) {
+                  //     reportChildList.add(e);
+                  //     mainList.add(e);
+                  //   } else if (e.parentID == 8) {
+                  //     logChildList.add(e);
+                  //   } else if (e.parentID == 64) {
+                  //     financialChildList.add(e);
+                  //   } else if (e.parentID == 69) {
+                  //     irdChildList.add(e);
+                  //   } else if (e.parentID == 73) {
+                  //     registerChildList.add(e);
+                  //   } else if (e.parentID == 82) {
+                  //     statementChildList.add(e);
+                  //   } else if (e.parentID == 95) {
+                  //     inventoryChildList.add(e);
+                  //   }
+                  // }
+
                   for (final e in data) {
                     if (e.parentID == 1) {
-                      homeChildList.add(e);
+
+                      if(!homeChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        homeChildList.add(e);
+                        mainList.add(e);
+                      }
+
                     } else if (e.parentID == 4) {
-                      auditChildList.add(e);
+
+                      if(!auditChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        auditChildList.add(e);
+                        mainList.add(e);
+                      }
                     } else if (e.parentID == 5) {
-                      reportChildList.add(e);
-                      mainList.add(e);
+
+                      if(!reportChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        reportChildList.add(e);
+                        mainList.add(e);
+                      }
+
                     } else if (e.parentID == 8) {
-                      logChildList.add(e);
+                      if(!logChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        logChildList.add(e);
+                        mainList.add(e);
+                      }
+                      // mainList.add(e);
                     } else if (e.parentID == 64) {
-                      financialChildList.add(e);
+                      if(!financialChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        financialChildList.add(e);
+                      }
+                      // mainList.add(e);
                     } else if (e.parentID == 69) {
-                      irdChildList.add(e);
+                      if(!irdChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        irdChildList.add(e);
+                      }
                     } else if (e.parentID == 73) {
-                      registerChildList.add(e);
+                      if(!registerChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        registerChildList.add(e);
+                      }
                     } else if (e.parentID == 82) {
-                      statementChildList.add(e);
+                      if(!statementChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        statementChildList.add(e);
+                      }
                     } else if (e.parentID == 95) {
-                      inventoryChildList.add(e);
+                      if(!inventoryChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        inventoryChildList.add(e);
+                      }
                     }
                   }
 

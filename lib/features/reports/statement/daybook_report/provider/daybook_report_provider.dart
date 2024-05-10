@@ -48,30 +48,39 @@ class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
+    // print(jsonData);
     List<Map<dynamic, dynamic>> myList = [];
     try{
       final response = await dio.post(Api.getSubList, data: jsonData);
 
+
       if(response.statusCode == 200){
+
         final responseList = response.data as List<dynamic>;
         var branch = {};
         var voucher = {};
         var ledger = {};
         var date = responseList[3];
 
+
+
         for(final e in responseList[0]){
           branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
         }
         for(final e in responseList[1]){
-          voucher[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+          voucher[ListModel.fromJson(e).text?? 'N/A'] = ListModel.fromJson(e).value!;
         }
         for(final e in responseList[2]){
           ledger[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
         }
+
         myList = [branch,voucher, ledger,date];
-      }else{
+
+
       }
-      print(myList);
+      else{
+      }
+
       return myList;
     }on DioError catch(err){
       throw DioException().getDioError(err);

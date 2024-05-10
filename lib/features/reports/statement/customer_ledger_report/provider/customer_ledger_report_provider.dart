@@ -25,7 +25,7 @@ class CustomerLedgerReportProvider extends StateNotifier<AsyncValue<List<dynamic
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
-      print(jsonData);
+      // print(jsonData);
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;

@@ -1,10 +1,6 @@
 class Api {
 
 
-
-
-
-
   static const baseUrl = 'http://202.51.74.138:88'; // LIVE KHATA SYSTEM
 
   // static const baseUrl = 'http://202.51.74.138:5017'; // DEMO KHATA SYSTEM
@@ -37,7 +33,7 @@ class Api {
 
 
   //POS (khata inventory)....
-  static const baseInventoryUrl = 'http://202.51.74.138:98/api/Sales'; // LIVE KHATA INVENTORY
+  static const baseInventoryUrl = 'http://202.51.74.138:6200/api/Sales'; // LIVE KHATA INVENTORY
   // static const baseInventoryUrl = 'http://202.51.74.138:5018/api/Sales'; // DEMO KHATA INVENTORY
 
 
@@ -73,7 +69,7 @@ class Api {
 
 
   //track product....
-  static const baseTrackUrl = 'http://202.51.74.138:98/api'; // LIVE KHATA INVENTORY
+  static const baseTrackUrl = 'http://202.51.74.138:6200/api'; // LIVE KHATA INVENTORY
 
   // static const baseTrackUrl = 'http://202.51.74.138:5018/api'; // DEMO KHATA INVENTORY
 

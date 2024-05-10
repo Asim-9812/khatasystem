@@ -16,7 +16,7 @@ import '../../../../dashboard/presentation/home_screen.dart';
 final TPBlistProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => TBPLBSListProvider().getMenu(model));
 final supplierListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => SupplierLedgerListProvider().getMenu(model));
 final customerListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => CustomerLedgerListProvider().getMenu(model));
-final ledgerListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => LedgerReportListProvider().getMenu(model));
+final ledgerListProvider = FutureProvider.family.autoDispose((ref, GetListModel2 model) => LedgerReportListProvider().getMenu(model));
 final listProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => ListProvider().getMenu(model));
 final listProvider2 = FutureProvider.family.autoDispose((ref, GetListModel model) => ListProvider().getSubList(model));
 final listProvider3 = FutureProvider.family.autoDispose((ref, GetListModel2 model) => ListProvider().getSubList2(model));
@@ -25,7 +25,7 @@ final ledgerItemProvider = FutureProvider.family((ref, GetListModel model) => Le
 
 
 class LedgerReportListProvider{
-  Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel getListModel) async {
+  Future<List<Map<dynamic, dynamic>>> getMenu(GetListModel2 getListModel) async {
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
@@ -535,6 +535,7 @@ class TableDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;

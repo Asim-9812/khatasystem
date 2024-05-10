@@ -62,11 +62,8 @@ class LauncherUtils{
     const String recipientEmail = 'reply2search@gmail.com';
     const subject = 'Help about Khata System (App)';
     const body = "";
-
     const url = 'mailto:$recipientEmail?subject=$subject&body=$body';
-
     final Uri uri = Uri.parse(url);
-
     if (!await launchUrl(
       uri,
       mode: LaunchMode.externalApplication,

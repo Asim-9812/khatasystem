@@ -129,7 +129,7 @@ class POSLedgerModel {
   int flag;
   int value;
   String text;
-  int? vcode;
+  String? vcode;
   String? searchtext;
   int branchId;
 

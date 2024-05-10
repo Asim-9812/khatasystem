@@ -1,10 +1,5 @@
 
-
-
-
-import 'dart:async';
 import 'dart:convert';
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +11,6 @@ import 'package:khata_app/features/reports/statement/bank_cash_report/widget/ban
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:pager/pager.dart';
-
 import '../../../../../common/colors.dart';
 import '../../../../../common/common_provider.dart';
 import '../../../../../common/shimmer_loading.dart';
@@ -28,6 +22,9 @@ import '../../../../dashboard/presentation/home_screen.dart';
 import '../../customer_ledger_report/widget/table_widget.dart';
 import '../../ledger_report/model/report_model.dart';
 import '../model/bank_cash_model.dart';
+
+
+
 
 class BankCashReport extends ConsumerStatefulWidget {
   const BankCashReport({super.key});
@@ -63,13 +60,6 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
   bool isLedgerListCompleted = false;
 
 
-
-
-
-
-
-
-
   @override
   void initState() {
     super.initState();
@@ -77,23 +67,16 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
     _currentPage = 1;
     _rowPerPage = 10;
     _totalPages = 0;
-
-
     // _isSelected = ref.watch(itemProvider).selected;
     dateFrom.text =DateFormat('yyyy/MM/dd').format( DateTime.parse(mainInfo.startDate!)).toString();
     dateTo.text =!DateTime.parse(mainInfo.endDate!).isAfter(DateTime.now())?DateFormat('yyyy/MM/dd').format(DateTime.parse(mainInfo.endDate!)):DateFormat('yyyy/MM/dd').format(DateTime.now());
-
   }
 
   @override
   void didChangeDependencies(){
     super.didChangeDependencies();
     ref.read(itemProvider.notifier).updateSelected(true);
-
   }
-
-
-
 
   void getList() {
     GetListModel modelRef = GetListModel();
@@ -123,16 +106,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
     print(getLedgerListModel.toJson());
 
     ref.refresh(bankCashLedgerListProvider(getLedgerListModel));
-
-
   }
-
-
-
-
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -174,21 +148,10 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
     );
 
 
-
-
-
-
-
-
-
-
     _selectedGroups =ref.watch(itemProvider).selectedBankCashList;
     final outCome = ref.watch(bankCashListProvider(modelRef2));
     final ledgerMenu = ref.watch(bankCashLedgerListProvider(getLedgerListModel));
     final bankCash = ref.watch(bankCashProvider);
-
-
-
 
 
     return WillPopScope(
@@ -246,27 +209,29 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
               });
 
 
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                if(ref.watch(itemProvider).selected){
+                  ref.read(itemProvider.notifier).updateSelectedBankCashList(groups.map((e) => e['value']).toList());
+                  if (!ledgerListExecuted) {
+                    ledgerList();
+                    setState(() {
+                      ledgerListExecuted = true;
+                    });
 
-              if(ref.watch(itemProvider).selected){
-                ref.read(itemProvider.notifier).updateSelectedBankCashList(groups.map((e) => e['value']).toList());
-                if (!ledgerListExecuted) {
-                  ledgerList();
-                  setState(() {
-                    ledgerListExecuted = true;
-                  });
 
+                  }
 
                 }
-
-              }
-
+              });
 
 
 
 
-              String branchItem = branches[ref.watch(itemProvider).index];
 
-              final ledgerItemData = ref.watch(itemProvider).ledgerItem;
+
+
+              String branchItem = branches[1];
+
 
 
 
@@ -579,15 +544,6 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                       ref.read(itemProvider.notifier).updateLedger(data[0]['value']);
                                       print('run executed');
                                     }
-
-
-
-
-
-
-
-
-
 
                                     return DropdownSearch<String>(
                                       items: ledgerItems,

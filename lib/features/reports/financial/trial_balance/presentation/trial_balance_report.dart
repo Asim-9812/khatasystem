@@ -128,7 +128,8 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                   branches.add(key);
                 });
 
-                String branchItem = branches[0];
+                String branchItem = branches[1];
+
 
                 final branchItemData = ref.watch(itemProvider).branchItem3;
                 final typeItemData = ref.watch(updateTypeProvider).trialBalanceType;
@@ -145,7 +146,7 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
 
                 String getBranchValue(String branchVal) {
                   if (branchVal == "All") {
-                    return 'BranchId--';
+                    return 'BranchId--${data[0][branchItem]}';
                   } else {
                     return 'BranchId--${data[0][branchItemData]}';
                   }

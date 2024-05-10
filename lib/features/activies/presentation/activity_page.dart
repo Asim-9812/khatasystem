@@ -30,7 +30,6 @@ class _ActivityViewState extends State<ActivityView> {
   late String selectedItem;
   String dropdownValue = list.first;
   Color? tileColor;
-
   Timer? logTimer;
   Timer? transactionTimer;
   StreamController<List<LogModel>> logStreamController =

@@ -190,8 +190,6 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                     dashBoardType == 'Financial' ? SliverToBoxAdapter(
                       child: dashData.when(
                         data: (data) {
-
-
                           return buildDashBoard(false, data);
                         },
                         error: (error, stackTrace) {
@@ -460,7 +458,8 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
               );
             },
           );
-        } else{
+        }
+        else{
           return Consumer(
             builder: (context, ref, child) {
               final dashData = ref.watch(dashBoardDataProvider(infoModel));

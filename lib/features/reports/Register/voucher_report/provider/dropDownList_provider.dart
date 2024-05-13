@@ -51,7 +51,7 @@ class VoucherListProvider{
           branch[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
         }
         for(final e in responseList[3]){
-          voucherType[ListModel.fromJson(e).text!] = ListModel.fromJson(e).value!;
+          voucherType[ListModel.fromJson(e).text ?? 'N/A'] = ListModel.fromJson(e).value!;
         }
         myList = [group, ledger, branch, voucherType];
       }else{

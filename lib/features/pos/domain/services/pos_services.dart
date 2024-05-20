@@ -592,6 +592,7 @@ class POSServices{
           }
       );
       if(response.statusCode == 200){
+        // print(response.data['result']);
         final masterId = response.data['result']['masterId'];
 
         final update = {
@@ -719,6 +720,32 @@ class POSServices{
         final receipt = ReceiptPOSModel.fromJson(data);
         // print(data);
         return Right(receipt);
+      }
+      else{
+        return Left('${response.statusCode} : Something went wrong');
+      }
+    }on DioException catch(e){
+      return Left('$e');
+    }
+
+  }
+
+  Future<Either<String,String>> printCountReceipt({
+    required Map<String,dynamic> data
+  }) async {
+
+
+
+    dio.options.headers["Authorization"] = "Bearer $userToken";
+    try{
+      print(data);
+      final response = await dio.post(Api.printCountPOS,
+          data:data);
+      if(response.statusCode == 200){
+        // final data = response.data as Map<String,dynamic>;
+        // final receipt = ReceiptPOSModel.fromJson(data);
+        // print(data);
+        return Right('Please wait...');
       }
       else{
         return Left('${response.statusCode} : Something went wrong');

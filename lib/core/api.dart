@@ -1,6 +1,7 @@
 class Api {
 
 
+  // static const baseUrl = 'https://api.khatasystem.com'; // LIVE KHATA SYSTEM
   static const baseUrl = 'http://202.51.74.138:88'; // LIVE KHATA SYSTEM
 
   // static const baseUrl = 'http://202.51.74.138:5017'; // DEMO KHATA SYSTEM
@@ -27,13 +28,9 @@ class Api {
   static const getLedgerList = '$baseUrl/api/BankCash/LedgerList_BankCash';
 
 
-
-
-
-
-
   //POS (khata inventory)....
-  static const baseInventoryUrl = 'http://202.51.74.138:6200/api/Sales'; // LIVE KHATA INVENTORY
+  static const baseInventoryUrl = 'https://inventory.khatasystem.com/api/Sales'; // LIVE KHATA INVENTORY
+  // static const baseInventoryUrl = 'http://202.51.74.138:6200/api/Sales'; // LIVE KHATA INVENTORY
   // static const baseInventoryUrl = 'http://202.51.74.138:5018/api/Sales'; // DEMO KHATA INVENTORY
 
 
@@ -63,13 +60,14 @@ class Api {
   static const getSalesTransactionCrDrList = '$baseInventoryUrl/GetSalesTransactionCrDrList';
   static const getSuffixPrefix = '$baseInventoryUrl/GetSuffixPrefix';
   static const salesLedgerTransactionPosting = '$baseInventoryUrl/SalesLedgerTransactionPosting';
+  static const printCountPOS = '$baseUrl/api/MasterPrint/InsertMasterPrintIRD';
   static const printPOS = '$baseInventoryUrl/PrintPOSReceipt';
 
 
 
 
   //track product....
-  static const baseTrackUrl = 'http://202.51.74.138:6200/api'; // LIVE KHATA INVENTORY
+  static const baseTrackUrl = 'https://inventory.khatasystem.com/api/'; // LIVE KHATA INVENTORY
 
   // static const baseTrackUrl = 'http://202.51.74.138:5018/api'; // DEMO KHATA INVENTORY
 

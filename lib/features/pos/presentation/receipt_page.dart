@@ -15,7 +15,8 @@ import 'package:number_to_words/number_to_words.dart';
 
 
 pw.Widget generatePdf({
-  required ReceiptPOSModel receipt
+  required ReceiptPOSModel receipt,
+  required String invoiceTitle,
 }) {
 
   String companyName = receipt.item1.companyName;
@@ -50,7 +51,7 @@ pw.Widget generatePdf({
         pw.Text(companyAddress),
         pw.SizedBox(height: 20),
         pw.Text('VAT No. ${buyersPAN}'),
-        pw.Text('ABBREVIATED TAX INVOICE'),
+        pw.Text(invoiceTitle),
         pw.SizedBox(height: 20),
         pw.Padding(
           padding: const pw.EdgeInsets.symmetric(horizontal: 18.0),

@@ -36,6 +36,7 @@ class _POSState extends ConsumerState<POS> {
   final  _productFormKey = GlobalKey<FormState>();
   final _customerFormKey = GlobalKey<FormState>();
   final _receivedFormKey = GlobalKey<FormState>();
+  final _printKey = GlobalKey<FormState>();
 
   final TextEditingController _productCodeController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
@@ -43,6 +44,7 @@ class _POSState extends ConsumerState<POS> {
   final TextEditingController _rateController = TextEditingController();
   final TextEditingController _unitController = TextEditingController();
   final TextEditingController _receivedAmountController = TextEditingController();
+  final TextEditingController _printCountController = TextEditingController();
 
 
   ///customer details...
@@ -1650,23 +1652,9 @@ class _POSState extends ConsumerState<POS> {
                                                                                                     textColor: Colors.white,
                                                                                                     fontSize: 16.0,
                                                                                                   );
-                                                                                                  final printResponse = await POSServices().printReceipt(masterId: salesMasterId);
-                                                                                                  if(printResponse.isLeft()){
-                                                                                                    Fluttertoast.showToast(
-                                                                                                      msg: 'Printing error',
-                                                                                                      gravity: ToastGravity.BOTTOM,
-                                                                                                      backgroundColor: ColorManager.errorRed.withOpacity(0.9),
-                                                                                                      textColor: Colors.white,
-                                                                                                      fontSize: 16.0,
-                                                                                                    );
-                                                                                                  }
-                                                                                                  else{
-                                                                                                    Navigator.pop(context);
-                                                                                                    final printReceipt = printResponse.fold((l) => null, (r) => r);
-                                                                                                    await POSServices().deleteDraftTable(id: drafts.first.salesMasterID);
-                                                                                                    _printReceipt(printReceipt!);
+                                                                                                  Navigator.pop(context);
+                                                                                                  _printCountDialog(masterId: salesMasterId,userId: userId,voucherNo: voucherNo,salesMasterId: drafts.first.salesMasterID);
 
-                                                                                                  }
 
                                                                                                 }
                                                                                               },
@@ -2403,16 +2391,195 @@ class _POSState extends ConsumerState<POS> {
 
   }
 
-  void _printReceipt(ReceiptPOSModel receipt) async {
+
+  void _printCountDialog({
+    required int masterId,
+    required int salesMasterId,
+    required String voucherNo,
+    required String userId,
+
+  }) async {
+
+
+    await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context){
+          return StatefulBuilder(
+              builder: (context,setState){
+                return AlertDialog(
+                  title: Text('Bill Print'),
+                  content: Form(
+                    key: _printKey,
+                    child: TextFormField(
+                      controller: _printCountController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        labelText: 'Copies',
+                      ),
+                      validator: (value){
+                        if(value ==null || value.trim().isEmpty){
+                          return 'No. of print is required';
+                        }
+                        else{
+                          try{
+                            final num = int.parse(value);
+                            if(num<1){
+                              return 'Invalid Value';
+                            }
+                          }catch(e){
+                            return 'Invalid character';
+                          }
+                        }
+                        return null;
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                    ),
+                  ),
+                  actions: [
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            backgroundColor: ColorManager.primary,
+                            shape: ContinuousRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)
+                            )
+                        ),
+                        onPressed: () async {
+                          if(_printKey.currentState!.validate()){
+
+                            final count = int.parse(_printCountController.text.trim());
+
+                            Map<String,dynamic> data=   {
+                              "id": 0,
+                              "masterID": masterId,
+                              "billNO": voucherNo,
+                              "voucherTypeID": 19,
+                              "printBY": userId2,
+                              "printTime": DateFormat('yyyy-MM-ddThh:mm:ssZ').format(DateTime.now()),//"2024-05-20T03:50:25.073Z",
+                              "printCount": count,
+                              "extra1": "string",
+                              "extra2": "string",
+                              "extra3": "string",
+                              "flag": "string"
+                            };
+
+                            final printCount = await POSServices().printCountReceipt(data: data);
+                            if(printCount.isLeft()){
+                              Fluttertoast.showToast(
+                                msg: 'Printing error',
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                            }
+                            else{
+
+                              final printResponse = await POSServices().printReceipt(masterId: masterId);
+                              if(printResponse.isLeft()){
+                                Fluttertoast.showToast(
+                                  msg: 'Printing error',
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                              }
+                              else{
+                                Navigator.pop(context);
+                                final printReceipt = printResponse.fold((l) => null, (r) => r);
+                                await POSServices().deleteDraftTable(id: salesMasterId);
+                                _printReceipt(printReceipt!,count);
+                                _printCountController.clear();
+
+                              }
+
+                            }
+
+
+
+                          }
+
+                        },
+                        child: Text('Print',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),)
+                    ),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            backgroundColor: ColorManager.errorRed,
+                            shape: ContinuousRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)
+                            )
+                        ),
+                        onPressed: ()async {
+                          ref.refresh(draftProvider(voucherNo));
+                          ref.refresh(productProvider(locationId));
+                          Navigator.pop(context);
+                          setState(() {
+                            selectedReceivedLedger=null;
+                            _customerNameController.text = customerName;
+                          });
+                          setState(() {
+                            isEdit = false;
+                            addProduct = null;
+                            productName = null;
+                            productRate = null;
+                            productUnit = null;
+                            quantityValue = null;
+                            netTotalValue = null;
+                            productCode = null;
+                            _rateController.clear();
+                            _unitController.clear();
+                            _rateController.clear();
+                            _unitController.clear();
+                            _quantityController.clear();
+                            _netTotalController.clear();
+                            _productCodeController.clear();
+                            _receivedAmountController.clear();
+                            disabledFields = true;
+                          });
+
+                          await Future.delayed(const Duration(milliseconds: 100));
+
+                          _productFormKey.currentState!.reset();
+
+                          Navigator.pop(context);
+                        },
+                        child: Text('Cancel',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),)
+                    ),
+                  ],
+                );
+              }
+          );
+        }
+    );
+
+  }
+
+  void _printReceipt(ReceiptPOSModel receipt,int count) async {
+
+    List<String> invoiceList = ['ABBREVIATED TAX INVOICE','INVOICE','COPY OF INVOICE'];
 
 
     final doc = pw.Document();
 
-    doc.addPage(pw.Page(
-        pageFormat: PdfPageFormat.a4,
-        build: (pw.Context context) {
-          return generatePdf(receipt: receipt); // Center
-        })); // Page
+    for(int i = 0; i<count;i++){
+      doc.addPage(pw.Page(
+          pageFormat: PdfPageFormat.a4,
+          build: (pw.Context context) {
+            return generatePdf(receipt: receipt,
+                invoiceTitle: i == 0 ? invoiceList[0]
+                    : i == 1? invoiceList[1]
+                    : '${invoiceList[2]}(${i-1})'
+            ); // Center
+          }));
+    }
+
+    await Future.delayed(Duration(seconds: 2));
+
 
     await Printing.layoutPdf(
         onLayout: (PdfPageFormat format) async => doc.save());
@@ -2431,4 +2598,8 @@ class _POSState extends ConsumerState<POS> {
 
   }
 
+
+
 }
+
+

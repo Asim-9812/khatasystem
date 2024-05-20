@@ -2459,7 +2459,7 @@ class _POSState extends ConsumerState<POS> {
                               "voucherTypeID": 19,
                               "printBY": userId2,
                               "printTime": DateFormat('yyyy-MM-ddThh:mm:ssZ').format(DateTime.now()),//"2024-05-20T03:50:25.073Z",
-                              "printCount": count,
+                              "printCount": count-1,
                               "extra1": "string",
                               "extra2": "string",
                               "extra3": "string",

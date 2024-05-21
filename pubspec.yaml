@@ -119,6 +119,8 @@ dependencies:
 
   printing: ^5.11.1
 
+  htmltopdfwidgets: ^1.0.3
+
 
 
 

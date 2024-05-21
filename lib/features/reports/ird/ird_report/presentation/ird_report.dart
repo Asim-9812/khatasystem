@@ -4,15 +4,21 @@
 import 'dart:convert';
 
 import 'package:dropdown_search/dropdown_search.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:htmltopdfwidgets/htmltopdfwidgets.dart' as html;
 import 'package:intl/intl.dart';
 import 'package:khata_app/features/reports/ird/ird_report/model/ird_model.dart';
+import 'package:khata_app/features/reports/ird/ird_report/presentation/ird_details.dart';
 import 'package:khata_app/features/reports/ird/ird_report/provider/ird_provider.dart';
-
+import 'package:pager/pager.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../../../common/colors.dart';
 import '../../../../../common/common_provider.dart';
 import '../../../../../common/snackbar.dart';
@@ -38,6 +44,13 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
   String selectedType ='Sales Book';
   bool isDetailed = false;
+
+  int selectedPage = 1;
+  int items = 10;
+  List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
+
+  final _printKey = GlobalKey<FormState>();
+  final TextEditingController _printCountController = TextEditingController();
 
   @override
   void initState(){
@@ -305,8 +318,8 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                   else{
                     setState(() {
                       data = {
-                        "pageNo": 1,
-                        "pageSize": 10,
+                        "pageNo": selectedPage,
+                        "pageSize": items,
                         "viewType": "${isDetailed}",
                         "bookType": typeList.indexOf(selectedType) + 1,
                         "fiscalId": mainInfo.fiscalID,
@@ -343,6 +356,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                       );
                       return SizedBox();
                     }
+
                     SalesBookBrief records = report[0];
                     CompanyInfo company = report[1];
                     List<SalesData> reports = report[2];
@@ -370,7 +384,54 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                           ),
                         ),
                         const SizedBox(height: 20,),
-                        _dataTable(reports)
+                        _dataTable(reports),
+                        const SizedBox(height: 20,),
+                        Pager(
+                            totalPages: records.totalPages!,
+                            onPageChanged: (page){
+                              DateTime fromDate = DateFormat('yyyy-MM-dd').parse(dateFrom.text);
+                              DateTime toDate = DateFormat('yyyy-MM-dd').parse(dateTo.text);
+                              String from = DateFormat('yyyy-MM-ddThh:mm:ssZ').format(fromDate);
+                              String to = DateFormat('yyyy-MM-ddThh:mm:ssZ').format(toDate);
+                              setState(() {
+                                selectedPage = page;
+                                data = {
+                                  "pageNo": page,
+                                  "pageSize": items,
+                                  "viewType": "${isDetailed}",
+                                  "bookType": typeList.indexOf(selectedType) + 1,
+                                  "fiscalId": mainInfo.fiscalID,
+                                  "fromDate": from,
+                                  "toDate": to
+                                };
+                              });
+                            },
+                          showItemsPerPage: true,
+                          onItemsPerPageChanged: (itemsPerPage) {
+                              print(itemsPerPage);
+                            setState(() {
+                              DateTime fromDate = DateFormat('yyyy-MM-dd').parse(dateFrom.text);
+                              DateTime toDate = DateFormat('yyyy-MM-dd').parse(dateTo.text);
+                              String from = DateFormat('yyyy-MM-ddThh:mm:ssZ').format(fromDate);
+                              String to = DateFormat('yyyy-MM-ddThh:mm:ssZ').format(toDate);
+                              items = itemsPerPage;
+                              selectedPage = 1;
+                              data = {
+                                "pageNo": selectedPage,
+                                "pageSize": items,
+                                "viewType": "${isDetailed}",
+                                "bookType": typeList.indexOf(selectedType) + 1,
+                                "fiscalId": mainInfo.fiscalID,
+                                "fromDate": from,
+                                "toDate": to
+                              };
+                            });
+                          },
+                          currentItemsPerPage: items,
+                          itemsPerPageList: rowPerPageItems,
+                          currentPage: selectedPage,
+                          itemsPerPageText: 'Showing ${records.pageSize} of ${records.totalRecords} :',
+                        )
                       ],
                     );
                   },
@@ -398,7 +459,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
     }
 
     else{
-      return _salesBook(salesData);
+      return _purchaseReturnBook(salesData);
     }
 
 
@@ -598,11 +659,15 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                              onPressed: (){},
+                              onPressed: (){
+                                _routeToDetails(salesData[index].salesMasterId!);
+                              },
                               icon: Icon(Icons.remove_red_eye,color: ColorManager.primary,),
                             ),
                             IconButton(
-                              onPressed: (){},
+                              onPressed: (){
+                                _printCountDialog(masterId: salesData[index].salesMasterId!);
+                              },
                               icon: Icon(Icons.print,color: ColorManager.logoOrange,),
                             ),
 
@@ -763,11 +828,15 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                              onPressed: (){},
+                              onPressed: (){
+                                _routeToDetails(salesData[index].salesMasterId!);
+                              },
                               icon: Icon(Icons.remove_red_eye,color: ColorManager.primary,),
                             ),
                             IconButton(
-                              onPressed: (){},
+                              onPressed: (){
+                                _printCountDialog(masterId: salesData[index].salesMasterId!);
+                              },
                               icon: Icon(Icons.print,color: ColorManager.logoOrange,),
                             ),
 
@@ -1029,11 +1098,285 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                              onPressed: (){},
+                              onPressed: (){
+                                _routeToDetails(salesData[index].salesMasterId!);
+                              },
                               icon: Icon(Icons.remove_red_eye,color: ColorManager.primary,),
                             ),
                             IconButton(
-                              onPressed: (){},
+                              onPressed: (){
+                                _printCountDialog(masterId: salesData[index].salesMasterId!);
+                              },
+                              icon: Icon(Icons.print,color: ColorManager.logoOrange,),
+                            ),
+
+                          ],
+                        )
+                    ),
+
+                  ],);
+                }),
+              ),
+            ],
+          ),
+        ),
+
+      ],
+    );
+  }
+
+  Widget _purchaseReturnBook(List<SalesData> salesData){
+    return Column(
+      children: [
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    width: 1060,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: ColorManager.primary,
+                        border: const Border(
+                            bottom: BorderSide(
+                                color: Colors.white,
+                                width: 1
+                            )
+                        )
+                    ),
+
+                    child:  const Center(
+                      child: Text(
+                        'बीजक / प्रज्ञापनपत्र नम्बर',
+                        style: TextStyle(
+                            fontFamily: 'Ubuntu',
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 20
+                        ),
+                      ),
+                    ),
+                  ),
+                  DataTable(
+                    headingRowHeight: 100,
+
+                    columns: [
+                      irdPurchaseColumn(100, 'मिति', TextAlign.center),
+                      irdPurchaseColumn(140, 'बीजक नम्बर', TextAlign.center),
+                      irdPurchaseColumn(140, 'प्रज्ञापनपत्र नम्बर', TextAlign.center),
+                      irdPurchaseColumn(160, 'आपूर्तिकर्ताको\nनाम', TextAlign.center),
+                      irdPurchaseColumn(120, 'आपूर्तिकर्ताको \nस्थायी लेखा \nनम्बर', TextAlign.center),
+                      irdPurchaseColumn(200, 'खरिद/पैठारी \nफिर्ता गरिएका \nवस्तु वा सेवाको \nविवरण', TextAlign.center),
+                      irdPurchaseColumn(100, 'खरिद/पैठारी \nफिर्ता गरिएका \nवस्तु वा सेवाको \nपरिमाण', TextAlign.center),
+                      irdPurchaseColumn(100, 'वस्तु वा सेवाको \nएकाई', TextAlign.center),
+                    ],
+                    rows: List.generate(salesData.length, (index) {
+                      DateTime date = DateFormat('yyyy-MM-ddThh:mm:ss').parse(salesData[index].entryDate!);
+                      String salesDate = DateFormat('yyyy-MM-dd').format(date);
+                      return  DataRow(cells: [
+                        buildCell(100, salesDate, TextAlign.center, false),
+                        buildCell(140, salesData[index].voucherNo!, TextAlign.center, false),
+                        buildCell(140, '', TextAlign.center, false),
+                        buildCell(160, salesData[index].customerName!, TextAlign.center, false),
+                        buildCell(120, salesData[index].pan ?? '', TextAlign.center, false),
+                        buildCell(200, salesData[index].productName ?? '', TextAlign.center, false),
+                        buildCell(100, '${salesData[index].qty ?? ''}', TextAlign.center, false),
+                        buildCell(100, '${salesData[index].unit ?? ''}', TextAlign.center, false),
+                      ]);
+                    }),
+                    columnSpacing: 0,
+                    horizontalMargin: 0,
+                  ),
+                ],
+              ),
+              DataTable(
+                headingRowHeight: 150,
+                columnSpacing: 0,
+                horizontalMargin: 0,
+                columns: [
+                  irdPurchaseColumn2(120, 'जम्मा फिर्ता \nमूल्य (रु)', TextAlign.center),
+                  irdPurchaseColumn2(120, 'कर छुट हुने \nवस्तु वा सेवाको \nफिर्ता मूल्य (रु)', TextAlign.center),],
+                rows: List.generate(salesData.length, (index) {
+                  final grossAmt = isDetailed? salesData[index].grossAmt : salesData[index].taxableAmt == 0 ? salesData[index].nonTaxableAmt : salesData[index].taxableAmt;
+
+                  return  DataRow(cells: [
+                    buildCell(120, '${grossAmt?.toStringAsFixed(2)}', TextAlign.center, false),
+                    buildCell(120, '${salesData[index].nonTaxableAmt ?? 0}', TextAlign.center, false),
+                  ],);
+                }),
+              ),
+              Column(
+                children: [
+                  Container(
+                    width: 200,
+                    height: 70,
+                    decoration: BoxDecoration(
+                        color: ColorManager.primary,
+                        border: const Border(
+                            bottom: BorderSide(
+                                color: Colors.white,
+                                width: 1
+                            )
+                        )
+                    ),
+
+                    child:  const Center(
+                      child: Text(
+                        'करयोग्य फिर्ता \n(पूंजीगत बाहेक)',
+                        style: TextStyle(
+                            fontFamily: 'Ubuntu',
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 20
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  DataTable(
+                    headingRowHeight: 80,
+
+                    columns: [
+                      irdPurchaseColumn(100, 'मुल्य (रु)', TextAlign.center),
+                      irdPurchaseColumn(100, 'कर (रु)', TextAlign.center),
+                    ],
+                    rows: List.generate(salesData.length, (index) {
+                      DateTime date = DateFormat('yyyy-MM-ddThh:mm:ss').parse(salesData[index].entryDate!);
+                      String salesDate = DateFormat('yyyy-MM-dd').format(date);
+                      return  DataRow(cells: [
+                        buildCell(100, '${salesData[index].taxableAmt?.toStringAsFixed(2)}', TextAlign.center, false),
+                        buildCell(100, '${salesData[index].vatAmt?.toStringAsFixed(2)}', TextAlign.center, false),
+                      ]);
+                    }),
+                    columnSpacing: 0,
+                    horizontalMargin: 0,
+                  ),
+
+                ],
+              ),
+              Column(
+                children: [
+                  Container(
+                    width: 200,
+                    height: 70,
+                    decoration: BoxDecoration(
+                        color: ColorManager.primary,
+                        border: const Border(
+                            bottom: BorderSide(
+                                color: Colors.white,
+                                width: 1
+                            )
+                        )
+                    ),
+
+                    child:  const Center(
+                      child: Text(
+                        'करयोग्य फिर्ता \n(पूंजीगत बाहेक)',
+                        style: TextStyle(
+                            fontFamily: 'Ubuntu',
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 20
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  DataTable(
+                    headingRowHeight: 80,
+
+                    columns: [
+                      irdPurchaseColumn(100, 'मुल्य (रु)', TextAlign.center),
+                      irdPurchaseColumn(100, 'कर  (रु)', TextAlign.center),
+                    ],
+                    rows: List.generate(salesData.length, (index) {
+                      DateTime date = DateFormat('yyyy-MM-ddThh:mm:ss').parse(salesData[index].entryDate!);
+                      String salesDate = DateFormat('yyyy-MM-dd').format(date);
+                      return  DataRow(cells: [
+                        buildCell(100, '0', TextAlign.center, false),
+                        buildCell(100, '0', TextAlign.center, false),
+                      ]);
+                    }),
+                    columnSpacing: 0,
+                    horizontalMargin: 0,
+                  ),
+
+                ],
+              ),
+              Column(
+                children: [
+                  Container(
+                    width: 200,
+                    height: 70,
+                    decoration: BoxDecoration(
+                        color: ColorManager.primary,
+                        border: const Border(
+                            bottom: BorderSide(
+                                color: Colors.white,
+                                width: 1
+                            )
+                        )
+                    ),
+
+                    child:  const Center(
+                      child: Text(
+                        'पूंजीगत करयोग्य \n फिर्ता',
+                        style: TextStyle(
+                            fontFamily: 'Ubuntu',
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white,
+                            fontSize: 20
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                  DataTable(
+                    headingRowHeight: 80,
+
+                    columns: [
+                      irdPurchaseColumn(100, 'मुल्य (रु)', TextAlign.center),
+                      irdPurchaseColumn(100, 'कर  (रु)', TextAlign.center),
+                    ],
+                    rows: List.generate(salesData.length, (index) {
+                      DateTime date = DateFormat('yyyy-MM-ddThh:mm:ss').parse(salesData[index].entryDate!);
+                      String salesDate = DateFormat('yyyy-MM-dd').format(date);
+                      return  DataRow(cells: [
+                        buildCell(100, '0', TextAlign.center, false),
+                        buildCell(100, '0', TextAlign.center, false),
+                      ]);
+                    }),
+                    columnSpacing: 0,
+                    horizontalMargin: 0,
+                  ),
+
+                ],
+              ),
+              DataTable(
+                headingRowHeight: 150,
+                columnSpacing: 0,
+                horizontalMargin: 0,
+                columns: [
+                  irdPurchaseColumn2(120, 'Action', TextAlign.center),],
+                rows: List.generate(salesData.length, (index) {
+
+                  return  DataRow(cells: [
+                    DataCell(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              onPressed: (){
+                                _routeToDetails(salesData[index].salesMasterId!);
+                              },
+                              icon: Icon(Icons.remove_red_eye,color: ColorManager.primary,),
+                            ),
+                            IconButton(
+                              onPressed: (){
+                                _printCountDialog(masterId: salesData[index].salesMasterId!);
+                              },
                               icon: Icon(Icons.print,color: ColorManager.logoOrange,),
                             ),
 
@@ -1162,6 +1505,140 @@ class _IRDReportState extends ConsumerState<IRDReport> {
         ),
       ),
     );
+  }
+
+  void _routeToDetails(int masterId){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => IRDDetails(masterId: masterId)));
+  }
+
+  void _printCountDialog({
+    required int masterId,
+
+  }) async {
+
+
+    await showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context){
+          return StatefulBuilder(
+              builder: (context,setState){
+                return AlertDialog(
+                  title: Text('Bill Print'),
+                  content: Form(
+                    key: _printKey,
+                    child: TextFormField(
+                      controller: _printCountController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        labelText: 'Copies',
+                      ),
+                      validator: (value){
+                        if(value ==null || value.trim().isEmpty){
+                          return 'No. of print is required';
+                        }
+                        else{
+                          try{
+                            final num = int.parse(value);
+                            if(num<1){
+                              return 'Invalid Value';
+                            }
+                          }catch(e){
+                            return 'Invalid character';
+                          }
+                        }
+                        return null;
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                    ),
+                  ),
+                  actions: [
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            backgroundColor: ColorManager.primary,
+                            shape: ContinuousRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)
+                            )
+                        ),
+                        onPressed: () async {
+                          if(_printKey.currentState!.validate()){
+
+                            final count = int.parse(_printCountController.text.trim());
+
+
+                            final reprint = await IRDProvider.getReprint(masterId: masterId, count: count);
+                            if(reprint.isLeft()){
+                              Fluttertoast.showToast(
+                                msg: 'Printing error',
+                                gravity: ToastGravity.BOTTOM,
+                                backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+                                textColor: Colors.white,
+                                fontSize: 16.0,
+                              );
+                              Navigator.pop(context);
+                            }
+                            else{
+                              final rightValue = reprint.fold((l) => null, (r) => r);
+                              Navigator.pop(context);
+
+
+                              if(rightValue != null){
+                                print('not null');
+                              }
+                              try{
+                                await Printing.layoutPdf(
+                                    dynamicLayout: false,
+                                    format: html.PdfPageFormat(2480,3508),
+                                    onLayout: (PdfPageFormat format) async {
+                                  var body = '${rightValue?.result}';
+
+                                  final pdf = pw.Document();
+                                  final widgets = await html.HTMLToPdf().convert(body);
+                                  pdf.addPage(pw.MultiPage(build: (context) => widgets));
+                                  return await pdf.save();
+                                });
+
+                              } catch(e){
+                                print(' error : $e');
+                              }
+
+
+                              // await Printing.layoutPdf(
+                              //     onLayout: (PdfPageFormat format) async => doc.save());
+                            }
+
+
+
+                          }
+
+                        },
+                        child: Text('Print',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),)
+                    ),
+                    ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            backgroundColor: ColorManager.errorRed,
+                            shape: ContinuousRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)
+                            )
+                        ),
+                        onPressed: (){
+                          Navigator.pop(context);
+                        },
+                        child: Text('Cancel',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.bold),)
+                    ),
+                  ],
+                );
+              }
+          );
+        }
+    );
+
+    _printCountController.clear();
+
   }
 
 }

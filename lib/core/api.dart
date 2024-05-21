@@ -29,6 +29,8 @@ class Api {
 
   //IRD REPORT...
   static const getIRDReport = '$baseUrl/api/SalesBook/GetSalesBook';
+  static const getIRDDetails = '$baseUrl/api/SalesBook/GetIRDBookDetails';
+  static const reprint = '$baseUrl/api/SalesBook/PrintSalesReport';
 
 
   //POS (khata inventory)....

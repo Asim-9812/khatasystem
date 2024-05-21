@@ -27,10 +27,37 @@ class MenuProvider{
       });
 
       if(response.statusCode == 200){
+
+        Map<String, dynamic> irdReportData = {
+          "intUserMenuid": 0,
+          "userID": 0,
+          "intMenuid": 0,
+          "strName": "IRD Report",
+          "strFormName": "IRD Report",
+          "strShorCut": "",
+          "isOpen": true,
+          "parentID": 69,
+          "isActive": true,
+          "hasSubMenu": false,
+          "webUrl": "/SalesBook/Index  ",
+          "isActiveApp": 1,
+          "menuicon": "",
+          "status": true,
+          "intOrder": 1,
+          "isPrivate": false
+        };
+        MenuModel irdReport = MenuModel.fromJson(irdReportData);
+
+
         final responseList = response.data as List<dynamic>;
 
         for (var element in responseList) {
           menuList.add(MenuModel.fromJson(element));
+        }
+        bool exist = menuList.any((element) => element.strName.toLowerCase() == irdReport.strName.toLowerCase());
+
+        if(!exist){
+          menuList.add(irdReport);
         }
 
       }else{

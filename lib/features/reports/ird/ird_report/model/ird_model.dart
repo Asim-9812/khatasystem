@@ -163,3 +163,40 @@ class SalesData {
     };
   }
 }
+
+
+class ReprintModel {
+  String? code;
+  String? message;
+  String? result;
+  int? printCount;
+  bool? alreadyPrint;
+
+  ReprintModel({
+    this.code,
+    this.message,
+    this.result,
+    this.printCount,
+    this.alreadyPrint,
+  });
+
+  factory ReprintModel.fromJson(Map<String, dynamic> json) {
+    return ReprintModel(
+      code: json['code'],
+      message: json['message'],
+      result: json['result'],
+      printCount: json['printCount'],
+      alreadyPrint: json['alreadyPrint'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'code': code,
+      'message': message,
+      'result': result,
+      'printCount': printCount,
+      'alreadyPrint': alreadyPrint,
+    };
+  }
+}

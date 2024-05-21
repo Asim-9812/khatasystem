@@ -87,7 +87,7 @@ class SubMenuView extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const DayBookReport()));
                             }else if(submenu[index].intMenuid == 84){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const BankCashReport()));
-                            }else if(submenu[index].intMenuid == 70){
+                            }else if(submenu[index].intMenuid == 0){
                               Navigator.of(context).push(MaterialPageRoute(builder: (context) => const IRDReport()));
                             }else{
                               Fluttertoast.showToast(
@@ -234,6 +234,8 @@ class SubMenuView extends StatelessWidget {
     int menuId = id;
 
     switch(menuId){
+      case 0:
+        return FaIcon(FontAwesomeIcons.fileSignature, size: 34, color: ColorManager.menuIcon,);
       case 65:
         return FaIcon(FontAwesomeIcons.chartLine, size: 34, color: ColorManager.menuIcon,);
       case 66:

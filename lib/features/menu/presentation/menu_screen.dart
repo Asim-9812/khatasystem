@@ -36,6 +36,7 @@ class ReportView extends ConsumerWidget {
             body: SafeArea(
               child: menuData.when(
                 data: (data) {
+
                   List<MenuModel> mainList = <MenuModel>[];
                   List<MenuModel> homeChildList = <MenuModel>[];
                   List<MenuModel> auditChildList = <MenuModel>[];

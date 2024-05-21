@@ -37,6 +37,7 @@ class _POSState extends ConsumerState<POS> {
   final _customerFormKey = GlobalKey<FormState>();
   final _receivedFormKey = GlobalKey<FormState>();
   final _printKey = GlobalKey<FormState>();
+  final TextEditingController _printCountController = TextEditingController();
 
   final TextEditingController _productCodeController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
@@ -44,7 +45,7 @@ class _POSState extends ConsumerState<POS> {
   final TextEditingController _rateController = TextEditingController();
   final TextEditingController _unitController = TextEditingController();
   final TextEditingController _receivedAmountController = TextEditingController();
-  final TextEditingController _printCountController = TextEditingController();
+
 
 
   ///customer details...

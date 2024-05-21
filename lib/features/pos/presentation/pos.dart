@@ -89,9 +89,9 @@ class _POSState extends ConsumerState<POS> {
   late List<PosSettingsModel> posSettingsModel;
   
   
-  late PosSettingsModel posSettingsLocation;
-  late PosSettingsModel posSettingsSales;
-  late PosSettingsModel posSettingsReceivedLedger;
+  PosSettingsModel? posSettingsLocation;
+  PosSettingsModel? posSettingsSales;
+  PosSettingsModel? posSettingsReceivedLedger;
 
   POSLedgerModel? selectedReceivedLedger;
 
@@ -101,10 +101,16 @@ class _POSState extends ConsumerState<POS> {
     super.initState();
     posSettingsModel = widget.posSettings;
     posSettingsLocation = posSettingsModel.firstWhere((element) => element.fieldName.toLowerCase() == 'location');
-    posSettingsSales = posSettingsModel.firstWhere((element) => element.fieldName.toLowerCase() == 'sales ledger');
-    posSettingsReceivedLedger = posSettingsModel.firstWhere((element) => element.fieldName.toLowerCase() == 'received ledger');
-    locationId = posSettingsLocation.defaultValue;
-    salesAccountId = posSettingsSales.defaultValue;
+    posSettingsSales = posSettingsModel.where((element) => element.fieldName.toLowerCase() == 'sales ledger').firstOrNull;
+    posSettingsReceivedLedger = posSettingsModel.where((element) => element.fieldName.toLowerCase() == 'received ledger').firstOrNull;
+    if(posSettingsSales != null){
+      salesAccountId = posSettingsSales!.defaultValue;
+    }
+    if(posSettingsLocation != null){
+      locationId = posSettingsLocation!.defaultValue;
+    }
+
+
     _customerNameController.text = customerName;
 
   }
@@ -210,7 +216,11 @@ class _POSState extends ConsumerState<POS> {
             ),
             toolbarHeight: 70,
           ),
-          body: voucherData.when(
+          body: posSettingsSales == null ? Center(
+            child: Text('No Products found',style: TextStyle(color: ColorManager.black,fontWeight: FontWeight.bold),),
+          )
+
+          :voucherData.when(
               data: (voucherNo){
                 final loadDraftData = ref.watch(draftProvider(voucherNo));
                 return productList.when(
@@ -1269,7 +1279,7 @@ class _POSState extends ConsumerState<POS> {
                                                         children: [
                                                           receivedLedgerData.when(
                                                               data: (receivedLedgerList){
-                                                                String defaultItem = receivedLedgerList.firstWhere((element) => element.value == int.parse(posSettingsReceivedLedger.defaultValue)).text;
+                                                                String defaultItem = receivedLedgerList.firstWhere((element) => element.value == int.parse(posSettingsReceivedLedger!.defaultValue)).text;
                                                                 return Expanded(
                                                                   child: DropdownSearch<String>(
 
@@ -1483,8 +1493,8 @@ class _POSState extends ConsumerState<POS> {
                                                                           transactionDetailsID: 0,
                                                                           voucherTypeID: 19,
                                                                           masterID: drafts.first.salesMasterID,
-                                                                          ledgerID: selectedReceivedLedger?.value ?? int.parse(posSettingsReceivedLedger.defaultValue),
-                                                                          ledgerName: selectedReceivedLedger?.text ?? posSettingsReceivedLedger.fieldName,
+                                                                          ledgerID: selectedReceivedLedger?.value ?? int.parse(posSettingsReceivedLedger!.defaultValue),
+                                                                          ledgerName: selectedReceivedLedger?.text ?? posSettingsReceivedLedger!.fieldName,
                                                                           drAmt: receivingAmount,
                                                                           crAmt: 0.0,
                                                                           userID: userId2,

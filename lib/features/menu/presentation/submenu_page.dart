@@ -5,6 +5,7 @@ import 'package:khata_app/features/reports/Register/voucher_report/presentation/
 import 'package:khata_app/features/reports/financial/balance_sheet/presentation/balance_sheet_report.dart';
 import 'package:khata_app/features/reports/financial/profit_loss/presentation/profit_loss_report.dart';
 import 'package:khata_app/features/reports/financial/trial_balance/presentation/trial_balance_report.dart';
+import 'package:khata_app/features/reports/ird/ird_report/presentation/ird_report.dart';
 import 'package:khata_app/features/reports/statement/bank_cash_report/presentation/bank_cash_report.dart';
 import 'package:khata_app/features/reports/statement/customer_ledger_report/presentation/customer_ledger_report.dart';
 import 'package:khata_app/features/reports/statement/groupwise_ledger_report/presentation/groupwise_ledger_report.dart';
@@ -86,6 +87,8 @@ class SubMenuView extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const DayBookReport()));
                             }else if(submenu[index].intMenuid == 84){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const BankCashReport()));
+                            }else if(submenu[index].intMenuid == 70){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const IRDReport()));
                             }else{
                               Fluttertoast.showToast(
                                 msg: 'Feature Coming Soon!!!',

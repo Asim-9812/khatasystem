@@ -27,6 +27,9 @@ class Api {
   static const getFiscalYear = '$baseUrl/api/FiscalYear/Getall';
   static const getLedgerList = '$baseUrl/api/BankCash/LedgerList_BankCash';
 
+  //IRD REPORT...
+  static const getIRDReport = '$baseUrl/api/SalesBook/GetSalesBook';
+
 
   //POS (khata inventory)....
   static const baseInventoryUrl = 'https://inventory.khatasystem.com/api/Sales'; // LIVE KHATA INVENTORY
@@ -67,7 +70,7 @@ class Api {
 
 
   //track product....
-  static const baseTrackUrl = 'https://inventory.khatasystem.com/api/'; // LIVE KHATA INVENTORY
+  static const baseTrackUrl = 'https://inventory.khatasystem.com/api'; // LIVE KHATA INVENTORY
 
   // static const baseTrackUrl = 'http://202.51.74.138:5018/api'; // DEMO KHATA INVENTORY
 

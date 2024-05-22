@@ -103,6 +103,7 @@ class DayBookViewPro {
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
     try{
       final jsonData = jsonEncode(filterModel.toJson());
+      print(filterModel.toJson()['mainInfoModel']);
 
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){

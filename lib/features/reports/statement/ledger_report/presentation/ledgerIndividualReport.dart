@@ -87,7 +87,7 @@ class LedgerVoucherIndividualReport extends ConsumerWidget {
                       color: Colors.white,
                     ),
                   ),
-                  title: const Text('Purchase Details'),
+                  title: const Text('Voucher Details'),
                   titleTextStyle: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,

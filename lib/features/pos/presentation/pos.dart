@@ -246,6 +246,7 @@ class _POSState extends ConsumerState<POS> {
                                     children: [
                                       TextFormField(
                                         controller: _productCodeController,
+                                        autofocus: true,
                                         decoration: InputDecoration(
                                             border: OutlineInputBorder(
                                                 borderRadius: BorderRadius.circular(10),
@@ -253,7 +254,6 @@ class _POSState extends ConsumerState<POS> {
                                                     color: ColorManager.primary
                                                 )
                                             ),
-
                                             enabledBorder: OutlineInputBorder(
                                                 borderRadius: BorderRadius.circular(10),
                                                 borderSide: BorderSide(
@@ -473,7 +473,9 @@ class _POSState extends ConsumerState<POS> {
                                             child: AbsorbPointer(
                                               absorbing: disabledFields,
                                               child: TextFormField(
+                                                autofocus: false,
                                                 controller: _quantityController,
+                                                keyboardType: TextInputType.number,
                                                 decoration: InputDecoration(
 
                                                     fillColor: disabledFields ? ColorManager.black.withOpacity(0.1) :ColorManager.white,
@@ -547,6 +549,7 @@ class _POSState extends ConsumerState<POS> {
                                               absorbing: disabledFields,
                                               child: TextFormField(
                                                   controller: _netTotalController,
+                                                  keyboardType: TextInputType.number,
                                                   decoration: InputDecoration(
 
                                                       fillColor: disabledFields ? ColorManager.black.withOpacity(0.1) :ColorManager.white,
@@ -1319,11 +1322,21 @@ class _POSState extends ConsumerState<POS> {
                                                                         ),
                                                                       ),
                                                                     ),
-                                                                    onChanged: (value) {
+                                                                    onChanged: (value) async {
+                                                                      print('here');
+
+
                                                                       final newReceivedLedger = receivedLedgerList.firstWhere((element) => element.text == value);
+
                                                                       setState(() {
                                                                         selectedReceivedLedger = newReceivedLedger;
                                                                       });
+                                                                      await Future.delayed(Duration(milliseconds: 10));
+
+
+                                                                      FocusScope.of(context).unfocus();
+
+
                                                                     },
                                                                   ),
                                                                 );
@@ -1379,6 +1392,7 @@ class _POSState extends ConsumerState<POS> {
                                                                 absorbing: amount == totalBill!,
                                                                 child: TextFormField(
                                                                   controller: _receivedAmountController,
+                                                                  keyboardType: TextInputType.number,
                                                                   decoration: InputDecoration(
                                                                       border: OutlineInputBorder(
                                                                           borderRadius: BorderRadius.circular(10),

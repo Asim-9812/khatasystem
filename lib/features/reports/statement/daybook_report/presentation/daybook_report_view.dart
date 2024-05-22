@@ -45,6 +45,7 @@ class DayBookReportView extends StatelessWidget {
 
     return Consumer(
         builder: (context, ref, child){
+
           final res = ref.watch(dayBookViewProvider(fModel));
           return WillPopScope(
             onWillPop: () async {
@@ -200,7 +201,7 @@ class DayBookReportView extends StatelessWidget {
 
                                         children: [
                                           Text('Narration:',style: TextStyle(fontWeight: FontWeight.bold),),
-                                          Text('${newList[0].mainNarration}')
+                                          Text('${newList.last.mainNarration}')
                                         ],
                                       ),
                                       Row(
@@ -209,7 +210,7 @@ class DayBookReportView extends StatelessWidget {
 
                                             children: [
                                               Text('Dr:',style: TextStyle(fontWeight: FontWeight.bold),),
-                                              Text('${newList[0].strDebit}')
+                                              Text('${newList.last.strDebit}')
                                             ],
                                           ),
                                           const SizedBox(
@@ -219,7 +220,7 @@ class DayBookReportView extends StatelessWidget {
 
                                             children: [
                                               Text('Cr:',style: TextStyle(fontWeight: FontWeight.bold),),
-                                              Text('${newList[0].strCredit}')
+                                              Text('${newList.last.strCredit}')
                                             ],
                                           ),
                                         ],

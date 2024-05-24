@@ -1,6 +1,6 @@
 
 
-
+import 'package:htmltopdfwidgets/htmltopdfwidgets.dart' as html;
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
@@ -113,6 +113,7 @@ class _POSState extends ConsumerState<POS> {
 
 
     _customerNameController.text = customerName;
+    _printCountController.text = '1';
 
   }
 
@@ -2502,8 +2503,12 @@ class _POSState extends ConsumerState<POS> {
                               );
                             }
                             else{
+                              Map<String,dynamic> data = {
+                                'masterId' : masterId,
+                                'count' : count
+                              };
 
-                              final printResponse = await POSServices().printReceipt(masterId: masterId);
+                              final printResponse = await POSServices().printReceipt(data: data);
                               if(printResponse.isLeft()){
                                 Fluttertoast.showToast(
                                   msg: 'Printing error',
@@ -2584,30 +2589,65 @@ class _POSState extends ConsumerState<POS> {
 
   }
 
-  void _printReceipt(ReceiptPOSModel receipt,int count) async {
+  void _printReceipt(String receipt,int count) async {
 
     List<String> invoiceList = ['ABBREVIATED TAX INVOICE','INVOICE','COPY OF INVOICE'];
 
 
-    final doc = pw.Document();
+    // final doc = pw.Document();
+    //
+    // for(int i = 0; i<count;i++){
+    //   doc.addPage(pw.Page(
+    //       pageFormat: PdfPageFormat.a4,
+    //       build: (pw.Context context) {
+    //         return generatePdf(receipt: receipt,
+    //             invoiceTitle: i == 0 ? invoiceList[0]
+    //                 : i == 1? invoiceList[1]
+    //                 : '${invoiceList[2]}(${i-1})'
+    //         ); // Center
+    //       }));
+    // }
+    //
+    // await Future.delayed(Duration(seconds: 2));
 
-    for(int i = 0; i<count;i++){
-      doc.addPage(pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          build: (pw.Context context) {
-            return generatePdf(receipt: receipt,
-                invoiceTitle: i == 0 ? invoiceList[0]
-                    : i == 1? invoiceList[1]
-                    : '${invoiceList[2]}(${i-1})'
-            ); // Center
-          }));
+    // try{
+    //   await Printing.layoutPdf(
+    //       dynamicLayout: false,
+    //       format: html.PdfPageFormat(2480,3508),
+    //       onLayout: (PdfPageFormat format) async {
+    //         var body = '${receipt.item2.reportHTML}';
+    //
+    //         final pdf = pw.Document();
+    //         final widgets = await html.HTMLToPdf().convert(body);
+    //         pdf.addPage(pw.MultiPage(build: (context) => widgets));
+    //         return await pdf.save();
+    //       });
+    //
+    // } catch(e){
+    //   print(' error : $e');
+    // }
+
+    //
+    // await Printing.layoutPdf(
+    //     onLayout: (PdfPageFormat format) async => doc.save());
+
+    try{
+      await Printing.layoutPdf(
+          dynamicLayout: false,
+          format: html.PdfPageFormat(648 ,588),
+          onLayout: (PdfPageFormat format) async {
+            var body = '${receipt}';
+
+            final pdf = pw.Document();
+            // final pdf = pw.Document();
+            final widgets = await html.HTMLToPdf().convert(body);
+            pdf.addPage(pw.MultiPage(build: (context) => widgets));
+            return await pdf.save();
+          });
+
+    } catch(e){
+      print(' error : $e');
     }
-
-    await Future.delayed(Duration(seconds: 2));
-
-
-    await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => doc.save());
 
     setState(() {
       isPostingFinalData = false;

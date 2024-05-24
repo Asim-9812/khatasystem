@@ -57,6 +57,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
     super.initState();
     dateFrom.text = DateFormat('yyyy-MM-dd').format(DateTime.parse(mainInfo.startDate!));
     dateTo.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    _printCountController.text = '1';
   }
 
   @override
@@ -645,6 +646,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
                 ],
               ),
+              if(!isDetailed)
               DataTable(
                 headingRowHeight: 130,
                 columnSpacing: 0,
@@ -814,6 +816,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
                 ],
               ),
+              if(!isDetailed)
               DataTable(
                 headingRowHeight: 130,
                 columnSpacing: 0,
@@ -1084,6 +1087,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
                 ],
               ),
+              if(!isDetailed)
               DataTable(
                 headingRowHeight: 150,
                 columnSpacing: 0,
@@ -1354,6 +1358,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
                 ],
               ),
+              if(!isDetailed)
               DataTable(
                 headingRowHeight: 150,
                 columnSpacing: 0,

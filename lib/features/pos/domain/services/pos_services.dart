@@ -18,7 +18,7 @@ final productProvider = FutureProvider.family((ref,String id) => POSServices().g
 final receivedAmountProvider = FutureProvider.family((ref,int id) => POSServices().getReceivedAmount(salesMasterId: id));
 final receivedTotalAmountProvider = FutureProvider.family((ref,int id) => POSServices().getReceivedTotalAmount(salesMasterId: id));
 final draftProvider = FutureProvider.family((ref,String voucherNo) => POSServices().loadPosDraft(voucherNo: voucherNo));
-final receiptProvider = FutureProvider.family((ref,int id) => POSServices().printReceipt(masterId: id));
+final receiptProvider = FutureProvider.family((ref,Map<String,dynamic> data) => POSServices().printReceipt(data: data));
 
 
 class POSServices{
@@ -705,21 +705,25 @@ class POSServices{
   }
 
 
-  Future<Either<String,ReceiptPOSModel>> printReceipt({
-    required int masterId
+  Future<Either<String,String>> printReceipt({
+    required Map<String,dynamic> data,
 }) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
+      final masterId = data['masterId'];
+      final count = data['count'];
       final response = await dio.get(Api.printPOS,
           queryParameters: {
-            'masterId' : masterId
+            'masterId' : masterId,
+            'printCount' : count
           });
       if(response.statusCode == 200){
-        final data = response.data as Map<String,dynamic>;
-        final receipt = ReceiptPOSModel.fromJson(data);
+        final data = response.data as String;
+        // final data = response.data as Map<String,dynamic>;
+        // final receipt = ReceiptPOSModel.fromJson(data);
         // print(data);
-        return Right(receipt);
+        return Right(data);
       }
       else{
         return Left('${response.statusCode} : Something went wrong');

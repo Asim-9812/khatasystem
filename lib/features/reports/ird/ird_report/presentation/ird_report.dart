@@ -476,7 +476,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
               Column(
                 children: [
                   Container(
-                    width: 840,
+                    width: 900,
                     height: 50,
                     decoration: BoxDecoration(
                         color: ColorManager.primary,
@@ -506,7 +506,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                     columns: [
                       irdColumn(100, 'मिति', TextAlign.center),
                       irdColumn(140, 'बीजक नम्बर', TextAlign.center),
-                      irdColumn(120, 'खरिदकर्ताको\nनाम', TextAlign.center),
+                      irdColumn(180, 'खरिदकर्ताको\nनाम', TextAlign.center),
                       irdColumn(120, 'खरिदकर्ताको\nस्थायी लेखा\nनम्बर', TextAlign.center),
                       irdColumn(160, 'वस्तु वा सेवाको\nनाम', TextAlign.center),
                       irdColumn(100, 'वस्तु वा \nसेवाको \nपारीमाण', TextAlign.center),
@@ -518,7 +518,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                       return  DataRow(cells: [
                         buildCell(100, salesDate, TextAlign.center, false),
                         buildCell(140, salesData[index].voucherNo!, TextAlign.center, false),
-                        buildCell(120, salesData[index].customerName!, TextAlign.center, false),
+                        buildCell(180, salesData[index].customerName!, TextAlign.center, false),
                         buildCell(120, salesData[index].pan ?? '', TextAlign.center, false),
                         buildCell(160, salesData[index].productName ?? '', TextAlign.center, false),
                         buildCell(100, '${salesData[index].qty ?? ''}', TextAlign.center, false),
@@ -585,7 +585,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                       String salesDate = DateFormat('yyyy-MM-dd').format(date);
                       return  DataRow(cells: [
                         buildCell(80, '${salesData[index].taxableAmt?.toStringAsFixed(2)}', TextAlign.center, false),
-                        buildCell(80, '${salesData[index].vatAmt}', TextAlign.center, false),
+                        buildCell(80, '${salesData[index].vatAmt?.toStringAsFixed(2)}', TextAlign.center, false),
                       ]);
                     }),
                     columnSpacing: 0,

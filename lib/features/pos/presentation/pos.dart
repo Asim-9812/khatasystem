@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/common/export.dart';
+import 'package:khata_app/common/format_date_distance.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:khata_app/features/pos/presentation/received_amount_table.dart';
 import 'package:khata_app/features/pos/presentation/receipt_page.dart';
@@ -153,6 +154,18 @@ class _POSState extends ConsumerState<POS> {
                         backgroundColor: ColorManager.primary
                       ),
                         onPressed: (){
+
+                          setState(() {
+                            isPostingFinalData = false;
+                            selectedReceivedLedger=null;
+                            _customerNameController.text = customerName;
+                            _printCountController.text = '1';
+                          });
+                          ref.invalidate(draftProvider);
+                          ref.invalidate(receivedTotalAmountProvider);
+                          ref.invalidate(receivedAmountProvider);
+                          ref.refresh(productProvider(locationId));
+
                         ref.invalidate(voucherProvider);
                         Navigator.pop(context);
                         Navigator.pop(context,true);
@@ -523,7 +536,7 @@ class _POSState extends ConsumerState<POS> {
                                                     }
                                                   }
                                                 },
-                                                inputFormatters: [IntInputFormatter()],
+                                                inputFormatters: [DoubleInputFormatter()],
 
                                                 onChanged:(value){
                                                   if(productRate !=null){
@@ -708,7 +721,7 @@ class _POSState extends ConsumerState<POS> {
                                                                           sku: addProduct!.fromUnitId!,
                                                                           skuUnitCost: 0,
                                                                           status: true,
-                                                                          stockqty: (int.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
+                                                                          stockqty: (double.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
                                                                           taxableAmt: isVatable? taxableAmt : 0.0,
                                                                           transactionMode: 1,
                                                                           transactionUnitCost: double.parse(_netTotalController.text.trim()),
@@ -734,7 +747,7 @@ class _POSState extends ConsumerState<POS> {
                                                                           unitID: addProduct!.fromUnitId!,
                                                                           batch: addProduct!.batch!,
                                                                           expiryDate: addProduct?.expirydate,
-                                                                          stockQty: (int.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
+                                                                          stockQty: (double.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
                                                                           extra1: voucherNo,
                                                                           flag: 2,
                                                                           userID: 0,
@@ -960,7 +973,7 @@ class _POSState extends ConsumerState<POS> {
                                                                     sku: addProduct!.fromUnitId!,
                                                                     skuUnitCost: 0,
                                                                     status: true,
-                                                                    stockqty: (int.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
+                                                                    stockqty: (double.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
                                                                     taxableAmt: isVatable? taxableAmt : 0.0,
                                                                     transactionMode: 1,
                                                                     transactionUnitCost: double.parse(_netTotalController.text.trim()),
@@ -986,7 +999,7 @@ class _POSState extends ConsumerState<POS> {
                                                                     unitID: addProduct!.fromUnitId!,
                                                                     batch: addProduct!.batch!,
                                                                     expiryDate: addProduct!.expirydate,
-                                                                    stockQty: (int.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
+                                                                    stockQty: (double.parse(_quantityController.text.trim()) * addProduct!.conversionFactor!),
                                                                     extra1: voucherNo,
                                                                     flag: 2,
                                                                     userID: userId2,
@@ -2634,7 +2647,7 @@ class _POSState extends ConsumerState<POS> {
     try{
       await Printing.layoutPdf(
           dynamicLayout: false,
-          format: html.PdfPageFormat(648 ,588),
+          // format: html.PdfPageFormat(648 ,588),
           onLayout: (PdfPageFormat format) async {
             var body = '${receipt}';
 
@@ -2653,6 +2666,7 @@ class _POSState extends ConsumerState<POS> {
       isPostingFinalData = false;
       selectedReceivedLedger=null;
       _customerNameController.text = customerName;
+      _printCountController.text = '1';
     });
     ref.invalidate(voucherProvider);
     ref.invalidate(draftProvider);

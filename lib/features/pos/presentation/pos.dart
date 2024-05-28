@@ -1,7 +1,10 @@
 
 
+import 'package:html_to_pdf_plus/html_to_pdf_plus.dart';
 import 'package:htmltopdfwidgets/htmltopdfwidgets.dart' as html;
-
+import 'package:pdf/src/pdf/page_format.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -2644,23 +2647,50 @@ class _POSState extends ConsumerState<POS> {
     // await Printing.layoutPdf(
     //     onLayout: (PdfPageFormat format) async => doc.save());
 
-    try{
-      await Printing.layoutPdf(
-          dynamicLayout: false,
-          // format: html.PdfPageFormat(648 ,588),
-          onLayout: (PdfPageFormat format) async {
-            var body = '${receipt}';
+    // try{
+    //   await Printing.layoutPdf(
+    //       dynamicLayout: false,
+    //       // format: html.PdfPageFormat(648 ,588),
+    //       onLayout: (PdfPageFormat format) async {
+    //         var body = '${receipt}';
+    //
+    //         final pdf = pw.Document();
+    //         // final pdf = pw.Document();
+    //         final widgets = await html.HTMLToPdf().convert(body);
+    //         pdf.addPage(pw.MultiPage(build: (context) => widgets));
+    //         return await pdf.save();
+    //       });
+    //
+    // } catch(e){
+    //   print(' error : $e');
+    // }
 
-            final pdf = pw.Document();
-            // final pdf = pw.Document();
-            final widgets = await html.HTMLToPdf().convert(body);
-            pdf.addPage(pw.MultiPage(build: (context) => widgets));
-            return await pdf.save();
-          });
+    // Get the documents directory
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String targetPath = documentsDirectory.path;
+    String targetFileName = "temp_pdf_file";
 
-    } catch(e){
-      print(' error : $e');
-    }
+    // Generate PDF from HTML content
+    final generatedPdfFile = await HtmlToPdf.convertFromHtmlContent(
+      htmlContent: receipt,
+      configuration: PdfConfiguration(
+        targetDirectory: targetPath,
+        targetName: targetFileName,
+        printSize: PrintSize.A4,
+        printOrientation: PrintOrientation.Portrait,
+      ),
+    );
+
+    print("Generated PDF file: ${generatedPdfFile.path}");
+
+    // final doc = pw.Document();
+
+    final pdfBytes = await generatedPdfFile.readAsBytes();
+    // Print or preview the PDF
+    await Printing.layoutPdf(
+      format: html.PdfPageFormat(650, 850),
+      onLayout: (PdfPageFormat format) async => pdfBytes,
+    );
 
     setState(() {
       isPostingFinalData = false;

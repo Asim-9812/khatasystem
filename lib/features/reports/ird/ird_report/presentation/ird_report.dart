@@ -331,6 +331,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                       };
                     });
                   }
+                  print(data);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: ColorManager.green,
@@ -664,13 +665,13 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                           children: [
                             IconButton(
                               onPressed: (){
-                                _routeToDetails(salesData[index].salesMasterId!);
+                                _routeToDetails(salesData[index].salesMasterId!,true);
                               },
                               icon: Icon(Icons.remove_red_eye,color: ColorManager.primary,),
                             ),
                             IconButton(
                               onPressed: (){
-                                _printCountDialog(masterId: salesData[index].salesMasterId!);
+                                _printCountDialog(masterId: salesData[index].salesMasterId!,voucherNo: salesData[index].voucherNo!);
                               },
                               icon: Icon(Icons.print,color: ColorManager.logoOrange,),
                             ),
@@ -834,13 +835,14 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                           children: [
                             IconButton(
                               onPressed: (){
-                                _routeToDetails(salesData[index].salesMasterId!);
+
+                                _routeToDetails(salesData[index].salesMasterId!,true);
                               },
                               icon: Icon(Icons.remove_red_eye,color: ColorManager.primary,),
                             ),
                             IconButton(
                               onPressed: (){
-                                _printCountDialog(masterId: salesData[index].salesMasterId!);
+                                _printCountDialog(masterId: salesData[index].salesMasterId!,voucherNo: salesData[index].voucherNo!);
                               },
                               icon: Icon(Icons.print,color: ColorManager.logoOrange,),
                             ),
@@ -1105,13 +1107,14 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                           children: [
                             IconButton(
                               onPressed: (){
-                                _routeToDetails(salesData[index].salesMasterId!);
+                                print(salesData[index].toJson());
+                                _routeToDetails(salesData[index].purchaseMasterId!,false);
                               },
                               icon: Icon(Icons.remove_red_eye,color: ColorManager.primary,),
                             ),
                             IconButton(
                               onPressed: (){
-                                _printCountDialog(masterId: salesData[index].salesMasterId!);
+                                _print(masterId: salesData[index].purchaseMasterId!,voucherNo: salesData[index].voucherNo!);
                               },
                               icon: Icon(Icons.print,color: ColorManager.logoOrange,),
                             ),
@@ -1376,13 +1379,14 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                           children: [
                             IconButton(
                               onPressed: (){
-                                _routeToDetails(salesData[index].salesMasterId!);
+                                _routeToDetails(salesData[index].purchaseMasterId!,false);
                               },
                               icon: Icon(Icons.remove_red_eye,color: ColorManager.primary,),
                             ),
                             IconButton(
                               onPressed: (){
-                                _printCountDialog(masterId: salesData[index].salesMasterId!);
+                                // print(salesData[index].toJson());
+                                _print(masterId: salesData[index].purchaseMasterId!,voucherNo: salesData[index].voucherNo!);
                               },
                               icon: Icon(Icons.print,color: ColorManager.logoOrange,),
                             ),
@@ -1508,19 +1512,25 @@ class _IRDReportState extends ConsumerState<IRDReport> {
         padding: const EdgeInsets.symmetric(horizontal: 10),
         width: cellWidth,
         child: Center(
-          child: Text(cellText),
+          child: Text(cellText,textAlign: cellTextAlign,),
         ),
       ),
     );
   }
 
-  void _routeToDetails(int masterId){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => IRDDetails(masterId: masterId)));
+  void _routeToDetails(int masterId,bool isSale){
+
+    final routeData ={
+      'masterId' : masterId,
+      'isSale' : isSale
+    };
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => IRDDetails(data: routeData,)));
   }
 
   void _printCountDialog({
     required int masterId,
-
+    required String voucherNo
   }) async {
 
 
@@ -1572,65 +1582,10 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                         ),
                         onPressed: () async {
                           if(_printKey.currentState!.validate()){
-
-                            final count = int.parse(_printCountController.text.trim());
-
-
-                            final reprint = await IRDProvider.getReprint(masterId: masterId, count: count);
-                            if(reprint.isLeft()){
-                              Fluttertoast.showToast(
-                                msg: 'Printing error',
-                                gravity: ToastGravity.BOTTOM,
-                                backgroundColor: ColorManager.errorRed.withOpacity(0.9),
-                                textColor: Colors.white,
-                                fontSize: 16.0,
-                              );
-                              Navigator.pop(context);
-                            }
-                            else{
-                              final rightValue = reprint.fold((l) => null, (r) => r);
-                              Navigator.pop(context);
+                            // final count = int.parse(_printCountController.text.trim());
 
 
-                              if(rightValue != null){
-                                print('not null');
-                              }
-                              try{
-                                // Get the documents directory
-                                Directory documentsDirectory = await getApplicationDocumentsDirectory();
-                                String targetPath = documentsDirectory.path;
-                                String targetFileName = "temp_pdf_file";
-
-                                // Generate PDF from HTML content
-                                final generatedPdfFile = await HtmlToPdf.convertFromHtmlContent(
-                                  htmlContent: '${rightValue?.result}',
-                                  configuration: PdfConfiguration(
-                                    targetDirectory: targetPath,
-                                    targetName: targetFileName,
-                                    printSize: PrintSize.A4,
-                                    printOrientation: PrintOrientation.Portrait,
-                                  ),
-                                );
-
-                                print("Generated PDF file: ${generatedPdfFile.path}");
-
-                                // final doc = pw.Document();
-
-                                final pdfBytes = await generatedPdfFile.readAsBytes();
-                                // Print or preview the PDF
-                                await Printing.layoutPdf(
-                                  format: html.PdfPageFormat(650, 850),
-                                  onLayout: (PdfPageFormat format) async => pdfBytes,
-                                );
-
-                              } catch(e){
-                                print(' error : $e');
-                              }
-
-
-                              // await Printing.layoutPdf(
-                              //     onLayout: (PdfPageFormat format) async => doc.save());
-                            }
+                            _print(masterId: masterId, voucherNo: voucherNo);
 
 
 
@@ -1658,6 +1613,82 @@ class _IRDReportState extends ConsumerState<IRDReport> {
           );
         }
     );
+
+
+  }
+
+  void _print({
+    required int masterId,
+    required String voucherNo
+  }) async {
+
+    int count = 0;
+
+    if(typeList.indexOf(selectedType) == 0 || typeList.indexOf(selectedType) == 1){
+       count = int.parse(_printCountController.text.trim());
+    }
+
+
+    final reprint = await IRDProvider.getReprint(masterId: masterId, count: count,type: typeList.indexOf(selectedType),voucherNo: voucherNo);
+    if(reprint.isLeft()){
+      Fluttertoast.showToast(
+        msg: 'Printing error',
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: ColorManager.errorRed.withOpacity(0.9),
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      if(typeList.indexOf(selectedType) == 0 || typeList.indexOf(selectedType) == 1){
+        Navigator.pop(context);
+      }
+
+    }
+    else{
+      final rightValue = reprint.fold((l) => null, (r) => r);
+      if(typeList.indexOf(selectedType) == 0 || typeList.indexOf(selectedType) == 1){
+        Navigator.pop(context);
+      }
+
+
+      if(rightValue != null){
+        print('not null');
+      }
+      try{
+        // Get the documents directory
+        Directory documentsDirectory = await getApplicationDocumentsDirectory();
+        String targetPath = documentsDirectory.path;
+        String targetFileName = "temp_pdf_file";
+
+        // Generate PDF from HTML content
+        final generatedPdfFile = await HtmlToPdf.convertFromHtmlContent(
+          htmlContent: '${rightValue?.result}',
+          configuration: PdfConfiguration(
+            targetDirectory: targetPath,
+            targetName: targetFileName,
+            printSize: PrintSize.A4,
+            printOrientation: PrintOrientation.Portrait,
+          ),
+        );
+
+        print("Generated PDF file: ${generatedPdfFile.path}");
+
+        // final doc = pw.Document();
+
+        final pdfBytes = await generatedPdfFile.readAsBytes();
+        // Print or preview the PDF
+        await Printing.layoutPdf(
+          // format: html.PdfPageFormat(650, 850),
+          onLayout: (PdfPageFormat format) async => pdfBytes,
+        );
+
+      } catch(e){
+        print(' error : $e');
+      }
+
+
+      // await Printing.layoutPdf(
+      //     onLayout: (PdfPageFormat format) async => doc.save());
+    }
 
     _printCountController.clear();
 

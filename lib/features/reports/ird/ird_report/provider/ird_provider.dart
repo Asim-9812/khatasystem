@@ -13,7 +13,7 @@ import '../model/ird_model.dart';
 
 
 final irdProvider = FutureProvider.family((ref,Map<String,dynamic> data) => IRDProvider.getIRDReport(data: data));
-final irdDetailProvider = FutureProvider.family((ref,int masterId) => IRDProvider.getIRDDetails(masterId: masterId));
+final irdDetailProvider = FutureProvider.family((ref,Map<String,dynamic> data) => IRDProvider.getIRDDetails(data: data));
 
 
 class IRDProvider{
@@ -52,27 +52,57 @@ class IRDProvider{
     
 }
 
-  static Future<List<SalesData>> getIRDDetails({required int masterId}) async{
+  static Future<List<SalesData>> getIRDDetails({required Map<String,dynamic> data}) async{
     final dio = Dio();
+
+
 
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
-      final response = await dio.get('${Api.getIRDDetails}/$masterId');
-      if(response.statusCode == 200){
-        List<dynamic> result = response.data as List<dynamic>;
+      final masterId = data['masterId'];
+      final isSale = data['isSale'];
 
-        List<SalesData> salesList = result.map((e) => SalesData.fromJson(e)).toList();
+      if(isSale){
+        final response = await dio.get('${Api.getIRDDetails}/$masterId');
+        if(response.statusCode == 200){
+          List<dynamic> result = response.data as List<dynamic>;
 
-        if(salesList.isEmpty || salesList == []){
-          return [];
+          List<SalesData> salesList = result.map((e) => SalesData.fromJson(e)).toList();
+
+          if(salesList.isEmpty || salesList == []){
+            return [];
+          }else{
+            return salesList;
+          }
+
         }else{
-          return salesList;
+          throw 'Something went wrong';
         }
-
-      }else{
-        throw 'Something went wrong';
       }
+      else{
+        final response = await dio.get('${Api.getIRDDetailsPurchase}',
+          queryParameters: {
+          'id':masterId
+          }
+        );
+        if(response.statusCode == 200){
+          List<dynamic> result = response.data as List<dynamic>;
+
+          List<SalesData> salesList = result.map((e) => SalesData.fromJson(e)).toList();
+
+          if(salesList.isEmpty || salesList == []){
+            return [];
+          }else{
+            return salesList;
+          }
+
+        }else{
+          throw 'Something went wrong';
+        }
+      }
+
+
 
     }on DioError catch(err){
       throw DioException().getDioError(err);
@@ -80,24 +110,68 @@ class IRDProvider{
 
 }
 
-  static Future<Either<String, ReprintModel>> getReprint({required int masterId,required int count}) async{
+  static Future<Either<String, ReprintModel>> getReprint({required int masterId,required int count,required int type,required String voucherNo}) async{
     final dio = Dio();
 
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
-      final response = await dio.get('${Api.reprint}',
-        queryParameters: {
-        'id' : masterId,
-          'count' : count
-        }
-      );
-      if(response.statusCode == 200){
-        return Right(ReprintModel.fromJson(response.data));
+      if(type == 0){
+        final response = await dio.get('${Api.salesReprint}',
+            queryParameters: {
+              'id' : masterId,
+              'count' : count
+            }
+        );
+        if(response.statusCode == 200){
+          return Right(ReprintModel.fromJson(response.data));
 
-      }else{
-        return Left('Something went wrong');
+        }else{
+          return Left('Something went wrong');
+        }
       }
+      else if(type ==1){
+        final response = await dio.get('${Api.salesReturnReprint}',
+            queryParameters: {
+              'id' : masterId,
+              'count' : count,
+              'sInvoice':voucherNo
+            }
+        );
+        if(response.statusCode == 200){
+          return Right(ReprintModel.fromJson(response.data));
+
+        }else{
+          return Left('Something went wrong');
+        }
+      }
+      else if(type ==2){
+        final response = await dio.get('${Api.purchaseReprint}',
+            queryParameters: {
+              'id' : masterId,
+            }
+        );
+        if(response.statusCode == 200){
+          return Right(ReprintModel.fromJson(response.data));
+
+        }else{
+          return Left('Something went wrong');
+        }
+      }
+      else{
+        final response = await dio.get('${Api.purchaseReturnReprint}',
+            queryParameters: {
+              'id' : masterId,
+            }
+        );
+        if(response.statusCode == 200){
+          return Right(ReprintModel.fromJson(response.data));
+
+        }else{
+          return Left('Something went wrong');
+        }
+      }
+
 
     }on DioError catch(err){
       return Left(err.toString());

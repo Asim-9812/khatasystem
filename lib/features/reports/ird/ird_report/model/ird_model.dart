@@ -90,7 +90,7 @@ class SalesData {
   String? pan;
   String? productName;
   String? unit;
-  int? qty;
+  double? qty;  // Changed to double
   double? grossAmt;
   double? nonTaxableAmt;
   double? taxableAmt;
@@ -130,7 +130,7 @@ class SalesData {
       pan: json['pan'],
       productName: json['productName'],
       unit: json['unit'],
-      qty: json['qty'],
+      qty: (json['qty'] as num?)?.toDouble(),  // Handle conversion to double
       grossAmt: (json['grossAmt'] as num?)?.toDouble(),
       nonTaxableAmt: (json['nonTaxableAmt'] as num?)?.toDouble(),
       taxableAmt: (json['taxableAmt'] as num?)?.toDouble(),
@@ -163,6 +163,7 @@ class SalesData {
     };
   }
 }
+
 
 
 class ReprintModel {

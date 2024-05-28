@@ -8,12 +8,12 @@ import '../../../../../common/colors.dart';
 import '../provider/ird_provider.dart';
 
 class IRDDetails extends ConsumerWidget {
-  final int masterId;
-  IRDDetails({required this.masterId});
+  final Map<String, dynamic> data;
+  IRDDetails({required this.data});
 
   @override
   Widget build(BuildContext context,ref) {
-    final getIrdDetails = ref.watch(irdDetailProvider(masterId));
+    final getIrdDetails = ref.watch(irdDetailProvider(data));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: ColorManager.primary,
@@ -61,7 +61,7 @@ class IRDDetails extends ConsumerWidget {
                       final index = data.indexWhere((element) => '${element.productName} ${element.qty} ${element.unit}' == '${e.productName} ${e.qty} ${e.unit}');
                       return DataRow(
                           cells: [
-                        DataCell(Text('$index')),
+                        DataCell(Text('${index+1}')),
                         DataCell(Text('${e.voucherNo}')),
                         DataCell(Text('${e.productName}')),
                         DataCell(Text('${e.qty}')),

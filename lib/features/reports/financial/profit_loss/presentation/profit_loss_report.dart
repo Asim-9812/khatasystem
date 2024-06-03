@@ -103,7 +103,7 @@ class _ProfitLossReportState extends ConsumerState<ProfitLossReport> {
                   branches.add(key);
                 });
 
-                String branchItem = branches[0];
+                String branchItem = branches[1];
 
                 final branchItemData = ref.watch(itemProvider).branchItem;
 
@@ -121,7 +121,7 @@ class _ProfitLossReportState extends ConsumerState<ProfitLossReport> {
 
                 String getBranchValue(String branchVal) {
                   if (branchVal == "All") {
-                    return 'BranchId--';
+                    return 'BranchId--${data[0][branchItem]}';
                   } else {
                     return 'BranchId--${data[0][branchItemData]}';
                   }

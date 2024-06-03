@@ -130,6 +130,8 @@ class _POSState extends ConsumerState<POS> {
 
     totalBill = totalRate.toPrecision(2);
 
+
+
     return totalRate.toPrecision(2);
   }
 
@@ -781,6 +783,12 @@ class _POSState extends ConsumerState<POS> {
                                                                       }
                                                                       else{
 
+                                                                        double newTotal = double.parse(_netTotalController.text.trim()) + (totalBill??0.0);
+
+                                                                        setState(() {
+                                                                          _receivedAmountController.text = newTotal.toString();
+                                                                        });
+
                                                                         ref.refresh(draftProvider(voucherNo));
                                                                         ref.refresh(productProvider(locationId));
                                                                         Fluttertoast.showToast(
@@ -809,7 +817,7 @@ class _POSState extends ConsumerState<POS> {
                                                                           _quantityController.clear();
                                                                           _netTotalController.clear();
                                                                           _productCodeController.clear();
-                                                                          _receivedAmountController.clear();
+                                                                          // _receivedAmountController.clear();
                                                                           disabledFields = true;
                                                                         });
 
@@ -863,7 +871,7 @@ class _POSState extends ConsumerState<POS> {
                                                                     _quantityController.clear();
                                                                     _netTotalController.clear();
                                                                     _productCodeController.clear();
-                                                                    _receivedAmountController.clear();
+                                                                    // _receivedAmountController.clear();
                                                                     disabledFields = true;
                                                                   });
 
@@ -1031,6 +1039,11 @@ class _POSState extends ConsumerState<POS> {
                                                                 }
                                                                 else{
 
+                                                                  double newTotal = double.parse(_netTotalController.text.trim()) + (totalBill??0.0);
+
+                                                                  setState(() {
+                                                                    _receivedAmountController.text = newTotal.toString();
+                                                                  });
 
                                                                   ref.refresh(draftProvider(voucherNo));
                                                                   ref.refresh(productProvider(locationId));
@@ -1059,7 +1072,7 @@ class _POSState extends ConsumerState<POS> {
                                                                     _quantityController.clear();
                                                                     _netTotalController.clear();
                                                                     _productCodeController.clear();
-                                                                    _receivedAmountController.clear();
+                                                                    // _receivedAmountController.clear();
                                                                     disabledFields = true;
                                                                     _panController.clear();
                                                                     _addressController.clear();
@@ -1116,7 +1129,7 @@ class _POSState extends ConsumerState<POS> {
                                                               _quantityController.clear();
                                                               _netTotalController.clear();
                                                               _productCodeController.clear();
-                                                              _receivedAmountController.clear();
+                                                              // _receivedAmountController.clear();
                                                               disabledFields = true;
                                                             });
 
@@ -1559,11 +1572,27 @@ class _POSState extends ConsumerState<POS> {
                                                                         );
                                                                         setState(() {
                                                                           isPostingReceivedAmount = false;
-                                                                          _receivedAmountController.clear();
+                                                                          // _receivedAmountController.clear();
                                                                         });
+
+                                                                        if((totalBill! - double.parse(_receivedAmountController.text)) == amount){
+                                                                          setState(() {
+                                                                            _receivedAmountController.clear();
+                                                                          });
+                                                                        }
+
+                                                                        else if((totalBill! - double.parse(_receivedAmountController.text))> 0){
+                                                                          setState(() {
+                                                                            _receivedAmountController.text = (totalBill! - double.parse(_receivedAmountController.text)).toString();
+                                                                          });
+                                                                        }
+
                                                                         ref.refresh(receivedAmountProvider(drafts.first.salesMasterID));
                                                                         ref.refresh(receivedTotalAmountProvider(drafts.first.salesMasterID));
                                                                         ref.refresh(productProvider(locationId));
+
+
+
                                                                         await Future.delayed(const Duration(milliseconds: 100));
 
                                                                         _receivedFormKey.currentState!.reset();
@@ -2610,61 +2639,6 @@ class _POSState extends ConsumerState<POS> {
     List<String> invoiceList = ['ABBREVIATED TAX INVOICE','INVOICE','COPY OF INVOICE'];
 
 
-    // final doc = pw.Document();
-    //
-    // for(int i = 0; i<count;i++){
-    //   doc.addPage(pw.Page(
-    //       pageFormat: PdfPageFormat.a4,
-    //       build: (pw.Context context) {
-    //         return generatePdf(receipt: receipt,
-    //             invoiceTitle: i == 0 ? invoiceList[0]
-    //                 : i == 1? invoiceList[1]
-    //                 : '${invoiceList[2]}(${i-1})'
-    //         ); // Center
-    //       }));
-    // }
-    //
-    // await Future.delayed(Duration(seconds: 2));
-
-    // try{
-    //   await Printing.layoutPdf(
-    //       dynamicLayout: false,
-    //       format: html.PdfPageFormat(2480,3508),
-    //       onLayout: (PdfPageFormat format) async {
-    //         var body = '${receipt.item2.reportHTML}';
-    //
-    //         final pdf = pw.Document();
-    //         final widgets = await html.HTMLToPdf().convert(body);
-    //         pdf.addPage(pw.MultiPage(build: (context) => widgets));
-    //         return await pdf.save();
-    //       });
-    //
-    // } catch(e){
-    //   print(' error : $e');
-    // }
-
-    //
-    // await Printing.layoutPdf(
-    //     onLayout: (PdfPageFormat format) async => doc.save());
-
-    // try{
-    //   await Printing.layoutPdf(
-    //       dynamicLayout: false,
-    //       // format: html.PdfPageFormat(648 ,588),
-    //       onLayout: (PdfPageFormat format) async {
-    //         var body = '${receipt}';
-    //
-    //         final pdf = pw.Document();
-    //         // final pdf = pw.Document();
-    //         final widgets = await html.HTMLToPdf().convert(body);
-    //         pdf.addPage(pw.MultiPage(build: (context) => widgets));
-    //         return await pdf.save();
-    //       });
-    //
-    // } catch(e){
-    //   print(' error : $e');
-    // }
-
     // Get the documents directory
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String targetPath = documentsDirectory.path;
@@ -2688,7 +2662,6 @@ class _POSState extends ConsumerState<POS> {
     final pdfBytes = await generatedPdfFile.readAsBytes();
     // Print or preview the PDF
     await Printing.layoutPdf(
-      format: html.PdfPageFormat(650, 850),
       onLayout: (PdfPageFormat format) async => pdfBytes,
     );
 
@@ -2704,6 +2677,20 @@ class _POSState extends ConsumerState<POS> {
     ref.invalidate(receivedAmountProvider);
     ref.refresh(voucherProvider);
     ref.refresh(productProvider(locationId));
+
+  }
+
+
+  double _left(double total, double received){
+    double left = 0.0;
+    left = (total - received);
+
+    if(left != totalBill){
+      setState(() {
+        _receivedAmountController.text = left.toString();
+      });
+    }
+    return left;
 
   }
 

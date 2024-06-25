@@ -579,7 +579,8 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                                 }
                               );
                             },
-                          ) : Consumer(
+                          )
+                              : Consumer(
                             builder: (context, ref, child) {
                               final ledgerReport = ref.watch(trialBalanceLedgerProvider);
                               return ledgerReport.when(

@@ -3,8 +3,10 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,8 +21,11 @@ import 'package:khata_app/features/reports/ird/ird_report/provider/ird_provider.
 import 'package:pager/pager.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'package:pdf_image_renderer/pdf_image_renderer.dart';
 import 'package:printing/printing.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sunmi_printer_plus/enums.dart';
+import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 import '../../../../../common/colors.dart';
 import '../../../../../common/common_provider.dart';
 import '../../../../../common/snackbar.dart';
@@ -461,7 +466,6 @@ class _IRDReportState extends ConsumerState<IRDReport> {
     else if(typeList.indexOf(selectedType) == 2){
       return _purchaseBook(salesData);
     }
-
     else{
       return _purchaseReturnBook(salesData);
     }
@@ -614,7 +618,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
                     child:  const Center(
                       child: Text(
-                        'निकसी',
+                        'निकासी',
                         style: TextStyle(
                             fontFamily: 'Ubuntu',
                             fontWeight: FontWeight.w500,
@@ -628,10 +632,10 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                     headingRowHeight: 80,
 
                     columns: [
-                      irdColumn(100, 'निकसी गरेको \nवस्तु वा सेवाको \nमुल्य(रु)', TextAlign.center),
+                      irdColumn(100, 'निकासी गरेको \nवस्तु वा सेवाको \nमुल्य(रु)', TextAlign.center),
                       irdColumn(100, 'निकासी \nगरेको देश', TextAlign.center),
-                      irdColumn(100, 'ननिकसी \nप्रग्यापनपत्र \nनम्बर', TextAlign.center),
-                      irdColumn(100, 'ननिकसी \nप्रग्यापनपत्र \nमिति', TextAlign.center),
+                      irdColumn(100, 'निकासी \nप्रग्यापनपत्र \nनम्बर', TextAlign.center),
+                      irdColumn(100, 'निकासी \nप्रग्यापनपत्र \nमिति', TextAlign.center),
                     ],
                     rows: List.generate(salesData.length, (index) {
                       DateTime date = DateFormat('yyyy-MM-ddThh:mm:ss').parse(salesData[index].entryDate!);
@@ -1344,7 +1348,6 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                   ),
                   DataTable(
                     headingRowHeight: 80,
-
                     columns: [
                       irdPurchaseColumn(100, 'मुल्य (रु)', TextAlign.center),
                       irdPurchaseColumn(100, 'कर  (रु)', TextAlign.center),
@@ -1360,7 +1363,6 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                     columnSpacing: 0,
                     horizontalMargin: 0,
                   ),
-
                 ],
               ),
               if(!isDetailed)
@@ -1371,7 +1373,6 @@ class _IRDReportState extends ConsumerState<IRDReport> {
                 columns: [
                   irdPurchaseColumn2(120, 'Action', TextAlign.center),],
                 rows: List.generate(salesData.length, (index) {
-
                   return  DataRow(cells: [
                     DataCell(
                         Row(
@@ -1401,7 +1402,6 @@ class _IRDReportState extends ConsumerState<IRDReport> {
             ],
           ),
         ),
-
       ],
     );
   }
@@ -1528,10 +1528,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => IRDDetails(data: routeData,)));
   }
 
-  void _printCountDialog({
-    required int masterId,
-    required String voucherNo
-  }) async {
+  void _printCountDialog({required int masterId, required String voucherNo}) async {
 
 
     await showDialog(
@@ -1617,10 +1614,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
   }
 
-  void _print({
-    required int masterId,
-    required String voucherNo
-  }) async {
+  void _print({required int masterId, required String voucherNo}) async {
 
     int count = 0;
 
@@ -1665,21 +1659,69 @@ class _IRDReportState extends ConsumerState<IRDReport> {
           configuration: PdfConfiguration(
             targetDirectory: targetPath,
             targetName: targetFileName,
-            printSize: PrintSize.A4,
+            printSize: PrintSize.A5,
             printOrientation: PrintOrientation.Portrait,
           ),
         );
 
-        print("Generated PDF file: ${generatedPdfFile.path}");
+        final pdf = PdfImageRendererPdf(path: generatedPdfFile.path);
 
-        // final doc = pw.Document();
+        // open the pdf document
+        await pdf.open();
 
-        final pdfBytes = await generatedPdfFile.readAsBytes();
-        // Print or preview the PDF
-        await Printing.layoutPdf(
-          // format: html.PdfPageFormat(650, 850),
-          onLayout: (PdfPageFormat format) async => pdfBytes,
+        // open a page from the pdf document using the page index
+        await pdf.openPage(pageIndex: 0);
+
+        // get the render size after the page is loaded
+        final size = await pdf.getPageSize(pageIndex: 0);
+
+        // get the actual image of the page
+        final imgPdf = await pdf.renderPage(
+          pageIndex: 0,
+          x: 0,
+          y: 0,
+          width: size.width, // you can pass a custom size here to crop the image
+          height: size.height-75, // you can pass a custom size here to crop the image
+          scale:2, // increase the scale for better quality (e.g. for zooming)  // DEF 2
+          background: Colors.white,
         );
+
+        // close the page again
+        await pdf.closePage(pageIndex: 0);
+
+        // close the PDF after rendering the page
+        pdf.close();
+
+        // var imgView = Image.memory(imgPdf!).image;
+        // // var imgData = Image.memory(imgPdf);
+        // //
+        // showImageViewer(context, imgView);
+
+        // await SunmiPrinter.startTransactionPrint(true);
+        //
+        // await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);// Center align
+        // await SunmiPrinter.setFontSize(SunmiFontSize.SM);     // DEF SM
+        // // await SunmiPrinter.setCustomFontSize(12);    // DEF SM
+        // await SunmiPrinter.printImage(imgPdf!);
+        //
+        //
+        // await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
+        // await SunmiPrinter.exitTransactionPrint(true); // Close the transaction
+
+
+
+        // print("Generated PDF file: ${generatedPdfFile.path}");
+        //
+        // // final doc = pw.Document();
+        //
+        // final pdfBytes = await generatedPdfFile.readAsBytes();
+        // // Print or preview the PDF
+        // await Printing.layoutPdf(
+        //   // format: html.PdfPageFormat(650, 850),
+        //   onLayout: (PdfPageFormat format) async => pdfBytes,
+        // );
+
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(image: imgPdf!,count: count,)));
 
       } catch(e){
         print(' error : $e');
@@ -1694,6 +1736,77 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
   }
 
+
+
 }
 
+
+class _PrintPreview extends StatelessWidget {
+  final Uint8List image;
+  final int count;
+  _PrintPreview({required this.image,required this.count,super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: ColorManager.white,
+      appBar: AppBar(
+       automaticallyImplyLeading: true,
+      ),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 5,
+                    color: Colors.black
+                  )
+                ),
+                padding: EdgeInsets.all(12),
+                margin: EdgeInsets.symmetric(horizontal: 24),
+                child: Image.memory(image)),
+            const SizedBox(height: 20,),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+
+                          backgroundColor: ColorManager.primary,
+                          shape: ContinuousRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                          )
+                        ),
+                        onPressed: () async {
+
+                          // await SunmiPrinter.bindingPrinter();
+
+                          await SunmiPrinter.startTransactionPrint(true);
+
+                          await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);// Center align
+                          await SunmiPrinter.setFontSize(SunmiFontSize.SM);     // DEF SM
+                          // await SunmiPrinter.setCustomFontSize(12);    // DEF SM
+                          await SunmiPrinter.printImage(image);
+
+
+                          await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
+                          await SunmiPrinter.exitTransactionPrint(true); // Close the transaction
+                          // await SunmiPrinter.unbindingPrinter();
+
+                        },
+                        child: Text('Print',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.w500),)),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
 

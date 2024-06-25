@@ -6,6 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:khata_app/common/colors.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
+import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 
 import 'common/route_manager.dart';
 import 'features/general_reminder/model/general_reminder_model.dart';
@@ -27,6 +28,8 @@ Future<void> main() async {
 
   await NotificationController.initializeLocalNotifications();
   await NotificationController.initializeIsolateReceivePort();
+
+  await SunmiPrinter.bindingPrinter();
 
   tz.initializeTimeZones();
   await Hive.initFlutter();

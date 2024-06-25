@@ -1,10 +1,5 @@
 
-import 'package:easy_image_viewer/easy_image_viewer.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:pdf_image_renderer/pdf_image_renderer.dart';
-import 'dart:typed_data';
-import 'package:flutter/services.dart' show rootBundle;
-// import 'package:pdf_render/pdf_render.dart' as PDFr;
+
 import 'package:html_to_pdf_plus/html_to_pdf_plus.dart';
 import 'package:htmltopdfwidgets/htmltopdfwidgets.dart' as html;
 import 'package:pdf/src/pdf/page_format.dart';
@@ -23,15 +18,12 @@ import 'package:khata_app/common/format_date_distance.dart';
 import 'package:khata_app/features/dashboard/presentation/home_screen.dart';
 import 'package:khata_app/features/pos/presentation/received_amount_table.dart';
 import 'package:khata_app/features/pos/presentation/receipt_page.dart';
-import 'package:pdf_render/pdf_render.dart';
-import 'package:sunmi_printer_plus/enums.dart';
 import '../../../../common/snackbar.dart';
 import '../domain/model/pos_model.dart';
 import '../domain/services/pos_services.dart';
-import 'package:pdf/pdf.dart' as pdf2;
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 
 
 
@@ -1901,7 +1893,10 @@ class _POSState extends ConsumerState<POS> {
 
 
 
-                                          const SizedBox(height: 100,)
+
+
+
+
 
 
 
@@ -2633,131 +2628,42 @@ class _POSState extends ConsumerState<POS> {
 
   }
 
-  // void _printReceipt(String receipt,int count) async {
-  //
-  //   List<String> invoiceList = ['ABBREVIATED TAX INVOICE','INVOICE','COPY OF INVOICE'];
-  //
-  //
-  //   // Get the documents directory
-  //   Directory documentsDirectory = await getApplicationDocumentsDirectory();
-  //   String targetPath = documentsDirectory.path;
-  //   String targetFileName = "temp_pdf_file";
-  //
-  //   // Generate PDF from HTML content
-  //   final generatedPdfFile = await HtmlToPdf.convertFromHtmlContent(
-  //     htmlContent: receipt,
-  //     configuration: PdfConfiguration(
-  //       targetDirectory: targetPath,
-  //       targetName: targetFileName,
-  //       printSize: PrintSize.A4,
-  //       printOrientation: PrintOrientation.Portrait,
-  //     ),
-  //   );
-  //
-  //   print("Generated PDF file: ${generatedPdfFile.path}");
-  //
-  //   // final doc = pw.Document();
-  //
-  //   final pdfBytes = await generatedPdfFile.readAsBytes();
-  //   // Print or preview the PDF
-  //   await Printing.layoutPdf(
-  //     onLayout: (PdfPageFormat format) async => pdfBytes,
-  //   );
-  //
-  //   setState(() {
-  //     isPostingFinalData = false;
-  //     selectedReceivedLedger=null;
-  //     _customerNameController.text = customerName;
-  //     _printCountController.text = '1';
-  //   });
-  //   ref.invalidate(voucherProvider);
-  //   ref.invalidate(draftProvider);
-  //   ref.invalidate(receivedTotalAmountProvider);
-  //   ref.invalidate(receivedAmountProvider);
-  //   ref.refresh(voucherProvider);
-  //   ref.refresh(productProvider(locationId));
-  //
-  // }
   void _printReceipt(String receipt,int count) async {
 
-    final ByteData data = await rootBundle.load('assets/images/khata-logo.png');
-    Uint8List img = data.buffer.asUint8List();
-
-    try{
-
-      Directory documentsDirectory = await getApplicationDocumentsDirectory();
-      String targetPath = documentsDirectory.path;
-      String targetFileName = "temp_pdf_file";
-
-      // Generate PDF from HTML content
-      final generatedPdfFile = await HtmlToPdf.convertFromHtmlContent(
-        htmlContent: receipt,
-        configuration: PdfConfiguration(
-          targetDirectory: targetPath,
-          targetName: targetFileName,
-          printSize: PrintSize.A5,
-          printOrientation: PrintOrientation.Portrait,
-        ),
-      );
-      final pdf = PdfImageRendererPdf(path: generatedPdfFile.path);
-
-      // open the pdf document
-      await pdf.open();
-
-      // open a page from the pdf document using the page index
-      await pdf.openPage(pageIndex: 0);
-
-      // get the render size after the page is loaded
-      final size = await pdf.getPageSize(pageIndex: 0);
-
-      // get the actual image of the page
-      final imgPdf = await pdf.renderPage(
-        pageIndex: 0,
-        x: 0,
-        y: 0,
-        width: size.width, // you can pass a custom size here to crop the image
-        height: size.height-75, // you can pass a custom size here to crop the image
-        scale:2, // increase the scale for better quality (e.g. for zooming)  // DEF 2
-        background: Colors.white,
-      );
-
-      // close the page again
-      await pdf.closePage(pageIndex: 0);
-
-      // close the PDF after rendering the page
-      pdf.close();
-      //
-      // var imgView = Image.memory(imgPdf!).image;
-      // //
-      // showImageViewer(context, imgView);
+    List<String> invoiceList = ['ABBREVIATED TAX INVOICE','INVOICE','COPY OF INVOICE'];
 
 
-      // await SunmiPrinter.startTransactionPrint(true);
-      //
-      // await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);// Center align
-      // await SunmiPrinter.setFontSize(SunmiFontSize.LG);
-      // await SunmiPrinter.printImage(imgPdf!);
-      //
-      //
-      // await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
-      // await SunmiPrinter.exitTransactionPrint(true); // Close the transaction
+    // Get the documents directory
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String targetPath = documentsDirectory.path;
+    String targetFileName = "temp_pdf_file";
 
+    // Generate PDF from HTML content
+    final generatedPdfFile = await HtmlToPdf.convertFromHtmlContent(
+      htmlContent: receipt,
+      configuration: PdfConfiguration(
+        targetDirectory: targetPath,
+        targetName: targetFileName,
+        printSize: PrintSize.A4,
+        printOrientation: PrintOrientation.Portrait,
+      ),
+    );
 
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(image: imgPdf!,count: count,)));
+    print("Generated PDF file: ${generatedPdfFile.path}");
 
-    } catch(e){
-      print(e);
-    }
+    // final doc = pw.Document();
 
-
+    final pdfBytes = await generatedPdfFile.readAsBytes();
+    // Print or preview the PDF
+    await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdfBytes,
+    );
 
     setState(() {
       isPostingFinalData = false;
       selectedReceivedLedger=null;
       _customerNameController.text = customerName;
       _printCountController.text = '1';
-      _receivedAmountController.clear();
-      totalBill = 0.0;
     });
     ref.invalidate(voucherProvider);
     ref.invalidate(draftProvider);
@@ -2785,76 +2691,5 @@ class _POSState extends ConsumerState<POS> {
 
 
 }
-
-
-class _PrintPreview extends StatelessWidget {
-  final Uint8List image;
-  final int count;
-  _PrintPreview({required this.image,required this.count,super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ColorManager.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: true,
-      ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        width: 5,
-                        color: Colors.black
-                    )
-                ),
-                padding: EdgeInsets.all(12),
-                margin: EdgeInsets.symmetric(horizontal: 24),
-                child: Image.memory(image)),
-            const SizedBox(height: 20,),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-
-                            backgroundColor: ColorManager.primary,
-                            shape: ContinuousRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            )
-                        ),
-                        onPressed: () async {
-
-                          // await SunmiPrinter.bindingPrinter();
-
-                          await SunmiPrinter.startTransactionPrint(true);
-
-                          await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);// Center align
-                          await SunmiPrinter.setFontSize(SunmiFontSize.SM);     // DEF SM
-                          // await SunmiPrinter.setCustomFontSize(12);    // DEF SM
-                          await SunmiPrinter.printImage(image);
-
-
-                          await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
-                          await SunmiPrinter.exitTransactionPrint(true); // Close the transaction
-                          // await SunmiPrinter.unbindingPrinter();
-
-                        },
-                        child: Text('Print',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.w500),)),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 
 

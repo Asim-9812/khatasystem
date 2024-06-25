@@ -570,7 +570,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                                               children: [
                                                                 Icon(Icons.phone, color: ColorManager.logoOrange,),
                                                                 const SizedBox(width: 10,),
-                                                                const Text('01-4106642 / 9851112946',
+                                                                const Text('01-4106642 / 9801867400',
                                                                   style: TextStyle(
                                                                       color: Colors.black
                                                                   ),
@@ -593,7 +593,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                                               children: [
                                                                 Icon(Icons.mail, color: ColorManager.logoOrange),
                                                                 const SizedBox(width: 10,),
-                                                                const Text('reply2search@gmail.com',
+                                                                const Text('reply2searchtech@gmail.com',
                                                                   style: TextStyle(
                                                                       color: Colors.black
                                                                   ),
@@ -651,6 +651,8 @@ class _UserLoginViewState extends State<UserLoginView> {
                                       ],
                                     ),
                                   ),
+                                  const SizedBox(height: 10,),
+                                  Text('Version 1.1.1',style: TextStyle(fontWeight: FontWeight.w500,color: ColorManager.primary,fontSize: 16),),
                                 ],
                               ),
                             ),

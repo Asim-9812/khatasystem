@@ -1,7 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -11,8 +10,6 @@ import 'package:khata_app/features/reports/Register/voucher_report/model/voucher
 import 'package:khata_app/features/reports/Register/voucher_report/provider/dropDownList_provider.dart';
 import 'package:khata_app/features/reports/Register/voucher_report/provider/voucher_report_provider.dart';
 import 'package:khata_app/features/reports/Register/voucher_report/widget/tbl_widgets.dart';
-import 'package:khata_app/features/reports/common_widgets/date_format.dart';
-import 'package:khata_app/features/reports/common_widgets/date_input_formatter.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/model/report_model.dart';
 import 'package:khata_app/features/reports/statement/ledger_report/provider/report_provider.dart';
 import 'package:khata_app/model/filter%20model/data_filter_model.dart';
@@ -577,7 +574,7 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                                     style: TextStyle(
                                       fontSize: 18,
                                     ))
-                              ],
+                              ], //
                             ),
                             // const Spacer(),
                             const SizedBox(
@@ -945,6 +942,7 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
       },
     );
   }
+
   DropdownSearch<String> buildDropdownSearch(String fieldName, List<String> dropDownList, String selectedItem, Function(dynamic) onChanged) {
     return DropdownSearch<String>(
       items: dropDownList,
@@ -984,4 +982,5 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
       onChanged: onChanged,
     );
   }
+
 }

@@ -27,50 +27,43 @@ class Api {
   static const getFiscalYear = '$baseUrl/api/FiscalYear/Getall';
   static const getLedgerList = '$baseUrl/api/BankCash/LedgerList_BankCash';
 
-  //IRD REPORT...
-  static const getIRDReport = '$baseUrl/api/SalesBook/GetSalesBook';
-  static const getIRDDetails = '$baseUrl/api/SalesBook/GetIRDBookDetails';
-  static const getIRDDetailsPurchase = '$baseUrl/api/SalesBook/GetIRDDetailsPurchase';
-  static const salesReprint = '$baseUrl/api/SalesBook/PrintSalesReport';
-  static const salesReturnReprint = '$baseUrl/api/SalesBook/PrintSalesReturnReport';
-  static const purchaseReprint = '$baseUrl/api/SalesBook/PrintPurchaseReport';
-  static const purchaseReturnReprint = '$baseUrl/api/SalesBook/PrintPurchaseReturnReport';
+
 
 
   //POS (khata inventory)....
-  static const baseInventoryUrl = 'https://inventory.khatasystem.com/api/Sales'; // LIVE KHATA INVENTORY
+  static const baseInventoryUrl = 'https://inventory.khatasystem.com/api'; // LIVE KHATA INVENTORY
   // static const baseInventoryUrl = 'http://202.51.74.138:6200/api/Sales'; // LIVE KHATA INVENTORY
   // static const baseInventoryUrl = 'http://202.51.74.138:5018/api/Sales'; // DEMO KHATA INVENTORY
 
 
-  static const getPOSSettings = '$baseInventoryUrl/GetPOSSettings';
-  static const getProductList = '$baseInventoryUrl/GetProductByCodePOS';
-  static const getBatchOfProduct = '$baseInventoryUrl/GetProductByCode';
-  static const getUnitByBatch = '$baseInventoryUrl/GetUnitByBatch';
-  static const getRateByBatch = '$baseInventoryUrl/GetUnitByBatch';
-  static const getReceivedLedgerList = '$baseInventoryUrl/RecievedLedger';
-  static const getCustomerList = '$baseInventoryUrl/Customer';
-  static const getVoucherNo = '$baseInventoryUrl/GetSuffixPrefix';
-  static const getConversionFactor = '$baseInventoryUrl/GetMissingUnitConversionFact';
-  static const addDraftPOS = '$baseInventoryUrl/AddSalesMasterDetailsPOS';
-  static const loadSalesDraft = '$baseInventoryUrl/AddSalesMasterDetailsPOS';
-  static const addTransactionSalesLedgerPOS = '$baseInventoryUrl/AddTransactionSalesLedgerPOS';
-  static const addSalesAllocation = '$baseInventoryUrl/AddSalesItemAllocation';
-  static const loadDraftPOS = '$baseInventoryUrl/LoadSalesMasterDetails';
-  static const delDraftPOS = '$baseInventoryUrl/DeleteSalesDraftTable';
-  static const deleteDraftItems = '$baseInventoryUrl/DeleteSalesMasterDraftEntry';
-  static const insertReceivedAmount = '$baseInventoryUrl/InsertSalesTransactionDraft';
-  static const getReceivedAmount = '$baseInventoryUrl/GetSalesTransactionList';
-  static const delReceivedAmount = '$baseInventoryUrl/DeleteTransactionSalesLedger';
-  static const insertCustomerInfo = '$baseInventoryUrl/InsertSalesInfoDrafts';
-  static const finalSavePOS = '$baseInventoryUrl/AddAllMasterTablePOS';
-  static const updateSalesMasterEntry = '$baseInventoryUrl/UpdateSalesEntryMaster';
-  static const loadSMDFStockPosting = '$baseInventoryUrl/LoadSalesMasterDetailsforStockPosting';
-  static const getSalesTransactionCrDrList = '$baseInventoryUrl/GetSalesTransactionCrDrList';
-  static const getSuffixPrefix = '$baseInventoryUrl/GetSuffixPrefix';
-  static const salesLedgerTransactionPosting = '$baseInventoryUrl/SalesLedgerTransactionPosting';
+  static const getPOSSettings = '$baseInventoryUrl/Sales/GetPOSSettings';
+  static const getProductList = '$baseInventoryUrl/Sales/GetProductByCodePOS';
+  static const getBatchOfProduct = '$baseInventoryUrl/Sales/GetProductByCode';
+  static const getUnitByBatch = '$baseInventoryUrl/Sales/GetUnitByBatch';
+  static const getRateByBatch = '$baseInventoryUrl/Sales/GetUnitByBatch';
+  static const getReceivedLedgerList = '$baseInventoryUrl/Sales/RecievedLedger';
+  static const getCustomerList = '$baseInventoryUrl/Sales/Customer';
+  static const getVoucherNo = '$baseInventoryUrl/Sales/GetSuffixPrefix';
+  static const getConversionFactor = '$baseInventoryUrl/Sales/GetMissingUnitConversionFact';
+  static const addDraftPOS = '$baseInventoryUrl/Sales/AddSalesMasterDetailsPOS';
+  static const loadSalesDraft = '$baseInventoryUrl/Sales/AddSalesMasterDetailsPOS';
+  static const addTransactionSalesLedgerPOS = '$baseInventoryUrl/Sales/AddTransactionSalesLedgerPOS';
+  static const addSalesAllocation = '$baseInventoryUrl/Sales/AddSalesItemAllocation';
+  static const loadDraftPOS = '$baseInventoryUrl/Sales/LoadSalesMasterDetails';
+  static const delDraftPOS = '$baseInventoryUrl/Sales/DeleteSalesDraftTable';
+  static const deleteDraftItems = '$baseInventoryUrl/Sales/DeleteSalesMasterDraftEntry';
+  static const insertReceivedAmount = '$baseInventoryUrl/Sales/InsertSalesTransactionDraft';
+  static const getReceivedAmount = '$baseInventoryUrl/Sales/GetSalesTransactionList';
+  static const delReceivedAmount = '$baseInventoryUrl/Sales/DeleteTransactionSalesLedger';
+  static const insertCustomerInfo = '$baseInventoryUrl/Sales/InsertSalesInfoDrafts';
+  static const finalSavePOS = '$baseInventoryUrl/Sales/AddAllMasterTablePOS';
+  static const updateSalesMasterEntry = '$baseInventoryUrl/Sales/UpdateSalesEntryMaster';
+  static const loadSMDFStockPosting = '$baseInventoryUrl/Sales/LoadSalesMasterDetailsforStockPosting';
+  static const getSalesTransactionCrDrList = '$baseInventoryUrl/Sales/GetSalesTransactionCrDrList';
+  static const getSuffixPrefix = '$baseInventoryUrl/Sales/GetSuffixPrefix';
+  static const salesLedgerTransactionPosting = '$baseInventoryUrl/Sales/SalesLedgerTransactionPosting';
   static const printCountPOS = '$baseUrl/api/MasterPrint/InsertMasterPrintIRD';
-  static const printPOS = '$baseInventoryUrl/PrintPOSReceipt';
+  static const printPOS = '$baseInventoryUrl/Sales/PrintPOSReceipt';
 
 
 
@@ -85,6 +78,16 @@ class Api {
   static const getTokenList = '$baseTrackUrl/TrackProduct/GetTokenList';
   static const getTrackList = '$baseTrackUrl/TrackProduct/GetTrackProductList';
 
+
+
+  //IRD REPORT...
+  static const getIRDReport = '$baseInventoryUrl/SalesBook/GetSalesBook';
+  static const getIRDDetails = '$baseInventoryUrl/SalesBook/GetIRDBookDetails';
+  static const getIRDDetailsPurchase = '$baseInventoryUrl/SalesBook/GetIRDDetailsPurchase';
+  static const salesReprint = '$baseInventoryUrl/SalesBook/PrintSalesReport';
+  static const salesReturnReprint = '$baseInventoryUrl/SalesBook/PrintSalesReturnReport';
+  static const purchaseReprint = '$baseInventoryUrl/SalesBook/PrintPurchaseReport';
+  static const purchaseReturnReprint = '$baseInventoryUrl/SalesBook/PrintPurchaseReturnReport';
 
 
 

@@ -5,6 +5,18 @@ import 'package:url_launcher/url_launcher.dart';
 class LauncherUtils{
   LauncherUtils._();
 
+
+  static Future<void> launchAppPlayStore() async {
+    const String scheme = 'https://play.google.com/store/apps/details?id=com.searchtech.khatasystem&hl=en';
+    final Uri uri = Uri.parse(scheme);
+    if (!await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw "Can not launch url";
+    }
+  }
+
   /// terms and condition
   static Future<void> launchTermConditionUrl() async {
     const String scheme = 'https://khatasystem.com/TermsConditions/Index';
@@ -59,7 +71,7 @@ class LauncherUtils{
   }
 
   static Future<void> openMail() async{
-    const String recipientEmail = 'reply2search@gmail.com';
+    const String recipientEmail = 'reply2searchtech@gmail.com';
     const subject = 'Help about Khata System (App)';
     const body = "";
     const url = 'mailto:$recipientEmail?subject=$subject&body=$body';

@@ -25,10 +25,6 @@ class POSServices{
 
   final dio = Dio();
 
-
-
-
-
   Future<String> getVoucherNo() async {
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
@@ -71,16 +67,12 @@ class POSServices{
         throw Exception('${response.statusCode} : Something went wrong');
       }
     } catch (e) {
-      print(e);
+     //print(e);
       throw Exception('$e');
     }
   }
 
-
-
-  Future<List<ProductModel>> getProductList({
-    required String locationId
-}) async {
+  Future<List<ProductModel>> getProductList({required String locationId}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     List<ProductModel> newProductList =[];
@@ -213,25 +205,18 @@ class POSServices{
       }
 
     }on DioException catch(e){
-      print(e);
+      //print(e);
       throw '$e';
     }
 
   }
 
-
-
-  Future<Either<String,String>> addSalesDraftPos({
-    required String voucherNo,
-    required int salesLedgerId,
-    required DraftModel newDraft,
-    required SalesItemAllocationModel itemAllocation
-}) async {
+  Future<Either<String,String>> addSalesDraftPos({required String voucherNo, required int salesLedgerId, required DraftModel newDraft, required SalesItemAllocationModel itemAllocation}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     final data = newDraft.toJson();
     final item = itemAllocation.toJson();
-    print(item);
+    // print(item);
     try{
       final allocateResponse = await dio.post(Api.addSalesAllocation,
           data: item
@@ -251,11 +236,11 @@ class POSServices{
             double grossAmt = 0.0;
             double vatAmt = 0.0;
            for(var i in data){
-             print(i.vat);
+             // print(i.vat);
              grossAmt = i.grossAmt;
              vatAmt = (i.vatAmt > 0 ? i.vatAmt : 0.0) + vatAmt;
            }
-           print('this is vat amt: $vatAmt, ${data.first.salesMasterID}');
+           // print('this is vat amt: $vatAmt, ${data.first.salesMasterID}');
 
             final transactionResponse = await dio.post(Api.addTransactionSalesLedgerPOS,
               data: {
@@ -315,13 +300,10 @@ class POSServices{
     }
 }
 
-
-  Future<List<DraftModel>> loadPosDraft({
-    required String voucherNo
-}) async {
+  Future<List<DraftModel>> loadPosDraft({required String voucherNo}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
-    print('voucher no : $voucherNo');
+   // print('voucher no : $voucherNo');
     try{
 
       final response = await dio.get(Api.loadDraftPOS,
@@ -342,9 +324,7 @@ class POSServices{
     }
   }
 
-  Future<Either<String,String>> deleteDraftItems({
-    required int id
-  }) async {
+  Future<Either<String,String>> deleteDraftItems({required int id}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
@@ -366,9 +346,7 @@ class POSServices{
 
   }
 
-  Future<Either<String,String>> deleteDraftTable({
-    required int id
-  }) async {
+  Future<Either<String,String>> deleteDraftTable({required int id}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
@@ -390,7 +368,6 @@ class POSServices{
 
   }
 
-
   Future<List<POSLedgerModel>> getReceivedLedgerList() async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
@@ -410,7 +387,7 @@ class POSServices{
         throw Exception('Something went wrong');
       }
     } catch (e) {
-      print(e);
+     // print(e);
       throw Exception('$e');
     }
   }
@@ -434,14 +411,12 @@ class POSServices{
         throw Exception('Something went wrong');
       }
     } catch (e) {
-      print(e);
+     // print(e);
       throw Exception('$e');
     }
   }
   
-  Future<Either<String,String>> addReceivedAmount({
-    required ReceivedAmountModel receivedAmount
-}) async {
+  Future<Either<String,String>> addReceivedAmount({required ReceivedAmountModel receivedAmount}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
@@ -461,10 +436,7 @@ class POSServices{
     
   }
 
-
-  Future<List<ReceivedAmountModel>> getReceivedAmount({
-    required int salesMasterId
-}) async {
+  Future<List<ReceivedAmountModel>> getReceivedAmount({required int salesMasterId}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
 
@@ -482,14 +454,12 @@ class POSServices{
         throw Exception('Something went wrong');
       }
     } catch (e) {
-      print(e);
+     // print(e);
       throw Exception('$e');
     }
   }
 
-  Future<double> getReceivedTotalAmount({
-    required int salesMasterId
-  }) async {
+  Future<double> getReceivedTotalAmount({required int salesMasterId}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     double total = 0;
@@ -513,16 +483,12 @@ class POSServices{
         throw Exception('Something went wrong');
       }
     } catch (e) {
-      print(e);
+      //print(e);
       throw Exception('$e');
     }
   }
 
-
-
-  Future<Either<String,String>> saveCustomerInfo({
-    required CustomerInfoModel customerInfo
-  }) async {
+  Future<Either<String,String>> saveCustomerInfo({required CustomerInfoModel customerInfo}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
@@ -542,10 +508,7 @@ class POSServices{
 
   }
 
-
-  Future<Either<String,String>> deleteReceivedAmount({
-    required ReceivedAmountModel receivedAmount
-  }) async {
+  Future<Either<String,String>> deleteReceivedAmount({required ReceivedAmountModel receivedAmount}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
@@ -565,11 +528,7 @@ class POSServices{
 
   }
 
-
-  Future<Either<String,dynamic>> finalSavePOS({
-    required int id,
-    required String voucherNo
-  }) async {
+  Future<Either<String,dynamic>> finalSavePOS({required int id, required String voucherNo}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
@@ -580,7 +539,7 @@ class POSServices{
         "detailsId": 0
       };
 
-      print('add : $pos');
+      //print('add : $pos');
       final response = await dio.post(Api.finalSavePOS,
           data: {
             "masterId": id,
@@ -603,7 +562,7 @@ class POSServices{
           "userId": userId2,
           "entryMasterId": 0
         };
-        print('update : $update');
+        //print('update : $update');
 
         final salesMasterEntryResponse = await dio.post(Api.updateSalesMasterEntry,
           data: {
@@ -623,7 +582,7 @@ class POSServices{
             'fiscalId': financialYearId,
             'userId': userId2
           };
-          print('load: $load');
+         // print('load: $load');
           final entryMasterId = salesMasterEntryResponse.data['entryMasterId'];
           final loadSalesStockPostingResponse = await dio.get(Api.loadSMDFStockPosting,
             queryParameters: {
@@ -641,7 +600,7 @@ class POSServices{
             );
             if(getSalesTransactionCrDrResponse.statusCode == 200){
               final salesResponse = getSalesTransactionCrDrResponse.data['result'] as List<dynamic>;
-              print(salesResponse);
+           //   print(salesResponse);
               final extra1 = voucherNo;
               bool isExecuted = true;
               for(var transaction in salesResponse){
@@ -704,10 +663,7 @@ class POSServices{
 
   }
 
-
-  Future<Either<String,String>> printReceipt({
-    required Map<String,dynamic> data,
-}) async {
+  Future<Either<String,String>> printReceipt({required Map<String,dynamic> data,}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
@@ -729,20 +685,19 @@ class POSServices{
         return Left('${response.statusCode} : Something went wrong');
       }
     }on DioException catch(e){
+      // print(e);
       return Left('$e');
     }
 
   }
 
-  Future<Either<String,String>> printCountReceipt({
-    required Map<String,dynamic> data
-  }) async {
+  Future<Either<String,String>> printCountReceipt({required Map<String,dynamic> data}) async {
 
 
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
     try{
-      print(data);
+      // print(data);
       final response = await dio.post(Api.printCountPOS,
           data:data);
       if(response.statusCode == 200){
@@ -755,11 +710,10 @@ class POSServices{
         return Left('${response.statusCode} : Something went wrong');
       }
     }on DioException catch(e){
+      // print(e);
       return Left('$e');
     }
 
   }
-
-
 
 }

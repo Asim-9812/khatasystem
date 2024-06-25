@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/common/common_provider.dart';
 import 'package:khata_app/common/shimmer_loading.dart';
+import 'package:khata_app/features/about_us/about_us.dart';
 import 'package:khata_app/features/dashboard/provider/dashboard_amount_provider.dart';
 import 'package:khata_app/features/login/presentation/status_page.dart';
 import 'package:khata_app/features/pos/domain/services/pos_services.dart';
@@ -435,6 +436,16 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         ),
                         ListTile(
                           onTap: () {
+                            Navigator.pop(context,true);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AboutUs(),));
+                          },
+                          title: const Text('About us', style: TextStyle(
+                            fontFamily: 'Ubuntu', fontSize: 18,),),
+                          leading: Icon(Icons.app_registration, size: 28,
+                            color: ColorManager.iconGray,),
+                        ),
+                        ListTile(
+                          onTap: () {
                             setState(() {
                               sessionBox.clear();
                               branchBox.clear();
@@ -704,6 +715,16 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                           title: const Text('Privacy Policy', style: TextStyle(
                             fontFamily: 'Ubuntu', fontSize: 18,),),
                           leading: Icon(Icons.logout, size: 28,
+                            color: ColorManager.iconGray,),
+                        ),
+                        ListTile(
+                          onTap: () {
+                            Navigator.pop(context,true);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => AboutUs(),));
+                          },
+                          title: const Text('About us', style: TextStyle(
+                            fontFamily: 'Ubuntu', fontSize: 18,),),
+                          leading: Icon(Icons.app_registration, size: 28,
                             color: ColorManager.iconGray,),
                         ),
                         ListTile(

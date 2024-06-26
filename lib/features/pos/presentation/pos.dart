@@ -391,7 +391,7 @@ class _POSState extends ConsumerState<POS> {
                                         onChanged: (dynamic value) {
                                           if(value != null){
                                             final product = data.firstWhere((e) => '${e.productName} (${(e.qty! < 0? 0 : e.qty) } ${e.mainunit})'==value);
-                                            print('${product.productName} (${(product.qty! < 0? 0 : product.qty) } ${product.mainunit})');
+                                           // print('${product.productName} (${(product.qty! < 0? 0 : product.qty) } ${product.mainunit})');
                                             setState(() {
                                               addProduct = product;
                                               productName = value;
@@ -669,7 +669,7 @@ class _POSState extends ConsumerState<POS> {
                                                                   // final scaffoldMessage = ScaffoldMessenger.of(context);
                                                                   if(_productFormKey.currentState!.validate()) {
 
-                                                                    print('something');
+                                                                    // print('something');
                                                                     if(addProduct !=null){
                                                                       setState(() {
                                                                         isPostingDraft = true;
@@ -677,7 +677,7 @@ class _POSState extends ConsumerState<POS> {
 
                                                                       bool isVatable = addProduct!.isvatable!;
 
-                                                                      print(isVatable);
+                                                                      // print(isVatable);
 
                                                                       double grossAmt = double.parse(_netTotalController.text.trim());
                                                                       double taxableAmt = 0.0;
@@ -767,7 +767,7 @@ class _POSState extends ConsumerState<POS> {
                                                                           entryDate: DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now())
                                                                       );
 
-                                                                      print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
+                                                                     // print('$isVatable tax: ${taxableAmt} gross :${grossAmt}  vat :${vat} net :${netAmt}');
 
                                                                       if(isEdit){
                                                                         await POSServices().deleteDraftItems(id: editId);
@@ -920,25 +920,25 @@ class _POSState extends ConsumerState<POS> {
                                                                 setState(() {
                                                                   isPostingDraft = true;
                                                                 });
-                                                                print('this is ${addProduct!.productId!}');
+                                                                //print('this is ${addProduct!.productId!}');
 
                                                                 bool isVatable = addProduct!.isvatable!;
 
-                                                                print(isVatable);
+                                                                //print(isVatable);
 
                                                                 double grossAmt = double.parse(_netTotalController.text.trim());
                                                                 double taxableAmt = 0.0;
                                                                 double vat = 0.0;
                                                                 double netAmt = grossAmt;
 
-                                                                print(grossAmt);
+                                                                //print(grossAmt);
 
                                                                 if(isVatable){
                                                                   taxableAmt = grossAmt / 1.13;
                                                                   vat = taxableAmt * (13/100);
                                                                   // netAmt = (taxableAmt + vat).toPrecision(2);
 
-                                                                  print('is vatable : $isVatable , gross amt : ${isVatable ? taxableAmt : grossAmt},vat : $vat, netAmt : $netAmt');
+                                                                  //print('is vatable : $isVatable , gross amt : ${isVatable ? taxableAmt : grossAmt},vat : $vat, netAmt : $netAmt');
 
                                                                 }
 
@@ -1047,7 +1047,7 @@ class _POSState extends ConsumerState<POS> {
                                                                 }
                                                                 else{
 
-                                                                  double newTotal = double.parse(_netTotalController.text.trim()) + (totalBill??0.0);
+                                                                  double newTotal = double.parse(_netTotalController.text.trim());
 
                                                                   setState(() {
                                                                     _receivedAmountController.text = newTotal.toString();
@@ -1361,7 +1361,7 @@ class _POSState extends ConsumerState<POS> {
                                                                       ),
                                                                     ),
                                                                     onChanged: (value) async {
-                                                                      print('here');
+                                                                      //print('here');
 
 
                                                                       final newReceivedLedger = receivedLedgerList.firstWhere((element) => element.text == value);
@@ -2591,7 +2591,7 @@ class _POSState extends ConsumerState<POS> {
                         onPressed: ()async {
                           ref.refresh(draftProvider(voucherNo));
                           ref.refresh(productProvider(locationId));
-                          Navigator.pop(context);
+                          // Navigator.pop(context);
                           setState(() {
                             selectedReceivedLedger=null;
                             _customerNameController.text = customerName;
@@ -2615,6 +2615,21 @@ class _POSState extends ConsumerState<POS> {
                             _receivedAmountController.clear();
                             disabledFields = true;
                           });
+
+                          setState(() {
+                            isPostingFinalData = false;
+                            selectedReceivedLedger=null;
+                            _customerNameController.text = customerName;
+                            _printCountController.text = '1';
+                            _receivedAmountController.clear();
+                            totalBill = 0.0;
+                          });
+                          ref.invalidate(voucherProvider);
+                          ref.invalidate(draftProvider);
+                          ref.invalidate(receivedTotalAmountProvider);
+                          ref.invalidate(receivedAmountProvider);
+                          ref.refresh(voucherProvider);
+                          ref.refresh(productProvider(locationId));
 
                           await Future.delayed(const Duration(milliseconds: 100));
 
@@ -2716,7 +2731,7 @@ class _POSState extends ConsumerState<POS> {
         x: 0,
         y: 0,
         width: size.width, // you can pass a custom size here to crop the image
-        height: size.height-75, // you can pass a custom size here to crop the image
+        height: size.height-50, // you can pass a custom size here to crop the image
         scale:2, // increase the scale for better quality (e.g. for zooming)  // DEF 2
         background: Colors.white,
       );
@@ -2746,7 +2761,7 @@ class _POSState extends ConsumerState<POS> {
       Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(image: imgPdf!,count: count,)));
 
     } catch(e){
-      print(e);
+      // print(e);
     }
 
 
@@ -2787,10 +2802,92 @@ class _POSState extends ConsumerState<POS> {
 }
 
 
-class _PrintPreview extends StatelessWidget {
+class _PrintPreview extends StatefulWidget {
   final Uint8List image;
   final int count;
-  _PrintPreview({required this.image,required this.count,super.key});
+
+  _PrintPreview({required this.image, required this.count, super.key});
+
+  @override
+  State<_PrintPreview> createState() => _PrintPreviewState();
+}
+
+class _PrintPreviewState extends State<_PrintPreview> {
+  @override
+  void initState() {
+    super.initState();
+    _bindingPrinter();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _unbindingPrinter();
+  }
+
+  Future<bool?> _bindingPrinter() async {
+    final bool? result = await SunmiPrinter.bindingPrinter();
+    await SunmiPrinter.initPrinter();
+    return result;
+  }
+
+  Future<bool?> _unbindingPrinter() async {
+    final bool? result = await SunmiPrinter.unbindingPrinter();
+    return result;
+  }
+
+  Future<void> _printImage(Uint8List image) async {
+    try {
+
+
+
+      await SunmiPrinter.startTransactionPrint(true);
+
+      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+
+      await SunmiPrinter.setFontSize(SunmiFontSize.SM);
+
+      await SunmiPrinter.printImage(image);
+
+      await SunmiPrinter.submitTransactionPrint();
+
+      await SunmiPrinter.exitTransactionPrint(true);
+
+
+      _printImage2(image);
+    } catch (e) {
+      print('Error during printing: $e');
+    }
+  }
+
+  /// again because some sort of bug doesn't let the print out in 1st try....
+  Future<void> _printImage2(Uint8List image) async {
+    try {
+
+      print('Starting transaction print...');
+      await SunmiPrinter.startTransactionPrint(true);
+
+      print('Setting alignment...');
+      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+
+      print('Setting font size...');
+      await SunmiPrinter.setFontSize(SunmiFontSize.SM);
+
+      print('Printing image...');
+      await SunmiPrinter.printImage(image);
+
+      print('Submitting transaction print...');
+      await SunmiPrinter.submitTransactionPrint();
+
+      print('Exiting transaction print...');
+      await SunmiPrinter.exitTransactionPrint(true);
+
+      print('Print complete.');
+    } catch (e) {
+      print('Error during printing: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -2798,63 +2895,54 @@ class _PrintPreview extends StatelessWidget {
       backgroundColor: ColorManager.white,
       appBar: AppBar(
         automaticallyImplyLeading: true,
+        title: Text('Preview'),
       ),
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        width: 5,
-                        color: Colors.black
-                    )
-                ),
-                padding: EdgeInsets.all(12),
-                margin: EdgeInsets.symmetric(horizontal: 24),
-                child: Image.memory(image)),
-            const SizedBox(height: 20,),
+              decoration: BoxDecoration(
+                border: Border.all(width: 5, color: Colors.black),
+              ),
+              // width: 200,
+              padding: EdgeInsets.all(12),
+              margin: EdgeInsets.symmetric(horizontal: 24),
+              child: Image.memory(widget.image),
+            ),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-
-                            backgroundColor: ColorManager.primary,
-                            shape: ContinuousRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            )
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: ColorManager.primary,
+                        shape: ContinuousRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        onPressed: () async {
-
-                          // await SunmiPrinter.bindingPrinter();
-
-                          await SunmiPrinter.startTransactionPrint(true);
-
-                          await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);// Center align
-                          await SunmiPrinter.setFontSize(SunmiFontSize.SM);     // DEF SM
-                          // await SunmiPrinter.setCustomFontSize(12);    // DEF SM
-                          await SunmiPrinter.printImage(image);
-
-
-                          await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
-                          await SunmiPrinter.exitTransactionPrint(true); // Close the transaction
-                          // await SunmiPrinter.unbindingPrinter();
-
-                        },
-                        child: Text('Print',style: TextStyle(color: ColorManager.white,fontWeight: FontWeight.w500),)),
+                      ),
+                      onPressed: () async {
+                        await _printImage(widget.image);
+                      },
+                      child: Text(
+                        'Print',
+                        style: TextStyle(
+                          color: ColorManager.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 }
-
 
 

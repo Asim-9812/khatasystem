@@ -29,7 +29,7 @@ Future<void> main() async {
   await NotificationController.initializeLocalNotifications();
   await NotificationController.initializeIsolateReceivePort();
 
-  await SunmiPrinter.bindingPrinter();
+  // await SunmiPrinter.bindingPrinter();
 
   tz.initializeTimeZones();
   await Hive.initFlutter();

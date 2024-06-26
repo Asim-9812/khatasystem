@@ -68,7 +68,7 @@ class DashboardAmountProvider {
     try{
 
       final jsonData = jsonEncode(infoModel.toJson());
-      print(jsonData);
+      // print(jsonData);
 
       final response = await dio.post(Api.getDashBoardAmount, data: jsonData,
         options: Options(
@@ -93,7 +93,7 @@ class DashboardAmountProvider {
         }
 
       }else{
-        print(response.statusCode);
+        // print(response.statusCode);
       }
       return dashList;
     }on DioError catch(err){

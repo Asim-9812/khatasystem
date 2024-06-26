@@ -21,7 +21,7 @@ class MenuProvider{
     try{
       // final response = await dio.get('http://202.51.74.138:88/api/Menu/GetMenuOfAppbyId?id=1-khatac_00001');
 
-      print(id);
+      // print(id);
       final response = await dio.get(Api.getMenu, queryParameters: {
         "id": id,
       });
@@ -61,7 +61,7 @@ class MenuProvider{
         }
 
       }else{
-        print(response.statusCode);
+        // print(response.statusCode);
       }
       return menuList;
     }on DioError catch(err){

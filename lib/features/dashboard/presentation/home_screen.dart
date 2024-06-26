@@ -15,6 +15,7 @@ import 'package:khata_app/features/track_product/presentation/track_product.dart
 import 'package:khata_app/main.dart';
 import 'package:khata_app/features/login/presentation/user_login.dart';
 import 'package:khata_app/utils/util_functions.dart';
+import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 import '../../../common/colors.dart';
 import '../../../model/dashboard_model.dart';
 import '../../../model/list model/get_list_model.dart';
@@ -65,13 +66,22 @@ class HomePageScreen extends ConsumerStatefulWidget {
 class _HomePageScreenState extends ConsumerState<HomePageScreen> {
 
   @override
+  void initState() {
+    super.initState();
+
+  }
+
+
+
+
+  @override
   Widget build(BuildContext context) {
     final now =  DateFormat("yyyy-MM-dd'T'HH:mm:ss").format(DateTime.now());
     final fromDate = ref.watch(itemProvider).fromDate;
     final toDate = ref.watch(itemProvider).toDate;
     final fy = ref.watch(itemProvider).fiscalYear;
     final fyId = ref.watch(itemProvider).fiscalId;
-    print('$fy , $fromDate, $toDate');
+    // print('$fy , $fromDate, $toDate');
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
 

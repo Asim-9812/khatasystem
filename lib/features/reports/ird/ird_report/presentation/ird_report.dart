@@ -7,6 +7,7 @@ import 'dart:typed_data';
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -1619,6 +1620,8 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
   void _print({required int masterId, required String voucherNo}) async {
 
+    List<Uint8List> imgList = [];
+    
     int count = 0;
 
     if(typeList.indexOf(selectedType) == 0 || typeList.indexOf(selectedType) == 1){
@@ -1666,35 +1669,41 @@ class _IRDReportState extends ConsumerState<IRDReport> {
             printOrientation: PrintOrientation.Portrait,
           ),
         );
+        
+        for(int i = 0; i <count; i++){
+          final pdf = PdfImageRendererPdf(path: generatedPdfFile.path);
 
-        final pdf = PdfImageRendererPdf(path: generatedPdfFile.path);
+          // open the pdf document
+          await pdf.open();
 
-        // open the pdf document
-        await pdf.open();
+          // open a page from the pdf document using the page index
+          await pdf.openPage(pageIndex: i);
 
-        // open a page from the pdf document using the page index
-        await pdf.openPage(pageIndex: 0);
+          // get the render size after the page is loaded
+          final size = await pdf.getPageSize(pageIndex: i);
 
-        // get the render size after the page is loaded
-        final size = await pdf.getPageSize(pageIndex: 0);
+          // get the actual image of the page
+          final imgPdf = await pdf.renderPage(
+            pageIndex: i,
+            x: 0,
+            y: 0,
+            width: size.width, // you can pass a custom size here to crop the image
+            height: size.height-50, // you can pass a custom size here to crop the image
+            scale:2, // increase the scale for better quality (e.g. for zooming)  // DEF 2
+            background: Colors.white,
+          );
+          
+          imgList.add(imgPdf!);
 
-        // get the actual image of the page
-        final imgPdf = await pdf.renderPage(
-          pageIndex: 0,
-          x: 0,
-          y: 0,
-          width: size.width, // you can pass a custom size here to crop the image
-          height: size.height-50, // you can pass a custom size here to crop the image
-          scale:2, // increase the scale for better quality (e.g. for zooming)  // DEF 2
-          background: Colors.white,
-        );
+          // close the page again
+          await pdf.closePage(pageIndex: i);
 
-        // close the page again
-        await pdf.closePage(pageIndex: 0);
+          // close the PDF after rendering the page
+          pdf.close();
 
-        // close the PDF after rendering the page
-        pdf.close();
+        }
 
+       
         // var imgView = Image.memory(imgPdf!).image;
         // // var imgData = Image.memory(imgPdf);
         // //
@@ -1725,7 +1734,8 @@ class _IRDReportState extends ConsumerState<IRDReport> {
         // );
 
         Navigator.pop(context);
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(image: imgPdf!,count: count,)));
+        // await SunmiPrinter.initPrinter();
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(imageList: imgList,count: count,)));
 
       } catch(e){
         print(' error : $e');
@@ -1747,10 +1757,10 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
 
 class _PrintPreview extends StatefulWidget {
-  final Uint8List image;
+  final List<Uint8List> imageList;
   final int count;
 
-  _PrintPreview({required this.image, required this.count, super.key});
+  _PrintPreview({required this.imageList, required this.count, super.key});
 
   @override
   State<_PrintPreview> createState() => _PrintPreviewState();
@@ -1760,6 +1770,7 @@ class _PrintPreviewState extends State<_PrintPreview> {
   @override
   void initState() {
     super.initState();
+    print(widget.imageList.length);
     _bindingPrinter();
   }
 
@@ -1771,7 +1782,7 @@ class _PrintPreviewState extends State<_PrintPreview> {
 
   Future<bool?> _bindingPrinter() async {
     final bool? result = await SunmiPrinter.bindingPrinter();
-    await SunmiPrinter.initPrinter();
+    // await SunmiPrinter.initPrinter();
     return result;
   }
 
@@ -1780,59 +1791,32 @@ class _PrintPreviewState extends State<_PrintPreview> {
     return result;
   }
 
-  Future<void> _printImage(Uint8List image) async {
+  Future<void> _printOnce(Uint8List image) async {
     try {
-
-
-
-      await SunmiPrinter.startTransactionPrint(true);
-
       await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
-
       await SunmiPrinter.setFontSize(SunmiFontSize.SM);
-
       await SunmiPrinter.printImage(image);
-
-      await SunmiPrinter.submitTransactionPrint();
-
-      await SunmiPrinter.exitTransactionPrint(true);
-
-
-      _printImage2(image);
     } catch (e) {
       print('Error during printing: $e');
     }
   }
 
-
-  /// again because some sort of bug doesn't let the print out in 1st try....
-  Future<void> _printImage2(Uint8List image) async {
+  Future<void> _printImages() async {
     try {
-
-      print('Starting transaction print...');
       await SunmiPrinter.startTransactionPrint(true);
 
-      print('Setting alignment...');
-      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+      for (Uint8List image in widget.imageList) {
+        await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+        await SunmiPrinter.setFontSize(SunmiFontSize.SM);
+        await SunmiPrinter.printImage(image);
+      }
 
-      print('Setting font size...');
-      await SunmiPrinter.setFontSize(SunmiFontSize.SM);
-
-      print('Printing image...');
-      await SunmiPrinter.printImage(image);
-
-      print('Submitting transaction print...');
       await SunmiPrinter.submitTransactionPrint();
-
-      print('Exiting transaction print...');
       await SunmiPrinter.exitTransactionPrint(true);
-
-      print('Print complete.');
     } catch (e) {
       print('Error during printing: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -1843,46 +1827,61 @@ class _PrintPreviewState extends State<_PrintPreview> {
         title: Text('Preview'),
       ),
       body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 5, color: Colors.black),
-              ),
-              padding: EdgeInsets.all(12),
-              margin: EdgeInsets.symmetric(horizontal: 24),
-              child: Image.memory(widget.image),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: ColorManager.primary,
-                        shape: ContinuousRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: widget.imageList.map((image) {
+                    return Container(
+                      width: 300,
+                      height: 500,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 5, color: Colors.black),
                       ),
-                      onPressed: () async {
-                        await _printImage(widget.image);
-                      },
-                      child: Text(
-                        'Print',
-                        style: TextStyle(
-                          color: ColorManager.white,
-                          fontWeight: FontWeight.w500,
+                      padding: EdgeInsets.all(12),
+                      margin: EdgeInsets.symmetric(horizontal: 12),
+                      child: Image.memory(image, fit: BoxFit.fill),
+                    );
+                  }).toList(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorManager.primary,
+                          shape: ContinuousRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () async {
+                          if (widget.imageList.length == 1) {
+                            await _printOnce(widget.imageList[0]);
+                          } else {
+                            await _printImages();
+                          }
+                        },
+                        child: Text(
+                          'Print',
+                          style: TextStyle(
+                            color: ColorManager.white,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

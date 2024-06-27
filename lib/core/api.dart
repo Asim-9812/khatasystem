@@ -80,7 +80,7 @@ class Api {
 
 
 
-  //IRD REPORT...
+  //IRD REPORT... //13 14 19 20
   static const getIRDReport = '$baseInventoryUrl/SalesBook/GetSalesBook';
   static const getIRDDetails = '$baseInventoryUrl/SalesBook/GetIRDBookDetails';
   static const getIRDDetailsPurchase = '$baseInventoryUrl/SalesBook/GetIRDDetailsPurchase';
@@ -88,6 +88,8 @@ class Api {
   static const salesReturnReprint = '$baseInventoryUrl/SalesBook/PrintSalesReturnReport';
   static const purchaseReprint = '$baseInventoryUrl/SalesBook/PrintPurchaseReport';
   static const purchaseReturnReprint = '$baseInventoryUrl/SalesBook/PrintPurchaseReturnReport';
+  static const insertPrint = '$baseUrl/api/MasterPrint/InsertMasterPrintIRD';
+  static const updatePrint = '$baseUrl/api/MasterPrint/UpdatePrintDetailIRD';
 
 
 

@@ -1755,7 +1755,6 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 }
 
 
-
 class _PrintPreview extends StatefulWidget {
   final List<Uint8List> imageList;
   final int count;
@@ -1770,7 +1769,6 @@ class _PrintPreviewState extends State<_PrintPreview> {
   @override
   void initState() {
     super.initState();
-    print(widget.imageList.length);
     _bindingPrinter();
   }
 
@@ -1782,7 +1780,7 @@ class _PrintPreviewState extends State<_PrintPreview> {
 
   Future<bool?> _bindingPrinter() async {
     final bool? result = await SunmiPrinter.bindingPrinter();
-    // await SunmiPrinter.initPrinter();
+    await SunmiPrinter.initPrinter();
     return result;
   }
 
@@ -1791,32 +1789,87 @@ class _PrintPreviewState extends State<_PrintPreview> {
     return result;
   }
 
-  Future<void> _printOnce(Uint8List image) async {
+  Future<void> _printImage() async {
     try {
-      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
-      await SunmiPrinter.setFontSize(SunmiFontSize.SM);
-      await SunmiPrinter.printImage(image);
-    } catch (e) {
-      print('Error during printing: $e');
-    }
-  }
 
-  Future<void> _printImages() async {
-    try {
+
+
       await SunmiPrinter.startTransactionPrint(true);
 
-      for (Uint8List image in widget.imageList) {
-        await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
-        await SunmiPrinter.setFontSize(SunmiFontSize.SM);
-        await SunmiPrinter.printImage(image);
-      }
 
-      await SunmiPrinter.submitTransactionPrint();
+      await SunmiPrinter.printText('');
+
+
       await SunmiPrinter.exitTransactionPrint(true);
+
+
+      _printImage2();
     } catch (e) {
       print('Error during printing: $e');
     }
   }
+
+  /// again because some sort of bug doesn't let the print out in 1st try....
+  Future<void> _printImage2() async {
+    try {
+
+      print('Starting transaction print...');
+      await SunmiPrinter.startTransactionPrint(true);
+
+      print('Setting alignment...');
+      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+
+      print('Setting font size...');
+      await SunmiPrinter.setFontSize(SunmiFontSize.SM);
+
+      print('Printing image...');
+      await SunmiPrinter.printImage(widget.imageList.last);
+
+
+
+      print('Exiting transaction print...');
+      await SunmiPrinter.exitTransactionPrint(true);
+
+      await Future.delayed(Duration(seconds: 1));
+
+        _printImage3();
+
+
+      print('Print complete.');
+    } catch (e) {
+      print('Error during printing: $e');
+    }
+  }
+
+  Future<void> _printImage3() async {
+    try {
+
+      print('Starting transaction print...');
+      await SunmiPrinter.startTransactionPrint(true);
+
+      print('Setting alignment...');
+      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+
+      print('Setting font size...');
+      await SunmiPrinter.setFontSize(SunmiFontSize.SM);
+
+      print('Printing image...');
+      for(int i = 0; i < widget.imageList.length; i++){
+        await SunmiPrinter.printImage(widget.imageList[i]);
+      }
+
+
+
+
+      print('Exiting transaction print...');
+      await SunmiPrinter.exitTransactionPrint(true);
+
+      print('Print complete.');
+    } catch (e) {
+      print('Error during printing: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -1834,18 +1887,13 @@ class _PrintPreviewState extends State<_PrintPreview> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: widget.imageList.map((image) {
+                  children: List.generate(widget.count, (index) {
                     return Container(
-                      width: 300,
                       height: 500,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 5, color: Colors.black),
-                      ),
-                      padding: EdgeInsets.all(12),
-                      margin: EdgeInsets.symmetric(horizontal: 12),
-                      child: Image.memory(image, fit: BoxFit.fill),
+                      width: 250,
+                      child: Image.memory(widget.imageList[index],fit: BoxFit.fitHeight,alignment: Alignment.centerLeft,),
                     );
-                  }).toList(),
+                  }),
                 ),
               ),
               const SizedBox(height: 20),
@@ -1862,11 +1910,7 @@ class _PrintPreviewState extends State<_PrintPreview> {
                           ),
                         ),
                         onPressed: () async {
-                          if (widget.imageList.length == 1) {
-                            await _printOnce(widget.imageList[0]);
-                          } else {
-                            await _printImages();
-                          }
+                          await _printImage();
                         },
                         child: Text(
                           'Print',
@@ -1887,5 +1931,4 @@ class _PrintPreviewState extends State<_PrintPreview> {
     );
   }
 }
-
 

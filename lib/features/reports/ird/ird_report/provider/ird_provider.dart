@@ -1,19 +1,19 @@
 
 
-
-
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:khata_app/core/api.dart';
-
 import '../../../../../core/api_exception.dart';
 import '../../../../dashboard/presentation/home_screen.dart';
 import '../model/ird_model.dart';
 
 
+
 final irdProvider = FutureProvider.family((ref,Map<String,dynamic> data) => IRDProvider.getIRDReport(data: data));
 final irdDetailProvider = FutureProvider.family((ref,Map<String,dynamic> data) => IRDProvider.getIRDDetails(data: data));
+
 
 
 class IRDProvider{
@@ -115,6 +115,24 @@ class IRDProvider{
 
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
+    int voucherTypeId = type == 0 ? 19 : type == 1 ? 20 : type == 2 ? 13 : 14;
+    final date = DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now());
+
+
+    var reprintData = {
+      "id": 0,
+      "masterID": masterId,
+      "billNO": "$voucherNo",
+      "voucherTypeID": voucherTypeId,
+      "printBY": userId2,
+      "printTime": date,
+      "printCount": count,
+      "extra1": "string",
+      "extra2": "string",
+      "extra3": "string"
+    };
+
+
     try{
       if(type == 0){
         final response = await dio.get('${Api.salesReprint}',
@@ -124,7 +142,28 @@ class IRDProvider{
             }
         );
         if(response.statusCode == 200){
-          return Right(ReprintModel.fromJson(response.data));
+          final data = ReprintModel.fromJson(response.data);
+
+          if(data.alreadyPrint!){
+            reprintData.addAll({
+              'flag' : 'UPDATEIRD'
+            });
+            print(reprintData);
+            await dio.post('${Api.updatePrint}',
+                data: reprintData
+            );
+          }
+          else{
+            reprintData.addAll({
+              'flag' : 'INSERTIRD'
+            });
+            print(reprintData);
+            await dio.post('${Api.insertPrint}',
+                data: reprintData
+            );
+          }
+
+          return Right(data);
 
         }else{
           return Left('Something went wrong');
@@ -139,7 +178,24 @@ class IRDProvider{
             }
         );
         if(response.statusCode == 200){
-          return Right(ReprintModel.fromJson(response.data));
+          final data = ReprintModel.fromJson(response.data);
+          if(data.alreadyPrint!){
+            reprintData.addAll({
+              'flag' : 'UPDATEIRD'
+            });
+            await dio.post('${Api.updatePrint}',
+                data: reprintData
+            );
+          }
+          else{
+            reprintData.addAll({
+              'flag' : 'INSERTIRD'
+            });
+            await dio.post('${Api.insertPrint}',
+                data: reprintData
+            );
+          }
+          return Right(data);
 
         }else{
           return Left('Something went wrong');
@@ -152,7 +208,24 @@ class IRDProvider{
             }
         );
         if(response.statusCode == 200){
-          return Right(ReprintModel.fromJson(response.data));
+          final data = ReprintModel.fromJson(response.data);
+          if(data.alreadyPrint!){
+            reprintData.addAll({
+              'flag' : 'UPDATEIRD'
+            });
+            await dio.post('${Api.updatePrint}',
+                data: reprintData
+            );
+          }
+          else{
+            reprintData.addAll({
+              'flag' : 'INSERTIRD'
+            });
+            await dio.post('${Api.insertPrint}',
+                data: reprintData
+            );
+          }
+          return Right(data);
 
         }else{
           return Left('Something went wrong');
@@ -165,7 +238,24 @@ class IRDProvider{
             }
         );
         if(response.statusCode == 200){
-          return Right(ReprintModel.fromJson(response.data));
+          final data = ReprintModel.fromJson(response.data);
+          if(data.alreadyPrint!){
+            reprintData.addAll({
+              'flag' : 'UPDATEIRD'
+            });
+            await dio.post('${Api.updatePrint}',
+                data: reprintData
+            );
+          }
+          else{
+            reprintData.addAll({
+              'flag' : 'INSERTIRD'
+            });
+            await dio.post('${Api.insertPrint}',
+                data: reprintData
+            );
+          }
+          return Right(data);
 
         }else{
           return Left('Something went wrong');
@@ -173,7 +263,10 @@ class IRDProvider{
       }
 
 
+
+
     }on DioError catch(err){
+      print(err);
       return Left(err.toString());
       throw DioException().getDioError(err);
     }

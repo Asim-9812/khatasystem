@@ -15,15 +15,12 @@ import 'package:khata_app/features/track_product/presentation/track_product.dart
 import 'package:khata_app/main.dart';
 import 'package:khata_app/features/login/presentation/user_login.dart';
 import 'package:khata_app/utils/util_functions.dart';
-import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 import '../../../common/colors.dart';
 import '../../../model/dashboard_model.dart';
 import '../../../model/list model/get_list_model.dart';
-import '../../../view/test.dart';
 import '../../fiscalYear/presentation/change_fiscal_year.dart';
 import '../../general_reminder/presentation/general_list.dart';
 import '../../pos/presentation/pos.dart';
-import '../../pos/presentation/receipt_page.dart';
 
 
 

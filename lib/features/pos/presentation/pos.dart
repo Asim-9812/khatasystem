@@ -250,6 +250,7 @@ class _POSState extends ConsumerState<POS> {
 
           :voucherData.when(
               data: (voucherNo){
+                print(voucherNo);
                 final loadDraftData = ref.watch(draftProvider(voucherNo));
                 return productList.when(
                     data: (data){
@@ -1717,7 +1718,7 @@ class _POSState extends ConsumerState<POS> {
 
                                                                                                   final right = response.fold((l) => null, (r) => r);
                                                                                                   final salesMasterId = right['masterId'];
-                                                                                                  // print(right);
+                                                                                                  print(salesMasterId);
                                                                                                   Fluttertoast.showToast(
                                                                                                     msg: 'Draft added',
                                                                                                     gravity: ToastGravity.BOTTOM,
@@ -2547,12 +2548,13 @@ class _POSState extends ConsumerState<POS> {
                               );
                             }
                             else{
-                              Map<String,dynamic> data = {
+                              Map<String,dynamic> newData = {
                                 'masterId' : masterId,
-                                'count' : count
+                                'count' : count,
+                                'voucherNo' : voucherNo
                               };
 
-                              final printResponse = await POSServices().printReceipt(data: data);
+                              final printResponse = await POSServices().printReceipt(data: newData);
                               if(printResponse.isLeft()){
                                 Fluttertoast.showToast(
                                   msg: 'Printing error',
@@ -2714,51 +2716,40 @@ class _POSState extends ConsumerState<POS> {
           printOrientation: PrintOrientation.Portrait,
         ),
       );
-      final pdf = PdfImageRendererPdf(path: generatedPdfFile.path);
+      List<Uint8List> imgList = [];
+      for(int i = 0; i <count; i++){
+        final pdf = PdfImageRendererPdf(path: generatedPdfFile.path);
 
-      // open the pdf document
-      await pdf.open();
+        // open the pdf document
+        await pdf.open();
 
-      // open a page from the pdf document using the page index
-      await pdf.openPage(pageIndex: 0);
+        // open a page from the pdf document using the page index
+        await pdf.openPage(pageIndex: i);
 
-      // get the render size after the page is loaded
-      final size = await pdf.getPageSize(pageIndex: 0);
+        // get the render size after the page is loaded
+        final size = await pdf.getPageSize(pageIndex: i);
 
-      // get the actual image of the page
-      final imgPdf = await pdf.renderPage(
-        pageIndex: 0,
-        x: 0,
-        y: 0,
-        width: size.width, // you can pass a custom size here to crop the image
-        height: size.height-50, // you can pass a custom size here to crop the image
-        scale:2, // increase the scale for better quality (e.g. for zooming)  // DEF 2
-        background: Colors.white,
-      );
+        // get the actual image of the page
+        final imgPdf = await pdf.renderPage(
+          pageIndex: i,
+          x: 0,
+          y: 0,
+          width: size.width, // you can pass a custom size here to crop the image
+          height: size.height-50, // you can pass a custom size here to crop the image
+          scale:2, // increase the scale for better quality (e.g. for zooming)  // DEF 2
+          background: Colors.white,
+        );
 
-      // close the page again
-      await pdf.closePage(pageIndex: 0);
+        imgList.add(imgPdf!);
 
-      // close the PDF after rendering the page
-      pdf.close();
-      //
-      // var imgView = Image.memory(imgPdf!).image;
-      // //
-      // showImageViewer(context, imgView);
+        // close the page again
+        await pdf.closePage(pageIndex: i);
 
+        // close the PDF after rendering the page
+        pdf.close();
 
-      // await SunmiPrinter.startTransactionPrint(true);
-      //
-      // await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);// Center align
-      // await SunmiPrinter.setFontSize(SunmiFontSize.LG);
-      // await SunmiPrinter.printImage(imgPdf!);
-      //
-      //
-      // await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
-      // await SunmiPrinter.exitTransactionPrint(true); // Close the transaction
-
-
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(image: imgPdf!,count: count,)));
+      }
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(imageList: imgList,count: count,)));
 
     } catch(e){
       // print(e);
@@ -2803,10 +2794,10 @@ class _POSState extends ConsumerState<POS> {
 
 
 class _PrintPreview extends StatefulWidget {
-  final Uint8List image;
+  final List<Uint8List> imageList;
   final int count;
 
-  _PrintPreview({required this.image, required this.count, super.key});
+  _PrintPreview({required this.imageList, required this.count, super.key});
 
   @override
   State<_PrintPreview> createState() => _PrintPreviewState();
@@ -2836,50 +2827,53 @@ class _PrintPreviewState extends State<_PrintPreview> {
     return result;
   }
 
-  Future<void> _printImage(Uint8List image) async {
+  Future<void> _printImage() async {
     try {
-
-
 
       await SunmiPrinter.startTransactionPrint(true);
 
-      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
-
-      await SunmiPrinter.setFontSize(SunmiFontSize.SM);
-
-      await SunmiPrinter.printImage(image);
-
-      await SunmiPrinter.submitTransactionPrint();
+      await SunmiPrinter.printText('');
 
       await SunmiPrinter.exitTransactionPrint(true);
 
-
-      _printImage2(image);
+      _printImage2();
     } catch (e) {
       print('Error during printing: $e');
     }
   }
 
   /// again because some sort of bug doesn't let the print out in 1st try....
-  Future<void> _printImage2(Uint8List image) async {
+  Future<void> _printImage2() async {
     try {
 
       print('Starting transaction print...');
       await SunmiPrinter.startTransactionPrint(true);
 
-      print('Setting alignment...');
-      await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);
+      await SunmiPrinter.printImage(widget.imageList.last);
 
-      print('Setting font size...');
-      await SunmiPrinter.setFontSize(SunmiFontSize.SM);
+      await SunmiPrinter.exitTransactionPrint(true);
 
-      print('Printing image...');
-      await SunmiPrinter.printImage(image);
+      await Future.delayed(Duration(seconds: 1));
 
-      print('Submitting transaction print...');
-      await SunmiPrinter.submitTransactionPrint();
+      if(widget.imageList.length>1){
+        _printImage3();
+      }
 
-      print('Exiting transaction print...');
+      print('Print complete.');
+    } catch (e) {
+      print('Error during printing: $e');
+    }
+  }
+  Future<void> _printImage3() async {
+    try {
+
+      print('Starting transaction print...');
+      await SunmiPrinter.startTransactionPrint(true);
+
+      for(int i = 0; i < widget.imageList.length; i++){
+        await SunmiPrinter.printImage(widget.imageList[i]);
+      }
+
       await SunmiPrinter.exitTransactionPrint(true);
 
       print('Print complete.');
@@ -2901,14 +2895,17 @@ class _PrintPreviewState extends State<_PrintPreview> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 5, color: Colors.black),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: List.generate(widget.count, (index) {
+                  return Container(
+                    height: 500,
+                    width: 250,
+                    child: Image.memory(widget.imageList[index],fit: BoxFit.fitHeight,alignment: Alignment.centerLeft,),
+                  );
+                }),
               ),
-              // width: 200,
-              padding: EdgeInsets.all(12),
-              margin: EdgeInsets.symmetric(horizontal: 24),
-              child: Image.memory(widget.image),
             ),
             const SizedBox(height: 20),
             Padding(
@@ -2924,7 +2921,7 @@ class _PrintPreviewState extends State<_PrintPreview> {
                         ),
                       ),
                       onPressed: () async {
-                        await _printImage(widget.image);
+                        await _printImage();
                       },
                       child: Text(
                         'Print',

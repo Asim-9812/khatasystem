@@ -602,6 +602,7 @@ class POSServices{
               final salesResponse = getSalesTransactionCrDrResponse.data['result'] as List<dynamic>;
            //   print(salesResponse);
               final extra1 = voucherNo;
+              // print(extra1);
               bool isExecuted = true;
               for(var transaction in salesResponse){
 
@@ -666,19 +667,40 @@ class POSServices{
   Future<Either<String,String>> printReceipt({required Map<String,dynamic> data,}) async {
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
+
+    final date = DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now());
+
     try{
       final masterId = data['masterId'];
       final count = data['count'];
+      final voucherNo = data['voucherNo'];
       final response = await dio.get(Api.printPOS,
           queryParameters: {
             'masterId' : masterId,
             'printCount' : count
           });
+      var reprintData = {
+        "id": 0,
+        "masterID": masterId,
+        "billNO": "$voucherNo",
+        "voucherTypeID": 19,
+        "printBY": userId2,
+        "printTime": date,
+        "printCount": count,
+        "extra1": "string",
+        "extra2": "string",
+        "extra3": "string",
+        "flag":"INSERTIRD"
+      };
       if(response.statusCode == 200){
         final data = response.data as String;
-        // final data = response.data as Map<String,dynamic>;
-        // final receipt = ReceiptPOSModel.fromJson(data);
-        // print(data);
+        print(reprintData);
+        final insert = await dio.post('${Api.insertPrint}',
+            data: reprintData
+        );
+        if(insert.statusCode == 200){
+          print('insert successfully');
+        }
         return Right(data);
       }
       else{

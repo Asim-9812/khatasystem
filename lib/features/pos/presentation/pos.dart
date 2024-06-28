@@ -250,7 +250,7 @@ class _POSState extends ConsumerState<POS> {
 
           :voucherData.when(
               data: (voucherNo){
-                print(voucherNo);
+                // print(voucherNo);
                 final loadDraftData = ref.watch(draftProvider(voucherNo));
                 return productList.when(
                     data: (data){
@@ -1718,7 +1718,7 @@ class _POSState extends ConsumerState<POS> {
 
                                                                                                   final right = response.fold((l) => null, (r) => r);
                                                                                                   final salesMasterId = right['masterId'];
-                                                                                                  print(salesMasterId);
+                                                                                                  // print(salesMasterId);
                                                                                                   Fluttertoast.showToast(
                                                                                                     msg: 'Draft added',
                                                                                                     gravity: ToastGravity.BOTTOM,

@@ -668,44 +668,29 @@ class POSServices{
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
 
-    final date = DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now());
+
 
     try{
       final masterId = data['masterId'];
       final count = data['count'];
-      final voucherNo = data['voucherNo'];
+      // final voucherNo = data['voucherNo'];
+
+
       final response = await dio.get(Api.printPOS,
           queryParameters: {
             'masterId' : masterId,
             'printCount' : count
           });
-      var reprintData = {
-        "id": 0,
-        "masterID": masterId,
-        "billNO": "$voucherNo",
-        "voucherTypeID": 19,
-        "printBY": userId2,
-        "printTime": date,
-        "printCount": count,
-        "extra1": "string",
-        "extra2": "string",
-        "extra3": "string",
-        "flag":"INSERTIRD"
-      };
+
       if(response.statusCode == 200){
         final data = response.data as String;
-        print(reprintData);
-        final insert = await dio.post('${Api.insertPrint}',
-            data: reprintData
-        );
-        if(insert.statusCode == 200){
-          print('insert successfully');
-        }
         return Right(data);
       }
       else{
         return Left('${response.statusCode} : Something went wrong');
+
       }
+
     }on DioException catch(e){
       // print(e);
       return Left('$e');
@@ -718,19 +703,61 @@ class POSServices{
 
 
     dio.options.headers["Authorization"] = "Bearer $userToken";
+
+    final masterId = data['masterID'];
+    final count = data['printCount'] +1 ;
+    final date = DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now());
+    print(masterId);
     try{
-      // print(data);
-      final response = await dio.post(Api.printCountPOS,
-          data:data);
-      if(response.statusCode == 200){
-        // final data = response.data as Map<String,dynamic>;
-        // final receipt = ReceiptPOSModel.fromJson(data);
-        // print(data);
-        return Right('Please wait...');
+      final printVoucher = await dio.post('${Api.getPrintVoucher}',
+          data:  {
+            "masterId" : masterId
+          }
+      );
+
+
+      if(printVoucher.statusCode == 200) {
+        final vNo = printVoucher.data['voucherNo'];
+        print(vNo);
+        var reprintData = {
+          "id": 0,
+          "masterID": masterId,
+          "billNO": "$vNo",
+          "voucherTypeID": 19,
+          "printBY": userId2,
+          "printTime": "${date}Z",
+          "printCount": count,
+          "extra1": "string",
+          "extra2": "string",
+          "extra3": "string",
+          "flag": "INSERTIRD"
+        };
+        print(reprintData);
+        final insert = await dio.post('${Api.insertPrint}',
+            data: reprintData
+        );
+        if (insert.statusCode == 200) {
+          final response = await dio.post(Api.printCountPOS,
+              data:data);
+          if(response.statusCode == 200){
+            // final data = response.data as Map<String,dynamic>;
+            // final receipt = ReceiptPOSModel.fromJson(data);
+            // print(data);
+            return Right('Please wait...');
+          }
+          else{
+            return Left('${response.statusCode} : Something went wrong');
+          }
+        }
+        else{
+          return Left('${insert.statusCode} : Something went wrong');
+        }
+
       }
       else{
-        return Left('${response.statusCode} : Something went wrong');
+        return Left('${printVoucher.statusCode} : Something went wrong');
       }
+      // print(data);
     }on DioException catch(e){
       // print(e);
       return Left('$e');

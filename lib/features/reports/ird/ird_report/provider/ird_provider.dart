@@ -115,7 +115,7 @@ class IRDProvider{
 
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
-    int voucherTypeId = type == 0 ? 19 : type == 1 ? 20 : type == 2 ? 13 : 14;
+    int voucherTypeId = type == 0 ? 19 : type == 1 ? 20 : type == 2 ? 13 : 14; //  purchase(13 return : 14) sales(19 return : 20)
     final date = DateFormat('yyyy-MM-ddThh:mm:ss').format(DateTime.now());
 
 

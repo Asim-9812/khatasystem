@@ -64,6 +64,7 @@ class Api {
   static const salesLedgerTransactionPosting = '$baseInventoryUrl/Sales/SalesLedgerTransactionPosting';
   static const printCountPOS = '$baseUrl/api/MasterPrint/InsertMasterPrintIRD';
   static const printPOS = '$baseInventoryUrl/Sales/PrintPOSReceipt';
+  static const getPrintVoucher = '$baseInventoryUrl/Sales/GetVoucherNo';
 
 
 
@@ -80,7 +81,7 @@ class Api {
 
 
 
-  //IRD REPORT... //13 14 19 20
+  //IRD REPORT...
   static const getIRDReport = '$baseInventoryUrl/SalesBook/GetSalesBook';
   static const getIRDDetails = '$baseInventoryUrl/SalesBook/GetIRDBookDetails';
   static const getIRDDetailsPurchase = '$baseInventoryUrl/SalesBook/GetIRDDetailsPurchase';

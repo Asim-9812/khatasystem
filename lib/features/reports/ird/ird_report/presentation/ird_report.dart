@@ -66,7 +66,10 @@ class _IRDReportState extends ConsumerState<IRDReport> {
     dateFrom.text = DateFormat('yyyy-MM-dd').format(DateTime.parse(mainInfo.startDate!));
     dateTo.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     _printCountController.text = '1';
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -1703,39 +1706,36 @@ class _IRDReportState extends ConsumerState<IRDReport> {
 
         }
 
-       
-        // var imgView = Image.memory(imgPdf!).image;
-        // // var imgData = Image.memory(imgPdf);
-        // //
-        // showImageViewer(context, imgView);
 
-        // await SunmiPrinter.startTransactionPrint(true);
-        //
-        // await SunmiPrinter.setAlignment(SunmiPrintAlign.CENTER);// Center align
-        // await SunmiPrinter.setFontSize(SunmiFontSize.SM);     // DEF SM
-        // // await SunmiPrinter.setCustomFontSize(12);    // DEF SM
-        // await SunmiPrinter.printImage(imgPdf!);
-        //
-        //
-        // await SunmiPrinter.submitTransactionPrint(); // SUBMIT and cut paper
-        // await SunmiPrinter.exitTransactionPrint(true); // Close the transaction
+        final printerStatus = await SunmiPrinter.printerVersion();
+        print(printerStatus);
+
+        if(printerStatus == 'NOT FOUND'){
+
+          print("Generated PDF file: ${generatedPdfFile.path}");
+
+          // final doc = pw.Document();
+
+          final pdfBytes = await generatedPdfFile.readAsBytes();
+          // Print or preview the PDF
+          Navigator.pop(context);
+          await Printing.layoutPdf(
+            // format: html.PdfPageFormat(650, 850),
+            onLayout: (PdfPageFormat format) async => pdfBytes,
+          );
+
+
+        }
+        else{
+          Navigator.pop(context);
+          // await SunmiPrinter.initPrinter();
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(imageList: imgList,count: count,)));
+
+        }
 
 
 
-        // print("Generated PDF file: ${generatedPdfFile.path}");
-        //
-        // // final doc = pw.Document();
-        //
-        // final pdfBytes = await generatedPdfFile.readAsBytes();
-        // // Print or preview the PDF
-        // await Printing.layoutPdf(
-        //   // format: html.PdfPageFormat(650, 850),
-        //   onLayout: (PdfPageFormat format) async => pdfBytes,
-        // );
 
-        Navigator.pop(context);
-        // await SunmiPrinter.initPrinter();
-        Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(imageList: imgList,count: count,)));
 
       } catch(e){
         print(' error : $e');
@@ -1769,25 +1769,24 @@ class _PrintPreviewState extends State<_PrintPreview> {
   @override
   void initState() {
     super.initState();
-    _bindingPrinter();
+    _initPrinter();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _unbindingPrinter();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   _unbindingPrinter();
+  // }
 
-  Future<bool?> _bindingPrinter() async {
-    final bool? result = await SunmiPrinter.bindingPrinter();
+  Future<bool?> _initPrinter() async {
     await SunmiPrinter.initPrinter();
-    return result;
+    return true;
   }
 
-  Future<bool?> _unbindingPrinter() async {
-    final bool? result = await SunmiPrinter.unbindingPrinter();
-    return result;
-  }
+  // Future<bool?> _unbindingPrinter() async {
+  //   final bool? result = await SunmiPrinter.unbindingPrinter();
+  //   return result;
+  // }
 
   Future<void> _printImage() async {
     try {
@@ -1857,9 +1856,6 @@ class _PrintPreviewState extends State<_PrintPreview> {
       for(int i = 0; i < widget.imageList.length; i++){
         await SunmiPrinter.printImage(widget.imageList[i]);
       }
-
-
-
 
       print('Exiting transaction print...');
       await SunmiPrinter.exitTransactionPrint(true);

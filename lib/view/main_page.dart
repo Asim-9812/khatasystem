@@ -8,6 +8,7 @@ import 'package:khata_app/common/colors.dart';
 import 'package:khata_app/common/common_provider.dart';
 import 'package:khata_app/service/update_service/update_service.dart';
 import 'package:khata_app/service/update_service/update_service_impl.dart';
+import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
 import '../features/activies/presentation/activity_page.dart';
 import '../features/dashboard/presentation/home_screen.dart';
 import '../features/menu/presentation/menu_screen.dart';
@@ -76,6 +77,13 @@ class _MainViewState extends ConsumerState<MainView> {
   void initState() {
     super.initState();
     _updateService.checkForInAppUpdate(_onUpdateSuccess, _onUpdateFailure);
+    _bindingPrinter();
+  }
+
+  Future<bool?> _bindingPrinter() async {
+    final bool? result = await SunmiPrinter.bindingPrinter();
+    // await SunmiPrinter.initPrinter();
+    return result;
   }
 
 

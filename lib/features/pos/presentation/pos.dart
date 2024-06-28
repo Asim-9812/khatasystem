@@ -2749,7 +2749,34 @@ class _POSState extends ConsumerState<POS> {
         pdf.close();
 
       }
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(imageList: imgList,count: count,)));
+
+
+      final printerStatus = await SunmiPrinter.printerVersion();
+      print(printerStatus);
+
+      if(printerStatus == 'NOT FOUND'){
+
+        print("Generated PDF file: ${generatedPdfFile.path}");
+
+        // final doc = pw.Document();
+
+        final pdfBytes = await generatedPdfFile.readAsBytes();
+        // Print or preview the PDF
+        Navigator.pop(context);
+        await Printing.layoutPdf(
+          // format: html.PdfPageFormat(650, 850),
+          onLayout: (PdfPageFormat format) async => pdfBytes,
+        );
+
+
+      }
+      else{
+        // Navigator.pop(context);
+        // await SunmiPrinter.initPrinter();
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>_PrintPreview(imageList: imgList,count: count,)));
+
+      }
+
 
     } catch(e){
       // print(e);
@@ -2807,24 +2834,14 @@ class _PrintPreviewState extends State<_PrintPreview> {
   @override
   void initState() {
     super.initState();
-    _bindingPrinter();
+    _initPrinter();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _unbindingPrinter();
-  }
 
-  Future<bool?> _bindingPrinter() async {
-    final bool? result = await SunmiPrinter.bindingPrinter();
+  Future<bool?> _initPrinter() async {
+    // final bool? result = await SunmiPrinter.bindingPrinter();
     await SunmiPrinter.initPrinter();
-    return result;
-  }
-
-  Future<bool?> _unbindingPrinter() async {
-    final bool? result = await SunmiPrinter.unbindingPrinter();
-    return result;
+    return true;
   }
 
   Future<void> _printImage() async {

@@ -2762,7 +2762,7 @@ class _POSState extends ConsumerState<POS> {
 
         final pdfBytes = await generatedPdfFile.readAsBytes();
         // Print or preview the PDF
-        Navigator.pop(context);
+        // Navigator.pop(context);
         await Printing.layoutPdf(
           // format: html.PdfPageFormat(650, 850),
           onLayout: (PdfPageFormat format) async => pdfBytes,

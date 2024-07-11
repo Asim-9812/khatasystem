@@ -66,7 +66,6 @@ class _IRDReportState extends ConsumerState<IRDReport> {
     dateFrom.text = DateFormat('yyyy-MM-dd').format(DateTime.parse(mainInfo.startDate!));
     dateTo.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     _printCountController.text = '1';
-
   }
 
 
@@ -1746,7 +1745,7 @@ class _IRDReportState extends ConsumerState<IRDReport> {
       //     onLayout: (PdfPageFormat format) async => doc.save());
     }
 
-    _printCountController.clear();
+      _printCountController.text = '1';
 
   }
 

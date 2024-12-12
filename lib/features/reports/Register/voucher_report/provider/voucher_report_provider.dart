@@ -32,6 +32,7 @@ class VoucherDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
         print(response.statusCode);
       }
     }on DioError catch(err){
+      print(err);
       throw DioException().getDioError(err);
     }
   }

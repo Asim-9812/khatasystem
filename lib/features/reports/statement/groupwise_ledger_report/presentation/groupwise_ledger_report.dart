@@ -177,9 +177,9 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
 
-                  FilterAnyModel fModel = FilterAnyModel();
+                  FilterAnyModel2 fModel = FilterAnyModel2();
                   fModel.dataFilterModel = filterModel;
-                  fModel.mainInfoModel = mainInfo;
+                  fModel.mainInfoModel = mainInfo2;
 
 
                   return SafeArea(
@@ -532,7 +532,7 @@ class _GroupWiseLedgerReportState extends State<GroupWiseLedgerReport> {
 
                                             /// updates row per page of filterModel, because it does not update on its own
                                             fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                            ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                            ref.read(tableDataProvider.notifier).getTableValues2(fModel);
                                           },
                                           itemsPerPageList: rowPerPageItems,
                                         ),

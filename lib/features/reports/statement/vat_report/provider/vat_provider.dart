@@ -12,9 +12,9 @@ import '../../../../../model/list model/get_list_model.dart';
 import '../../../../../model/list model/list_model.dart';
 import '../../../../dashboard/presentation/home_screen.dart';
 
-final vatListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => VatListProvider().getVatReportList(model));
-final aboveLakhProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => VatListProvider().getAboveLakhList(model));
-final monthlyProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => VatListProvider().getMonthlyList(model));
+final vatListProvider = FutureProvider.family.autoDispose((ref, GetListModel2 model) => VatListProvider().getVatReportList(model));
+final aboveLakhProvider = FutureProvider.family.autoDispose((ref, GetListModel2 model) => VatListProvider().getAboveLakhList(model));
+final monthlyProvider = FutureProvider.family.autoDispose((ref, GetListModel2 model) => VatListProvider().getMonthlyList(model));
 
 final vatReportProvider = StateNotifierProvider<VatReportProvider, AsyncValue<List<dynamic>>>((ref) =>VatReportProvider());
 final vatReportProvider2 = StateNotifierProvider<VatReportProvider2, AsyncValue<List<dynamic>>>((ref) =>VatReportProvider2());
@@ -48,7 +48,7 @@ class VatReportDetailProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   VatReportProvider() : super(const AsyncValue.data([]));
 
-  Future<void> getTableValues(FilterAnyModel filterModel) async{
+  Future<void> getTableValues(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
@@ -91,7 +91,7 @@ class VatReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 class VatReportProvider2 extends StateNotifier<AsyncValue<List<dynamic>>>{
   VatReportProvider2() : super(const AsyncValue.data([]));
 
-  Future<void> getTableValues(FilterAnyModel filterModel) async{
+  Future<void> getTableValues(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
@@ -114,7 +114,7 @@ class VatReportProvider2 extends StateNotifier<AsyncValue<List<dynamic>>>{
 class VatReportProvider3 extends StateNotifier<AsyncValue<List<dynamic>>>{
   VatReportProvider3() : super(const AsyncValue.data([]));
 
-  Future<void> getTableValues(FilterAnyModel filterModel) async{
+  Future<void> getTableValues(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
@@ -138,7 +138,7 @@ class VatReportProvider3 extends StateNotifier<AsyncValue<List<dynamic>>>{
 
 
 class VatListProvider {
-  Future<List<Map<String, dynamic>>> getVatReportList(GetListModel getListModel) async {
+  Future<List<Map<String, dynamic>>> getVatReportList(GetListModel2 getListModel) async {
     final dio = Dio();
     
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
@@ -181,7 +181,7 @@ class VatListProvider {
       throw Exception('$err');
     }
   }
-  Future<List<Map<String, dynamic>>> getAboveLakhList(GetListModel getListModel) async {
+  Future<List<Map<String, dynamic>>> getAboveLakhList(GetListModel2 getListModel) async {
     final dio = Dio();
     
      dio.options.headers["Authorization"] = "Bearer ${userToken}";
@@ -224,7 +224,7 @@ class VatListProvider {
       throw Exception('$err');
     }
   }
-  Future<List<Map<String, dynamic>>> getMonthlyList(GetListModel getListModel) async {
+  Future<List<Map<String, dynamic>>> getMonthlyList(GetListModel2 getListModel) async {
     final dio = Dio();
     
      dio.options.headers["Authorization"] = "Bearer ${userToken}";

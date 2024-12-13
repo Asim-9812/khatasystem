@@ -7,19 +7,24 @@ class BalanceSheetReportModel {
 
   String? strDebit;
   String? strCredit;
+  double? debit;
+  double? credit;
   int? layerPosition;
   String? nature;
 
-  BalanceSheetReportModel(
-      {this.sno,
-        this.accountGroupId,
-        this.accountGroupId2,
-        this.accountGroupName,
-        this.accountGroupName2,
-        this.strDebit,
-        this.strCredit,
-        this.layerPosition,
-        this.nature});
+  BalanceSheetReportModel({
+    this.sno,
+    this.accountGroupId,
+    this.accountGroupId2,
+    this.accountGroupName,
+    this.accountGroupName2,
+    this.strDebit,
+    this.strCredit,
+    this.debit,
+    this.credit,
+    this.layerPosition,
+    this.nature,
+  });
 
   BalanceSheetReportModel.fromJson(Map<String, dynamic> json) {
     sno = json['sno'];
@@ -29,6 +34,8 @@ class BalanceSheetReportModel {
     accountGroupName2 = json['accountGroupName2'];
     strDebit = json['strDebit'];
     strCredit = json['strCredit'];
+    debit = json['debit'] != null ? (json['debit'] as num).toDouble() : null;
+    credit = json['credit'] != null ? (json['credit'] as num).toDouble() : null;
     layerPosition = json['layerPosition'];
     nature = json['nature'];
   }
@@ -42,6 +49,8 @@ class BalanceSheetReportModel {
     data['accountGroupName2'] = accountGroupName2;
     data['strDebit'] = strDebit;
     data['strCredit'] = strCredit;
+    data['debit'] = debit;
+    data['credit'] = credit;
     data['layerPosition'] = layerPosition;
     data['nature'] = nature;
     return data;

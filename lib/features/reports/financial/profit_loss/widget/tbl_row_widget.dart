@@ -9,9 +9,9 @@ DataRow buildProfitLossRow(int index, PLReportModel tblData) {
     color: MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildDataCell(250, '${tblData.accountGroupName}', tblData.nature!),
-      buildDataCell(160, '${tblData.strDebit}', tblData.nature!),
+      buildDataCell(160, '${tblData.debit}', tblData.nature!),
       buildDataCell(250, '${tblData.accountGroupName2}', tblData.nature!),
-      buildDataCell(160, '${tblData.strCredit}', tblData.nature!),
+      buildDataCell(160, '${tblData.credit?.abs()}', tblData.nature!),
     ],
   );
 }

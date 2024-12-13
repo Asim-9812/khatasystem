@@ -17,13 +17,14 @@ final balanceSheetReportProvider = StateNotifierProvider<BalanceSheetReportProvi
 class BalanceSheetReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   BalanceSheetReportProvider() : super(const AsyncValue.data([]));
 
-  Future<void> getTableData(FilterAnyModel filterModel) async{
+  Future<void> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;

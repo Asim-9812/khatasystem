@@ -16,7 +16,7 @@ final groupWiseLedgerProvider = StateNotifierProvider<GroupWiseLedgerReportProvi
 class GroupWiseLedgerReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   GroupWiseLedgerReportProvider() : super(const AsyncValue.data([]));
 
-  Future<void> getTableValues(FilterAnyModel filterModel) async{
+  Future<void> getTableValues(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";

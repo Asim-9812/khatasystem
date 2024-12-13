@@ -16,13 +16,14 @@ final plReportProvider = StateNotifierProvider<PLReportProvider, AsyncValue<List
 class PLReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   PLReportProvider() : super(const AsyncValue.data([]));
 
-  Future<void> getTableData(FilterAnyModel filterModel) async{
+  Future<void> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;
@@ -31,6 +32,7 @@ class PLReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
         print(response.statusCode);
       }
     }on DioError catch(err){
+      // print(err);
       throw DioException().getDioError(err);
     }
   }

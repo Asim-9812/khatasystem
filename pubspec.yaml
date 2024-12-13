@@ -127,7 +127,7 @@ dependencies:
 
   path_provider: ^2.1.5
 
-  flutter_share: ^2.0.0
+  flutter_share: any
 
   sunmi_printer_plus: ^2.1.3
 

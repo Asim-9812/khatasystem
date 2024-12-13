@@ -16,7 +16,7 @@ final supplierLedgerReportProvider = StateNotifierProvider<SupplierLedgerReportP
 class SupplierLedgerReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   SupplierLedgerReportProvider() : super(const AsyncValue.data([]));
 
-  Future<void> fetchTableData(FilterAnyModel filterModel) async{
+  Future<void> fetchTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";

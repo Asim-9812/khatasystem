@@ -45,13 +45,13 @@ class _MonthlyState extends State<Monthly> {
 
   @override
   Widget build(BuildContext context) {
-    GetListModel modelRef = GetListModel();
+    GetListModel2 modelRef = GetListModel2();
     modelRef.refName = 'MonthlyVATReport';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
     modelRef.listNameId = "[\"monthly_branch\"]";
     mainInfo.dbName = mainInfo.dbName;
-    modelRef.mainInfoModel = mainInfo;
+    modelRef.mainInfoModel = mainInfo2;
     modelRef.conditionalValues = '';
 
     return Consumer(
@@ -117,9 +117,9 @@ class _MonthlyState extends State<Monthly> {
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
 
-                  FilterAnyModel fModel = FilterAnyModel();
+                  FilterAnyModel2 fModel = FilterAnyModel2();
                   fModel.dataFilterModel = filterModel;
-                  fModel.mainInfoModel = mainInfo;
+                  fModel.mainInfoModel = mainInfo2;
 
 
                   return SafeArea(

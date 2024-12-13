@@ -51,7 +51,7 @@ class _TestState extends ConsumerState<DayBookReport> {
   String voucherValue = '';
   late List _selectedVouchers;
   String searchQuery = '';
-  GetListModel modelRef2 = GetListModel();
+  GetListModel2 modelRef2 = GetListModel2();
   GetLedgerListModel ledgerRef = GetLedgerListModel();
 
 
@@ -71,12 +71,12 @@ class _TestState extends ConsumerState<DayBookReport> {
 
 
   void getList() {
-    GetListModel modelRef = GetListModel();
+    GetListModel2 modelRef = GetListModel2();
     modelRef.refName = 'DayBook';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
     modelRef.listNameId = "[\"branch\",\"voucherType\",\"ledger\"]";
-    modelRef.mainInfoModel = mainInfo;
+    modelRef.mainInfoModel = mainInfo2;
     modelRef.conditionalValues = '';
     setState(() {
       modelRef2 = modelRef;
@@ -221,9 +221,9 @@ class _TestState extends ConsumerState<DayBookReport> {
               filterModel.currentPageNumber = _currentPage;
               filterModel.strListNames = "";
 
-              FilterAnyModel fModel = FilterAnyModel();
+              FilterAnyModel2 fModel = FilterAnyModel2();
               fModel.dataFilterModel = filterModel;
-              fModel.mainInfoModel = mainInfo;
+              fModel.mainInfoModel = mainInfo2;
 
 
               return SafeArea(
@@ -660,7 +660,7 @@ class _TestState extends ConsumerState<DayBookReport> {
                                               _currentPage = 1;
                                               /// updates row per page of filterModel, because it does not update on its own
                                               fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                              ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                              ref.read(tableDataProvider.notifier).getTableValues2(fModel);
                                             },
                                             itemsPerPageList: rowPerPageItems,
                                           ),
@@ -749,7 +749,7 @@ class _TestState extends ConsumerState<DayBookReport> {
                                           _currentPage = 1;
                                           /// updates row per page of filterModel, because it does not update on its own
                                           fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                          ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                          ref.read(tableDataProvider.notifier).getTableValues2(fModel);
                                         },
                                         itemsPerPageList: rowPerPageItems,
                                       ),

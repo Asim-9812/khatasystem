@@ -528,7 +528,7 @@ final tableDataProvider = StateNotifierProvider<TableDataProvider, AsyncValue<Li
 class TableDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   TableDataProvider() : super(const AsyncValue.data([]));
 
-  Future<void> getTableValues(FilterAnyModel filterModel) async{
+  Future<void> getTableValues(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
@@ -556,6 +556,7 @@ class TableDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
 
     try{
       final jsonData = jsonEncode(filterModel.toJson());
+      print(jsonData);
       final response = await dio.post(Api.getTable, data: jsonData);
       if(response.statusCode == 200){
         final result = response.data as List<dynamic>;

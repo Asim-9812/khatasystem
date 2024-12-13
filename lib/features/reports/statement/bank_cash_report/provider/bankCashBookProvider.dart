@@ -16,7 +16,7 @@ import '../../../../dashboard/presentation/home_screen.dart';
 
 final bankCashProvider = StateNotifierProvider<BankCashReport, AsyncValue<List<dynamic>>>((ref) =>BankCashReport());
 final bankCashProvider2 = StateNotifierProvider<BankCashReport, AsyncValue<List<dynamic>>>((ref) =>BankCashReport());
-final bankCashListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => BankCashReport().getBankCashList(model));
+final bankCashListProvider = FutureProvider.family.autoDispose((ref, GetListModel2 model) => BankCashReport().getBankCashList(model));
 final bankCashLedgerListProvider = FutureProvider.family.autoDispose((ref, GetLedgerListModel model) => BankCashReport().getBankCashLedgerList(model));
 
 
@@ -47,12 +47,13 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
 
 
-  Future<List<Map<dynamic, dynamic>>> getBankCashList(GetListModel getListModel) async {
+  Future<List<Map<dynamic, dynamic>>> getBankCashList(GetListModel2 getListModel) async {
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
     final jsonData = jsonEncode(getListModel.toJson());
+    print(jsonData);
     List<Map<dynamic, dynamic>> myList = [];
     try{
       final response = await dio.post(Api.getSubList, data: jsonData);
@@ -79,6 +80,7 @@ class BankCashReport extends StateNotifier<AsyncValue<List<dynamic>>>{
 
       return myList;
     }on DioError catch(err){
+      print(err);
       throw DioException().getDioError(err);
     }
   }

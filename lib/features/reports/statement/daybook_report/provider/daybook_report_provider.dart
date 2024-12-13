@@ -15,13 +15,13 @@ import '../../../../dashboard/presentation/home_screen.dart';
 
 
 final dayBookProvider = StateNotifierProvider<DayBookReportProvider, AsyncValue<List<dynamic>>>((ref) =>DayBookReportProvider());
-final dayBookListProvider = FutureProvider.family.autoDispose((ref, GetListModel model) => DayBookReportProvider().getDayBookList(model));
+final dayBookListProvider = FutureProvider.family.autoDispose((ref, GetListModel2 model) => DayBookReportProvider().getDayBookList(model));
 
 
 class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   DayBookReportProvider() : super(const AsyncValue.data([]));
 
-  Future<void> fetchTableData(FilterAnyModel filterModel) async{
+  Future<void> fetchTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
@@ -42,7 +42,7 @@ class DayBookReportProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
     }
   }
 
-  Future<List<Map<dynamic, dynamic>>> getDayBookList(GetListModel getListModel) async {
+  Future<List<Map<dynamic, dynamic>>> getDayBookList(GetListModel2 getListModel) async {
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";

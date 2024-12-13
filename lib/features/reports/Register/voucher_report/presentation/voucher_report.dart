@@ -38,7 +38,7 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
   List<int> rowPerPageItems = [5, 10, 15, 20, 25, 50];
   late int _totalPages;
 
-  FilterAnyModel searchFilterModel = FilterAnyModel();
+  FilterAnyModel2 searchFilterModel = FilterAnyModel2();
 
   bool? _isDetailed;
 
@@ -239,9 +239,9 @@ class _VoucherReportPageState extends State<VoucherReportPage> {
                     filterModel.currentPageNumber = _currentPage;
                     filterModel.strListNames = "";
 
-                    FilterAnyModel fModel = FilterAnyModel();
+                    FilterAnyModel2 fModel = FilterAnyModel2();
                     fModel.dataFilterModel = filterModel;
-                    fModel.mainInfoModel = mainInfo;
+                    fModel.mainInfoModel = mainInfo2;
 
                     searchFilterModel = fModel;
 

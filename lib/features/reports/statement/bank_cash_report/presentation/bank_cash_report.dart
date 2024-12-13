@@ -51,7 +51,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
   late MainInfoModel2 bankCashReportModel;
 
   String searchQuery = '';
-  GetListModel modelRef2 = GetListModel();
+  GetListModel2 modelRef2 = GetListModel2();
   GetLedgerListModel getLedgerListModel = GetLedgerListModel();
   // late bool _isSelected ;
   bool ledgerListExecuted = false;
@@ -79,12 +79,12 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
   }
 
   void getList() {
-    GetListModel modelRef = GetListModel();
+    GetListModel2 modelRef = GetListModel2();
     modelRef.refName = 'BankCashBook';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
     modelRef.listNameId = "[\"branch\",\"branch\",\"ledger\"]";
-    modelRef.mainInfoModel = mainInfo;
+    modelRef.mainInfoModel = mainInfo2;
     modelRef.conditionalValues = '';
     setState(() {
       modelRef2 = modelRef;
@@ -93,7 +93,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
   }
   void ledgerList(){
     GetLedgerListModel ledref = GetLedgerListModel();
-    ledref.mainInfoModel = mainInfo;
+    ledref.mainInfoModel = mainInfo2;
     ledref.branchId =0;
     ledref.accountGroupId =ref.watch(itemProvider).selectedBankCashList ;
 
@@ -540,10 +540,15 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                     String selectedLedgerItem = ledgerItems[ref.watch(itemProvider).ledgerIndex];
 
 
-                                    if(selectedLedgerItem =='ALL' ){
-                                      ref.read(itemProvider.notifier).updateLedger(data[0]['value']);
-                                      print('run executed');
-                                    }
+                                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                      if(selectedLedgerItem =='ALL' ){
+                                        ref.read(itemProvider.notifier).updateLedger(data[0]['value']);
+                                        print('run executed');
+                                      }
+
+                                    });
+
+
 
                                     return DropdownSearch<String>(
                                       items: ledgerItems,
@@ -1181,7 +1186,7 @@ class _BankCashReportState extends ConsumerState<BankCashReport> {
                                                     itemsPerPageList: rowPerPageItems,
                                                   ),
                                                   const SizedBox(width: 1200,),
-                                                  Text('Closing balance: CASH: ${newList.last.strCashBalance}    BANK: ${newList.last.strBankBalance}',style: TextStyle(fontWeight: FontWeight.bold),)
+                                                  Text('Closing balance: CASH: ${newList.last.cashBalance.abs()}    BANK: ${newList.last.bankBalance.abs()}',style: TextStyle(fontWeight: FontWeight.bold),)
                                                 ],
                                               ),
                                         ],

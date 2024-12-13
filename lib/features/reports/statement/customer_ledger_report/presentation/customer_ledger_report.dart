@@ -199,9 +199,9 @@ class _CustomerLedgerReportState extends State<CustomerLedgerReport> {
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
 
-                  FilterAnyModel fModel = FilterAnyModel();
+                  FilterAnyModel2 fModel = FilterAnyModel2();
                   fModel.dataFilterModel = filterModel;
-                  fModel.mainInfoModel = mainInfo;
+                  fModel.mainInfoModel = mainInfo2;
 
 
                   return SafeArea(

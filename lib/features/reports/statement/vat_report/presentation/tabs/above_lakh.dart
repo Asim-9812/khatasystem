@@ -75,12 +75,12 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
   @override
   Widget build(BuildContext context) {
     _selectedParticulars = ref.watch(itemProvider).selectedVatReportList;
-    GetListModel modelRef = GetListModel();
+    GetListModel2 modelRef = GetListModel2();
     modelRef.refName = 'AboveLakhVATReport';
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
     modelRef.listNameId ="[\"trans_branch\",\"trans_particular\"]";
-    modelRef.mainInfoModel = mainInfo;
+    modelRef.mainInfoModel = mainInfo2;
     modelRef.conditionalValues = '';
 
 
@@ -181,9 +181,9 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
                   filterModel.currentPageNumber = _currentPage;
                   filterModel.strListNames = "";
 
-                  FilterAnyModel fModel = FilterAnyModel();
+                  FilterAnyModel2 fModel = FilterAnyModel2();
                   fModel.dataFilterModel = filterModel;
-                  fModel.mainInfoModel = mainInfo;
+                  fModel.mainInfoModel = mainInfo2;
 
 
                   return SafeArea(
@@ -652,7 +652,7 @@ class _DayBookReportState extends ConsumerState<AboveLakhTab> {
 
                                               /// updates row per page of filterModel, because it does not update on its own
                                               fModel.dataFilterModel!.pageRowCount = _rowPerPage;
-                                              ref.read(tableDataProvider.notifier).getTableValues(fModel);
+                                              ref.read(tableDataProvider.notifier).getTableValues2(fModel);
                                             },
                                             itemsPerPageList: rowPerPageItems,
                                           ),

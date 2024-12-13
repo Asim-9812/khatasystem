@@ -43,10 +43,10 @@ DataRow buildBankCashRow1(int index, BankCashModel tblData,
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildBankCashDataCell(
-          200, '${tblData.strCashDr}', TextAlign.center, 2),
+          200, '${tblData.cashDr}', TextAlign.center, 2),
       buildBankCashDataCell(
-          200, '${tblData.strCashCr}', TextAlign.center, 2),
-      buildBankCashDataCell(200, '${tblData.strCashBalance}', TextAlign.center,
+          200, '${tblData.cashCr}', TextAlign.center, 2),
+      buildBankCashDataCell(200, '${tblData.cashclosingBalance}', TextAlign.center,
           2),
     ],
   );
@@ -60,10 +60,10 @@ DataRow buildBankCashRow2(int index, BankCashModel tblData,
     MaterialStateProperty.resolveWith((states) => getColor(states, index)),
     cells: [
       buildBankCashDataCell(
-          200, '${tblData.strBankDr}', TextAlign.center, 2),
+          200, '${tblData.bankDr}', TextAlign.center, 2),
       buildBankCashDataCell(
-          200, '${tblData.strBankCr}', TextAlign.center, 2),
-      buildBankCashDataCell(200, '${tblData.strBankBalance}', TextAlign.center,
+          200, '${tblData.bankCr}', TextAlign.center, 2),
+      buildBankCashDataCell(200, '${tblData.bankclosingBalance}', TextAlign.center,
           2),
     ],
   );

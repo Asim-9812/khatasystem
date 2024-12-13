@@ -175,8 +175,6 @@ class MainInfoModel2 {
   String? endDate;
   String? strId;
   String? sessionId;
-  String? fromDate;
-  String? toDate;
   int? id;
   String? searchText;
 
@@ -196,8 +194,6 @@ class MainInfoModel2 {
     this.endDate,
     this.strId,
     this.sessionId,
-    this.fromDate,
-    this.toDate,
     this.id,
     this.searchText
   });
@@ -239,8 +235,6 @@ class MainInfoModel2 {
     data['endDate'] = endDate;
     data['strId'] = strId;
     data['sessionId'] = sessionId;
-    data['fromDate'] = fromDate;
-    data['toDate'] = toDate;
     data['id'] = id;
     data['searchtext']=searchText;
     return data;
@@ -250,7 +244,7 @@ class MainInfoModel2 {
 
 
 class GetLedgerListModel {
-  MainInfoModel? mainInfoModel;
+  MainInfoModel2? mainInfoModel;
   int? branchId;
   List? accountGroupId;
 
@@ -261,7 +255,7 @@ class GetLedgerListModel {
 
   GetLedgerListModel.fromJson(Map<String, dynamic> json) {
     mainInfoModel = json['mainInfo'] != null
-        ? MainInfoModel.fromJson(json['mainInfo'])
+        ? MainInfoModel2.fromJson(json['mainInfo'])
         : null;
     branchId = json['branchid'];
     accountGroupId = json['accountgroupid'];

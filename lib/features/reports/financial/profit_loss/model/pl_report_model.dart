@@ -6,6 +6,8 @@ class PLReportModel {
   int? accountGroupId2;
   String? accountGroupName;
   String? accountGroupName2;
+  double? debit;
+  double? credit;
   String? strDebit;
   String? strCredit;
   int? layerPosition;
@@ -21,6 +23,8 @@ class PLReportModel {
     this.strCredit,
     this.layerPosition,
     this.nature,
+    this.credit,
+    this.debit
   });
 
   PLReportModel.fromJson(Map<String, dynamic> json) {
@@ -33,7 +37,10 @@ class PLReportModel {
     strCredit = json['strCredit'];
     layerPosition = json['layerPosition'];
     nature = json['nature'];
+    debit = json['debit'] != null ? (json['debit'] as num).toDouble() : null;
+    credit = json['credit'] != null ? (json['credit'] as num).toDouble() : null;
   }
+
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};

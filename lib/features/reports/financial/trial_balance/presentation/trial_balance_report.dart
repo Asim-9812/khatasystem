@@ -130,6 +130,8 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
 
                 String branchItem = branches[1];
 
+                print(branches[1]);
+
 
                 final branchItemData = ref.watch(itemProvider).branchItem3;
                 final typeItemData = ref.watch(updateTypeProvider).trialBalanceType;
@@ -145,10 +147,10 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                 ledgerGroupListModel.conditionalValues = '';
 
                 String getBranchValue(String branchVal) {
-                  if (branchVal == "All") {
-                    return 'BranchId--${data[0][branchItem]}';
+                  if (branchVal.toLowerCase() == "All") {
+                    return 'BranchId--0';
                   } else {
-                    return 'BranchId--${data[0][branchItemData]}';
+                    return 'BranchId--${data[0][branchItem]}';
                   }
                 }
 
@@ -180,9 +182,9 @@ class _TrialBalanceReportState extends ConsumerState<TrialBalanceReport> {
                 filterModel.currentPageNumber = _currentPage;
                 filterModel.strListNames = "";
 
-                FilterAnyModel fModel = FilterAnyModel();
+                FilterAnyModel2 fModel = FilterAnyModel2();
                 fModel.dataFilterModel = filterModel;
-                fModel.mainInfoModel = mainInfo;
+                fModel.mainInfoModel = mainInfo2;
 
                 return SafeArea(
                   child: Padding(

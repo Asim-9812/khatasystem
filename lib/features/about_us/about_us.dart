@@ -146,7 +146,7 @@ class AboutUs extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10)
                 ),
                 leading:Image.asset('assets/images/new-logo.png',width: 25,height: 25,),
-                title: Text('Version 1.1.1',style: TextStyle(fontSize: 16),),
+                title: Text('Version 1.1.4',style: TextStyle(fontSize: 16),),
                 subtitle: Text('Tap to check for updates',style: TextStyle(fontSize: 12),),
               ),
             ),

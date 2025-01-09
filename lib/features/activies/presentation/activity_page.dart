@@ -242,69 +242,77 @@ class DisplayBlock extends StatelessWidget {
                       fontWeight: FontWeight.w400),
                 ));
           }
-          snapshot.data!.sort((a,b)=>a.logId!.compareTo(b.logId!));
-          final reverseList = snapshot.data!.reversed.toList();
-          return ListView.separated(
-            itemCount: reverseList.length,
-            itemBuilder: (context, index) {
+          else{
+            snapshot.data!.sort((a,b){
+              if(a.logId != null && b.logId!=null){
+                return a.logId!.compareTo(b.logId!);
+              }
+              else{
+                return 0;
+              }
+            });
+            final reverseList = snapshot.data!.reversed.toList();
+            return ListView.separated(
+              itemCount: reverseList.length,
+              itemBuilder: (context, index) {
 
-              // final reverseIndex = snapshot.data!.length - 1 - index;
-              final item = reverseList[index];
-              return GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        contentPadding: EdgeInsets.zero, /// Remove the default padding
-                        content: Container(
-                          padding: const EdgeInsets.all(0),
-                          height: 500,
-                          width: 600.0,
-                          decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/khata-logo.png'),
-                                  fit: BoxFit.contain,
-                                  opacity: 0.05
-                              )
+                // final reverseIndex = snapshot.data!.length - 1 - index;
+                final item = reverseList[index];
+                return GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          child: Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
-                                height: 50,
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                    color: ColorManager.primary,
-                                    borderRadius: const BorderRadius.vertical(top: Radius.circular(10),)
-                                ),
-                                child: const Center(
-                                  child: Text('Log Information',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
+                          contentPadding: EdgeInsets.zero, /// Remove the default padding
+                          content: Container(
+                            padding: const EdgeInsets.all(0),
+                            height: 500,
+                            width: 600.0,
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage('assets/images/khata-logo.png'),
+                                    fit: BoxFit.contain,
+                                    opacity: 0.05
+                                )
+                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 15),
+                                  height: 50,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                      color: ColorManager.primary,
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(10),)
+                                  ),
+                                  child: const Center(
+                                    child: Text('Log Information',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: ListView(
-                                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                                  children: [
-                                    RichText(
-                                      text: TextSpan(
+                                Expanded(
+                                  child: ListView(
+                                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
                                           children: [
                                             TextSpan(
-                                                text: item.name,
-                                                style: const TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.black,
-                                                ),
+                                              text: item.name,
+                                              style: const TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.black,
+                                              ),
                                             ),
                                             TextSpan(
                                               text: ' ${(item.status == 'True') ? 'Logged In' : item.statusMessage} ${formatDistanceToNowStrict(reverseList[index].logInTime!)} ago',
@@ -313,153 +321,155 @@ class DisplayBlock extends StatelessWidget {
                                                   color: Colors.black),
                                             ),
                                           ],
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 16,),
-                                    const Text('Details',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        decoration: TextDecoration.underline,
+                                      const SizedBox(height: 16,),
+                                      const Text('Details',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                          decoration: TextDecoration.underline,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 5,),
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          const TextSpan(
-                                            text: 'Email: ',
-                                            style: TextStyle(
-                                                fontSize: 18,
+                                      const SizedBox(height: 5,),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            const TextSpan(
+                                              text: 'Email: ',
+                                              style: TextStyle(
+                                                  fontSize: 18,
 
-                                                color: Colors.black),
-                                          ),
-                                          TextSpan(
-                                            text: item.email,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
+                                                  color: Colors.black),
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4,),
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          const TextSpan(
-                                            text: 'Contact: ',
-                                            style: TextStyle(
+                                            TextSpan(
+                                              text: item.email,
+                                              style: const TextStyle(
                                                 fontSize: 18,
-
-                                                color: Colors.black),
-                                          ),
-                                          TextSpan(
-                                            text: item.contact,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                            ),
-                                          )
-                                        ],
+                                                color: Colors.black,
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 4,),
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          const TextSpan(
-                                            text: 'Mac address: ',
-                                            style: TextStyle(
+                                      const SizedBox(height: 4,),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            const TextSpan(
+                                              text: 'Contact: ',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+
+                                                  color: Colors.black),
+                                            ),
+                                            TextSpan(
+                                              text: item.contact,
+                                              style: const TextStyle(
                                                 fontSize: 18,
-
-                                                color: Colors.black),
-                                          ),
-                                          TextSpan(
-                                            text: item.macAddress,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                            ),
-                                          )
-                                        ],
+                                                color: Colors.black,
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 4,),
-                                    RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          const TextSpan(
-                                            text: 'IP address: ',
-                                            style: TextStyle(
+                                      const SizedBox(height: 4,),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            const TextSpan(
+                                              text: 'Mac address: ',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+
+                                                  color: Colors.black),
+                                            ),
+                                            TextSpan(
+                                              text: item.macAddress,
+                                              style: const TextStyle(
                                                 fontSize: 18,
-
-                                                color: Colors.black),
-                                          ),
-                                          TextSpan(
-                                            text: item.ipaddress,
-                                            style: const TextStyle(
-                                              fontSize: 18,
-                                              color: Colors.black,
-                                            ),
-                                          )
-                                        ],
+                                                color: Colors.black,
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(height: 4,),
-                                  ],
+                                      const SizedBox(height: 4,),
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            const TextSpan(
+                                              text: 'IP address: ',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+
+                                                  color: Colors.black),
+                                            ),
+                                            TextSpan(
+                                              text: item.ipaddress,
+                                              style: const TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.black,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4,),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: TextSpan(children: [
-                          TextSpan(
-                            text: reverseList[index].name,
-                            style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black),
-                          ),
-                          TextSpan(
-                              text: ' ${reverseList[index].statusMessage}',
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: reverseList[index].name,
                               style: const TextStyle(
-                                  fontSize: 18, color: Colors.black))
-                        ]),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        '${formatDistanceToNowStrict(reverseList[index].logInTime!)} ago',
-                        style: TextStyle(
-                            fontSize: 18, color: ColorManager.subtitleGrey),
-                      )
-                    ],
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black),
+                            ),
+                            TextSpan(
+                                text: ' ${reverseList[index].statusMessage}',
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.black))
+                          ]),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          '${formatDistanceToNowStrict(reverseList[index].logInTime!)} ago',
+                          style: TextStyle(
+                              fontSize: 18, color: ColorManager.subtitleGrey),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
-            separatorBuilder: (context, index) {
-              return Divider(
-                height: 1.2,
-                thickness: 1,
-                color: Colors.black.withOpacity(0.25),
-              );
-            },
-          );
+                );
+              },
+              separatorBuilder: (context, index) {
+                return Divider(
+                  height: 1.2,
+                  thickness: 1,
+                  color: Colors.black.withOpacity(0.25),
+                );
+              },
+            );
+          }
+
         },
       );
     }

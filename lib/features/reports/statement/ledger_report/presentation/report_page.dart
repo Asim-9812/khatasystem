@@ -54,7 +54,9 @@ class _ReportPageViewState extends State<ReportPageView> {
     modelRef.isSingleList = 'false';
     modelRef.singleListNameStr = '';
     modelRef.listNameId = "['underGroup', 'mainLedger-${1}', 'mainBranch-${2}']";
-    modelRef.mainInfoModel = mainInfo2;
+    MainInfoModel2 mainInfoModel = mainInfo2; /// change in param in only this report for now...may change later
+    mainInfoModel.decimalPlace = '2';
+    modelRef.mainInfoModel = mainInfoModel;
     modelRef.conditionalValues = '';
 
     return Consumer(

@@ -1,8 +1,8 @@
 class Api {
 
 
-  // static const baseUrl = 'https://api.khatasystem.com'; // LIVE KHATA SYSTEM
-  static const baseUrl = 'http://202.51.74.138:88'; // LIVE KHATA SYSTEM
+  static const baseUrl = 'https://api.khatasystem.com'; // LIVE KHATA SYSTEM
+  // static const baseUrl = 'http://202.51.74.138:88'; // LIVE KHATA SYSTEM
 
   // static const baseUrl = 'http://202.51.74.138:5017'; // DEMO KHATA SYSTEM
 

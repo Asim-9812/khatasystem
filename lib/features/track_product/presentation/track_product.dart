@@ -26,6 +26,7 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
   Division? selectedDivision;
 
   List<TrackModel> trackModel=[];
+  String errorData = '';
 
   TokenModel? selectedToken;
 
@@ -367,6 +368,11 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                                   final response = await TrackServices.getTrackingList(tokenData: selectedToken!);
                                   if(response.isLeft()){
                                     final leftV = response.fold((l) => l, (r) => null);
+                                    setState(() {
+                                      _isLoading = false;
+                                      trackModel = [];
+                                      errorData = 'Data not found';
+                                    });
                                     Fluttertoast.showToast(
                                       msg: '$leftV',
                                       gravity: ToastGravity.BOTTOM,
@@ -378,10 +384,20 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
                                   else{
                                     final tracks = response.fold((l) => null, (r) => r);
 
-                                    setState(() {
-                                      _isLoading = false;
-                                      trackModel = tracks!;
-                                    });
+                                    if(tracks == null){
+                                      setState(() {
+                                        _isLoading = false;
+                                        trackModel = [];
+                                        errorData = 'Data not found';
+                                      });
+                                    }
+                                    else{
+                                      setState(() {
+                                        _isLoading = false;
+                                        trackModel = tracks;
+                                      });
+                                    }
+
                                   }
                                 }
                                 else{
@@ -403,6 +419,9 @@ class _TrackProductState extends ConsumerState<TrackProduct> {
               ),
 
               const SizedBox(height: 20,),
+
+              if(errorData.trim().isNotEmpty)
+              Center(child: Text(errorData)),
 
               if(trackModel.isNotEmpty)
               Visibility(

@@ -73,22 +73,22 @@ Future<List<LogModel>> fetchLogActivities(StreamController logStreamController, 
 
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
 
-    final response = await dio.get(Api.getLoginActivities,
-        // data: {
-        //   "logid": 0,
-        //   "ipaddress": "string",
-        //   "macAddress": "string",
-        //   "hostAddress": "string",
-        //   "userId": "string",
-        //   "statusMessage": "string",
-        //   "status": "string",
-        //   "contact": "string",
-        //   "email": "string",
-        //   "name": "string",
-        //   "logInTime": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
-        //   "sessionId": "string",
-        //   "dbName": mainInfo.dbName
-        // },
+    final response = await dio.post(Api.getLoginActivities,
+        data: {
+          "logid": 0,
+          "ipaddress": "string",
+          "macAddress": "string",
+          "hostAddress": "string",
+          "userId": "string",
+          "statusMessage": "string",
+          "status": "string",
+          "contact": "string",
+          "email": "string",
+          "name": "string",
+          "logInTime": DateFormat("yyyy-MM-ddTHH:mm:ss.SSS'Z'").format(DateTime.now()),
+          "sessionId": "string",
+          "dbName": mainInfo.dbName
+        },
     );
     if (response.statusCode == 200) {
       final result = response.data["result"] as List<dynamic>;

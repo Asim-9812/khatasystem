@@ -26,7 +26,7 @@ class FiscalYearProvider{
 
     try{
       final response = await dio.post(Api.getFiscalYear,
-          data: mainInfo.toJson()
+          data: mainInfo2.toJson()
       );
 
       if(response.statusCode == 200){
@@ -37,6 +37,7 @@ class FiscalYearProvider{
         return [];
       }
     }on DioError catch(err){
+      print(err);
       throw err.message;
     }
   }

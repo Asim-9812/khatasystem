@@ -11,10 +11,10 @@ import '../../../../../main.dart';
 import '../../../../dashboard/presentation/home_screen.dart';
 
 
-final voucherIndividualReportProvider = FutureProvider.family((ref, FilterAnyModel filterModel) => VoucherIndividualDataProvider().getTableData(filterModel));
+final voucherIndividualReportProvider = FutureProvider.family((ref, FilterAnyModel2 filterModel) => VoucherIndividualDataProvider().getTableData(filterModel));
 
 class VoucherIndividualDataProvider {
-  Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
+  Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";

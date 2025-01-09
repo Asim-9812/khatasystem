@@ -44,12 +44,14 @@ class _UserLoginViewState extends State<UserLoginView> {
 
   /// create a variable for box
   late Box box1;
+  late Box hiddenBox;
 
   /// we want the box to be created as soon as the page is created
   /// so the create box function is called here in initState() method
   @override
   void initState() {
     super.initState();
+    hiddenBox = Hive.box('hiddenBox');
     createOpenBox();
   }
 
@@ -385,6 +387,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                           if (_formKey.currentState!.validate()) {
                                             ref.read(loadingProvider.notifier).toggle();
                                             login();
+                                            hiddenCred();
                                             final response = await ref.read(userLoginProvider).login(
                                               databseId: idController.text.trim(),
                                               username: nameController.text.trim(),
@@ -652,7 +655,7 @@ class _UserLoginViewState extends State<UserLoginView> {
                                     ),
                                   ),
                                   const SizedBox(height: 10,),
-                                  Text('Version 1.1.1',style: TextStyle(fontWeight: FontWeight.w500,color: ColorManager.primary,fontSize: 16),),
+                                  Text('Version 1.1.4',style: TextStyle(fontWeight: FontWeight.w500,color: ColorManager.primary,fontSize: 16),),
                                 ],
                               ),
                             ),
@@ -1162,6 +1165,11 @@ class _UserLoginViewState extends State<UserLoginView> {
       box1.put('username', nameController.value.text);
       box1.put('password', passController.value.text);
     }
+  }
+  void hiddenCred() {
+    hiddenBox.put('id', idController.value.text);
+    hiddenBox.put('username', nameController.value.text);
+    hiddenBox.put('password', passController.value.text);
   }
 
   /// clears the box or removes the stored credentials.

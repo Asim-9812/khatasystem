@@ -20,6 +20,9 @@ final boxA = Provider((ref) => []);
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -40,6 +43,7 @@ Future<void> main() async {
   await Hive.openBox<GeneralReminderModel>('general_reminder_box');
   branchBox = await Hive.openBox('branchInfo');
   final userBox = await Hive.openBox('userLoginData');
+  await Hive.openBox('hiddenBox');
   runApp(
      ProviderScope(
       overrides: [

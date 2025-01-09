@@ -576,7 +576,7 @@ final modalDataProvider = StateNotifierProvider.autoDispose<ModalDataProvider, A
 class ModalDataProvider extends StateNotifier<AsyncValue<List<dynamic>>>{
   ModalDataProvider() : super(const AsyncValue.data([]));
 
-  Future<void> getModalTableData(FilterAnyModel filterModel) async{
+  Future<void> getModalTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";
@@ -628,10 +628,10 @@ class LedgerIndividualProvider {
 
 
 
-final ledgerVoucherIndividualProvider = FutureProvider.family((ref, FilterAnyModel filterModel) => LedgerVoucherIndividualProvider().getTableData(filterModel));
+final ledgerVoucherIndividualProvider = FutureProvider.family((ref, FilterAnyModel2 filterModel) => LedgerVoucherIndividualProvider().getTableData(filterModel));
 
 class LedgerVoucherIndividualProvider {
-  Future<List<dynamic>> getTableData(FilterAnyModel filterModel) async{
+  Future<List<dynamic>> getTableData(FilterAnyModel2 filterModel) async{
     final dio = Dio();
     
     dio.options.headers["Authorization"] = "Bearer ${userToken}";

@@ -141,9 +141,9 @@ class _SubReportPageState extends ConsumerState<CustomerSubReportPage> {
     filterModel.currentPageNumber = _currentPage;
     filterModel.strListNames = "";
 
-    FilterAnyModel fModel = FilterAnyModel();
+    FilterAnyModel2 fModel = FilterAnyModel2();
     fModel.dataFilterModel = filterModel;
-    fModel.mainInfoModel = mainInfo;
+    fModel.mainInfoModel = mainInfo2;
 
 
     return Scaffold(

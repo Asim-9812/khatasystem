@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:khata_app/common/common_provider.dart';
 import 'package:khata_app/common/shimmer_loading.dart';
@@ -14,6 +15,7 @@ import 'package:khata_app/features/pos/domain/services/pos_services.dart';
 import 'package:khata_app/features/track_product/presentation/track_product.dart';
 import 'package:khata_app/main.dart';
 import 'package:khata_app/features/login/presentation/user_login.dart';
+import 'package:khata_app/custom_report.dart';
 import 'package:khata_app/utils/util_functions.dart';
 import '../../../common/colors.dart';
 import '../../../model/dashboard_model.dart';
@@ -323,6 +325,20 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         const SizedBox(height: 10,),
                         ListTile(
                           onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => CustomReportPage(),));
+                            // Navigator.push(context, MaterialPageRoute(builder: (context) => TesterPage(),));
+                          },
+                          title: const Text('TEST BUTTON',
+                            style: TextStyle(
+                              fontFamily: 'Ubuntu',
+                              fontSize: 18,
+                            ),
+                          ),
+                          leading: Icon(Icons.calendar_month, size: 28,
+                            color: ColorManager.iconGray,),
+                        ),
+                        ListTile(
+                          onTap: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const FiscalYear(),));
                             // Navigator.push(context, MaterialPageRoute(builder: (context) => TesterPage(),));
                           },
@@ -453,9 +469,11 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                         ),
                         ListTile(
                           onTap: () {
+                            final hiddenBox = Hive.box('hiddenBox');
                             setState(() {
                               sessionBox.clear();
                               branchBox.clear();
+                              hiddenBox.clear();
                             });
                             Navigator.pop(context,true);
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const UserLoginView()));
@@ -623,6 +641,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                             )
                         ),
                         const SizedBox(height: 10,),
+
                         ListTile(
                           onTap: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const FiscalYear(),));

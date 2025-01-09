@@ -77,46 +77,76 @@ class ReportView extends ConsumerWidget {
 
                       if(!homeChildList.any((item) => item.intMenuid == e.intMenuid)){
                         homeChildList.add(e);
-                        mainList.add(e);
+                        if(e.hasSubMenu){
+                          mainList.add(e);
+                        }
+
                       }
 
                     } else if (e.parentID == 4) {
 
                       if(!auditChildList.any((item) => item.intMenuid == e.intMenuid)){
                         auditChildList.add(e);
-                        mainList.add(e);
+                        if(e.hasSubMenu){
+                          mainList.add(e);
+                        }
                       }
                     } else if (e.parentID == 5) {
 
                       if(!reportChildList.any((item) => item.intMenuid == e.intMenuid)){
                         reportChildList.add(e);
-                        mainList.add(e);
+                        if(e.hasSubMenu && e.intMenuid != 95){
+                          mainList.add(e);
+                        }
                       }
 
                     } else if (e.parentID == 8) {
                       if(!logChildList.any((item) => item.intMenuid == e.intMenuid)){
                         logChildList.add(e);
-                        mainList.add(e);
+                        if(e.hasSubMenu){
+                          mainList.add(e);
+                        }
                       }
                       // mainList.add(e);
                     } else if (e.parentID == 64) {
                       if(!financialChildList.any((item) => item.intMenuid == e.intMenuid)){
+                        if(e.intMenuid != 68){
                         financialChildList.add(e);
+                        }
                       }
                       // mainList.add(e);
                     } else if (e.parentID == 69) {
                       if(!irdChildList.any((item) => item.intMenuid == e.intMenuid)){
-                        irdChildList.add(e);
+                        if(e.intMenuid != 68  // cash flow report
+                        && e.intMenuid != 256 // audit trial
+                        ){
+                          irdChildList.add(e);
+                        }
                       }
                     } else if (e.parentID == 73) {
                       if(!registerChildList.any((item) => item.intMenuid == e.intMenuid)){
-                        registerChildList.add(e);
+                        if(e.intMenuid != 78){
+                          registerChildList.add(e);
+                        }
                       }
                     } else if (e.parentID == 82) {
                       if(!statementChildList.any((item) => item.intMenuid == e.intMenuid)){
-                        statementChildList.add(e);
+                        if (e.intMenuid != 89 // Aging
+                            && e.intMenuid != 90 // Sales profit loss
+                            && e.intMenuid != 92 // Purchase order report
+                            && e.intMenuid != 94 // Sales order report
+                            && e.intMenuid != 198 // SalesWiseProfitAndLoss
+                            && e.intMenuid != 244 // Purchase Report
+                            && e.intMenuid != 251 // Product Wise Purchase Report
+                            && e.intMenuid != 252 // Product Wise Sales Report
+                            && e.intMenuid != 254 // Materialized Report
+                            && e.intMenuid != 255 // Sales Report
+                        ){
+                          statementChildList.add(e);
+                        }
+
                       }
-                    } else if (e.parentID == 95) {
+                    } else if (e.parentID == 95 ) {
                       if(!inventoryChildList.any((item) => item.intMenuid == e.intMenuid)){
                         inventoryChildList.add(e);
                       }

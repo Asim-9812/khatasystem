@@ -24,7 +24,7 @@ class TrackServices{
       dio.options.headers["Authorization"] = "Bearer $userToken";
 
 
-      print('${Api.getBranchList}/$branchId');
+      // print('${Api.getBranchList}/$branchId');
 
 
       final response = await dio.get('${Api.getBranchList}/$branchId');
@@ -76,6 +76,7 @@ class TrackServices{
       dio.options.headers["Authorization"] = "Bearer $userToken";
 
       final tokenMap = tokenData.toJson();
+      print(tokenMap);
 
       final response = await dio.post('${Api.getTrackList}', data: tokenMap);
 
@@ -102,6 +103,8 @@ class TrackServices{
 
     } on DioException catch(e){
       return Left('${e}');
+    } on DioError catch(e){
+      return Left('Data not found');
     }
 
   }

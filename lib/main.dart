@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -27,6 +28,11 @@ Future<void> main() async {
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
     )
+  );
+
+  await FlutterDownloader.initialize(
+      debug: false, // optional: set to false to disable printing logs to console (default: true)
+      ignoreSsl : true // option: set to false to disable working with http links (default: false)
   );
 
   await NotificationController.initializeLocalNotifications();

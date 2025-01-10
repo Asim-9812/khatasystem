@@ -150,6 +150,11 @@ dependencies:
 
   native_shared_preferences: ^2.0.10
 
+  flutter_inappwebview: ^6.1.5
+#  android_path_provider: ^0.3.0
+  flutter_downloader: ^1.11.8
+  permission_handler: ^11.3.1
+
 
 
 dev_dependencies:

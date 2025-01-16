@@ -16,6 +16,7 @@ import 'package:khata_app/features/track_product/presentation/track_product.dart
 import 'package:khata_app/main.dart';
 import 'package:khata_app/features/login/presentation/user_login.dart';
 import 'package:khata_app/custom_report.dart';
+import 'package:khata_app/test.dart';
 import 'package:khata_app/utils/util_functions.dart';
 import '../../../common/colors.dart';
 import '../../../model/dashboard_model.dart';
@@ -323,20 +324,20 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                             )
                         ),
                         const SizedBox(height: 10,),
-                        ListTile(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => CustomReportPage(),));
-                            // Navigator.push(context, MaterialPageRoute(builder: (context) => TesterPage(),));
-                          },
-                          title: const Text('TEST BUTTON',
-                            style: TextStyle(
-                              fontFamily: 'Ubuntu',
-                              fontSize: 18,
-                            ),
-                          ),
-                          leading: Icon(Icons.calendar_month, size: 28,
-                            color: ColorManager.iconGray,),
-                        ),
+                        // ListTile(
+                        //   onTap: (){
+                        //     Navigator.push(context, MaterialPageRoute(builder: (context) => TestWidget(),));
+                        //     // Navigator.push(context, MaterialPageRoute(builder: (context) => TesterPage(),));
+                        //   },
+                        //   title: const Text('TEST BUTTON',
+                        //     style: TextStyle(
+                        //       fontFamily: 'Ubuntu',
+                        //       fontSize: 18,
+                        //     ),
+                        //   ),
+                        //   leading: Icon(Icons.calendar_month, size: 28,
+                        //     color: ColorManager.iconGray,),
+                        // ),
                         ListTile(
                           onTap: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context) => const FiscalYear(),));
@@ -581,7 +582,7 @@ class _HomePageScreenState extends ConsumerState<HomePageScreen> {
                                   ),
                                 );
                               },
-                            ),
+                            ), 
                           );
                         },
                       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:khata_app/custom_report.dart';
 import 'package:khata_app/features/reports/Register/voucher_report/presentation/voucher_report.dart';
 import 'package:khata_app/features/reports/financial/balance_sheet/presentation/balance_sheet_report.dart';
 import 'package:khata_app/features/reports/financial/profit_loss/presentation/profit_loss_report.dart';
@@ -10,6 +11,7 @@ import 'package:khata_app/features/reports/statement/bank_cash_report/presentati
 import 'package:khata_app/features/reports/statement/customer_ledger_report/presentation/customer_ledger_report.dart';
 import 'package:khata_app/features/reports/statement/groupwise_ledger_report/presentation/groupwise_ledger_report.dart';
 import 'package:khata_app/features/reports/statement/vat_report/presentation/vat_report.dart';
+import 'package:khata_app/test2.dart';
 
 import '../../../common/colors.dart';
 import '../../reports/statement/daybook_report/presentation/daybook_report_presentation.dart';
@@ -89,6 +91,8 @@ class SubMenuView extends StatelessWidget {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => const BankCashReport()));
                             }else if(submenu[index].intMenuid == 0){
                               Navigator.of(context).push(MaterialPageRoute(builder: (context) => const IRDReport()));
+                            }else if(submenu[index].intMenuid == 240){
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => CustomReportPage(name: submenu[index].strName)));
                             }else{
                               Fluttertoast.showToast(
                                 msg: 'Feature Coming Soon!!!',

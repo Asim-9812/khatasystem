@@ -6,9 +6,8 @@ list(APPEND FLUTTER_PLUGIN_LIST
   awesome_notifications
   awesome_notifications_core
   connectivity_plus
-  flutter_inappwebview_windows
-  permission_handler_windows
   printing
+  share_plus
   url_launcher_windows
 )
 

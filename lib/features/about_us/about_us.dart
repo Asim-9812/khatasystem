@@ -1,9 +1,8 @@
 
 
 
-
+import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_share/flutter_share.dart';
 import '../../common/colors.dart';
 import '../../utils/util_functions.dart';
 
@@ -162,7 +161,7 @@ class AboutUs extends StatelessWidget {
     final String message = 'Check out our app: \n $appLink';
 
     // Share the app link and message using the share dialog
-    await FlutterShare.share(title: 'Khata System', text: message);
+    await Share.share(message,subject: 'Khata System');
   }
 
 }

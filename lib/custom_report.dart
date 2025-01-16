@@ -4,7 +4,8 @@ import 'package:khata_app/common/colors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class CustomReportPage extends StatefulWidget {
-  const CustomReportPage({super.key});
+  final String name;
+  const CustomReportPage({required this.name,super.key});
 
   @override
   State<CustomReportPage> createState() => _WebViewPageState();
@@ -15,11 +16,12 @@ class _WebViewPageState extends State<CustomReportPage> {
   final String url = 'https://khatasystem.com/Login/Index';
   bool isFormSubmitted = false; // Flag to check if the form has been submitted
   bool isLoading = true; // Flag to show/hide loading animation
+  String menuName = '';
 
   @override
   void initState() {
     super.initState();
-
+    menuName = widget.name;
     final credBox = Hive.box('hiddenBox');
     final id = credBox.get('id');
     final username = credBox.get('username');
@@ -55,15 +57,12 @@ class _WebViewPageState extends State<CustomReportPage> {
                 isFormSubmitted = true;
               });
             }
-
-
-
           },
           onNavigationRequest: (NavigationRequest request) async {
             // Once the login is complete and we navigate to the desired page, stop further navigation
             if (request.url.toLowerCase() == 'https://khatasystem.com/home/index') {
               print(request.url);
-              bgController.loadRequest(Uri.parse('https://khatasystem.com/CustomReport/CustomReport/Index?menuName=Stock%20Summary%20Report')).whenComplete(() async {
+              bgController.loadRequest(Uri.parse('https://khatasystem.com/CustomReport/CustomReport/Index?menuName=$menuName')).whenComplete(() async {
 
                 await Future.delayed(Duration(seconds: 3),(){
                   setState(() {

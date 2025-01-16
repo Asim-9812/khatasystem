@@ -95,7 +95,7 @@ class ReportView extends ConsumerWidget {
 
                       if(!reportChildList.any((item) => item.intMenuid == e.intMenuid)){
                         reportChildList.add(e);
-                        if(e.hasSubMenu && e.intMenuid != 95){
+                        if(e.hasSubMenu){
                           mainList.add(e);
                         }
                       }
@@ -148,7 +148,9 @@ class ReportView extends ConsumerWidget {
                       }
                     } else if (e.parentID == 95 ) {
                       if(!inventoryChildList.any((item) => item.intMenuid == e.intMenuid)){
-                        inventoryChildList.add(e);
+                        if(e.intMenuid == 240){
+                          inventoryChildList.add(e);
+                        }
                       }
                     }
                   }

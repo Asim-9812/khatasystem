@@ -7,7 +7,6 @@ import 'package:khata_app/common/colors.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:responsive_framework/utils/scroll_behavior.dart';
 import 'package:sunmi_printer_plus/sunmi_printer_plus.dart';
-
 import 'common/route_manager.dart';
 import 'features/general_reminder/model/general_reminder_model.dart';
 import 'features/notification_controller/notification_controller.dart';

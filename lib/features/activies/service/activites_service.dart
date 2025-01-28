@@ -120,7 +120,7 @@ Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactio
 
 
     if (response.statusCode == 200) {
-      print(response.data);
+      // print(response.data);
       final result = response.data["result"] as List<dynamic>;
       final entryMasterModel = result.map((e) => EntryMaster.fromJson(e)).toList();
       transactionStreamController.add(entryMasterModel);
@@ -129,7 +129,7 @@ Future<List<EntryMaster>> fetchTransactionActivities(StreamController transactio
       throw Exception('Failed to load logs');
     }
   }on DioError catch(err){
-    print(err);
+    // print(err);
     throw err.message;
   }
 }

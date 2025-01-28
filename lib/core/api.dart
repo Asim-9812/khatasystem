@@ -19,7 +19,7 @@ class Api {
   static const getVoucherList = '$baseUrl/api/GetList/GetVoucherReportList';
   static const getTable = '$baseUrl/api/CommonReport/GetFilterAnyDataPaginationReport';
   static const getModalTable = '$baseUrl/api/CommonReport/GetFilterAnyDataPaginationReport';
-  static const getLoginActivities = '$baseUrl/api/ActivityLog/GetUserLoginLog';
+  static const getLoginActivities = '$baseUrl/api/ActivityLog/GetLoginActivity';
   static const getTransactionActivities = '$baseUrl/api/ActivityLog/GetEntryMasterLog';
   static const getDashBoardAmount = '$baseUrl/api/MyFunction/DashBoardAccountGroupwithsub';
   static const getSubList = '$baseUrl/api/MyFunction/GetList_Report';
